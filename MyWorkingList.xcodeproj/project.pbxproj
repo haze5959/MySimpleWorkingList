@@ -15,6 +15,7 @@
 		179B6F8520E8C6BC008A7D5A /* MyWorkingListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179B6F8420E8C6BC008A7D5A /* MyWorkingListTests.swift */; };
 		179B6F9020E8C6BC008A7D5A /* MyWorkingListUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179B6F8F20E8C6BC008A7D5A /* MyWorkingListUITests.swift */; };
 		179B6FA220E8CC30008A7D5A /* MyWorkingList.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 179B6FA020E8CC30008A7D5A /* MyWorkingList.xcdatamodeld */; };
+		179B6FA420E8F963008A7D5A /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 179B6FA320E8F963008A7D5A /* README.md */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		179B6F8F20E8C6BC008A7D5A /* MyWorkingListUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyWorkingListUITests.swift; sourceTree = "<group>"; };
 		179B6F9120E8C6BC008A7D5A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		179B6FA120E8CC30008A7D5A /* MyWorkingList.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MyWorkingList.xcdatamodel; sourceTree = "<group>"; };
+		179B6FA320E8F963008A7D5A /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +81,7 @@
 		179B6F6020E8C6B8008A7D5A = {
 			isa = PBXGroup;
 			children = (
+				179B6FA320E8F963008A7D5A /* README.md */,
 				179B6F6B20E8C6B8008A7D5A /* MyWorkingList */,
 				179B6F8320E8C6BC008A7D5A /* MyWorkingListTests */,
 				179B6F8E20E8C6BC008A7D5A /* MyWorkingListUITests */,
@@ -234,6 +237,7 @@
 			files = (
 				179B6F7A20E8C6BC008A7D5A /* LaunchScreen.storyboard in Resources */,
 				179B6F7720E8C6BC008A7D5A /* Assets.xcassets in Resources */,
+				179B6FA420E8F963008A7D5A /* README.md in Resources */,
 				179B6F7220E8C6B8008A7D5A /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
