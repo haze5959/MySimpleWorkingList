@@ -10,11 +10,11 @@
 		179B6F6D20E8C6B8008A7D5A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179B6F6C20E8C6B8008A7D5A /* AppDelegate.swift */; };
 		179B6F6F20E8C6B8008A7D5A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179B6F6E20E8C6B8008A7D5A /* ViewController.swift */; };
 		179B6F7220E8C6B8008A7D5A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 179B6F7020E8C6B8008A7D5A /* Main.storyboard */; };
-		179B6F7520E8C6B8008A7D5A /* MyWorkingList.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 179B6F7320E8C6B8008A7D5A /* MyWorkingList.xcdatamodeld */; };
 		179B6F7720E8C6BC008A7D5A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 179B6F7620E8C6BC008A7D5A /* Assets.xcassets */; };
 		179B6F7A20E8C6BC008A7D5A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 179B6F7820E8C6BC008A7D5A /* LaunchScreen.storyboard */; };
 		179B6F8520E8C6BC008A7D5A /* MyWorkingListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179B6F8420E8C6BC008A7D5A /* MyWorkingListTests.swift */; };
 		179B6F9020E8C6BC008A7D5A /* MyWorkingListUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179B6F8F20E8C6BC008A7D5A /* MyWorkingListUITests.swift */; };
+		179B6FA220E8CC30008A7D5A /* MyWorkingList.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 179B6FA020E8CC30008A7D5A /* MyWorkingList.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,7 +39,6 @@
 		179B6F6C20E8C6B8008A7D5A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		179B6F6E20E8C6B8008A7D5A /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		179B6F7120E8C6B8008A7D5A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		179B6F7420E8C6B8008A7D5A /* MyWorkingList.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MyWorkingList.xcdatamodel; sourceTree = "<group>"; };
 		179B6F7620E8C6BC008A7D5A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		179B6F7920E8C6BC008A7D5A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		179B6F7B20E8C6BC008A7D5A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -49,6 +48,7 @@
 		179B6F8B20E8C6BC008A7D5A /* MyWorkingListUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MyWorkingListUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		179B6F8F20E8C6BC008A7D5A /* MyWorkingListUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyWorkingListUITests.swift; sourceTree = "<group>"; };
 		179B6F9120E8C6BC008A7D5A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		179B6FA120E8CC30008A7D5A /* MyWorkingList.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MyWorkingList.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,13 +99,13 @@
 		179B6F6B20E8C6B8008A7D5A /* MyWorkingList */ = {
 			isa = PBXGroup;
 			children = (
+				179B6FA020E8CC30008A7D5A /* MyWorkingList.xcdatamodeld */,
 				179B6F6C20E8C6B8008A7D5A /* AppDelegate.swift */,
 				179B6F6E20E8C6B8008A7D5A /* ViewController.swift */,
 				179B6F7020E8C6B8008A7D5A /* Main.storyboard */,
 				179B6F7620E8C6BC008A7D5A /* Assets.xcassets */,
 				179B6F7820E8C6BC008A7D5A /* LaunchScreen.storyboard */,
 				179B6F7B20E8C6BC008A7D5A /* Info.plist */,
-				179B6F7320E8C6B8008A7D5A /* MyWorkingList.xcdatamodeld */,
 			);
 			path = MyWorkingList;
 			sourceTree = "<group>";
@@ -261,7 +261,7 @@
 			files = (
 				179B6F6F20E8C6B8008A7D5A /* ViewController.swift in Sources */,
 				179B6F6D20E8C6B8008A7D5A /* AppDelegate.swift in Sources */,
-				179B6F7520E8C6B8008A7D5A /* MyWorkingList.xcdatamodeld in Sources */,
+				179B6FA220E8CC30008A7D5A /* MyWorkingList.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -590,12 +590,12 @@
 /* End XCConfigurationList section */
 
 /* Begin XCVersionGroup section */
-		179B6F7320E8C6B8008A7D5A /* MyWorkingList.xcdatamodeld */ = {
+		179B6FA020E8CC30008A7D5A /* MyWorkingList.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				179B6F7420E8C6B8008A7D5A /* MyWorkingList.xcdatamodel */,
+				179B6FA120E8CC30008A7D5A /* MyWorkingList.xcdatamodel */,
 			);
-			currentVersion = 179B6F7420E8C6B8008A7D5A /* MyWorkingList.xcdatamodel */;
+			currentVersion = 179B6FA120E8CC30008A7D5A /* MyWorkingList.xcdatamodel */;
 			path = MyWorkingList.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
