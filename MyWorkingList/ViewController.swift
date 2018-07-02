@@ -9,10 +9,12 @@
 import UIKit
 
 class ViewController: UIViewController {
+    static let MARGIN_TO_CURRENT_DAY = 30;
 
     @IBOutlet weak var titleLabel: UINavigationItem!
     @IBOutlet weak var tableView: UITableView!
     
+    fileprivate var taskData: Array<NSDictionary> = []
     fileprivate let itemsTitle: [String] = ["월(23)", "화(24)", "수(25)"]
     fileprivate let itemsBody: [String] = ["task1 4h", "task2 2h", "task3 1h"]
     
@@ -22,10 +24,41 @@ class ViewController: UIViewController {
         self.tableView.delegate = self;
         self.tableView.dataSource = self;
         
-        self.tableView.register(TableViewCell.self,
-                                  forCellReuseIdentifier: "TableViewCell");
+        self.tableView.register(UINib(nibName: "TableViewCell", bundle: nil), forCellReuseIdentifier: "TableViewCell");
         
         self.titleLabel.title = "워크스페이스";
+        
+        self.taskData = initTaskData(pivotDate: Date());
+    }
+    
+    /**
+     
+    */
+    func initTaskData(pivotDate:Date) -> Array<NSDictionary> {
+        let dateFormatter = DateFormatter();
+        dateFormatter.setLocalizedDateFormatFromTemplate("EEEE");
+        
+        for i in 0..<99 {
+            print("(i)")
+        }
+        
+        //과거로부터 현재까지
+        for i in 30..>0{
+            Calendar.current.date(byAdding: .day, value: i, to: pivotDate)
+        }
+        
+        for i in 0..<(MARGIN_TO_CURRENT_DAY){
+            Calendar.current.date(byAdding: .day, value: i, to: pivotDate)
+        }
+        
+        
+//        dateFormatter.string(from: <#T##Date#>)
+        
+        
+        NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
+        [dateFormatter setDateFormat:@"EEEE"];
+        NSLog(@"%@", [dateFormatter stringFromDate:[NSDate date]]);
+        return [];
     }
 
     override func didReceiveMemoryWarning() {
@@ -49,7 +82,7 @@ class ViewController: UIViewController {
 // MARK: UITableViewDelegate
 extension ViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        print(items[indexPath.row])
+        print("click! - ", indexPath.row);
     }
 }
 
@@ -57,13 +90,12 @@ extension ViewController: UITableViewDelegate {
 extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView,
                    numberOfRowsInSection section: Int) -> Int {
-        return self.itemsTitle.count;
+        return self.taskData.count;
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell: TableViewCell = tableView.dequeueReusableCell(withIdentifier: "TableViewCell") as! TableViewCell;
-        
-//        cell.textLabel?.text = items[indexPath.row];
+        let cell:TableViewCell! = self.tableView.dequeueReusableCell(withIdentifier: "TableViewCell", for: indexPath) as! TableViewCell;
+    
         cell.titleLabel?.text = itemsTitle[indexPath.row];
         var bodyStr = "";
         for task:String in itemsBody {
@@ -72,5 +104,8 @@ extension ViewController: UITableViewDataSource {
         
         cell.bodyLabel?.text = bodyStr;
         return cell
+        
+//        cell.textLabel?.text = items[indexPath.row];
+        
     }
 }
