@@ -8,12 +8,14 @@
 
 import UIKit
 
-class task: NSObject {
-    let date:date!
-    let title:string!
-    let body:string!
+class myTask: NSObject {
+    let date:Date!
+    let title:String!
+    let body:String!
     
-    init(_ dateVal:date) {
+    init(_ dateVal:Date) {
+        self.title = "";
+        self.body = "";
         self.date = dateVal;
     }
 }

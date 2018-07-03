@@ -16,9 +16,9 @@
 		179B6F9020E8C6BC008A7D5A /* MyWorkingListUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179B6F8F20E8C6BC008A7D5A /* MyWorkingListUITests.swift */; };
 		179B6FA220E8CC30008A7D5A /* MyWorkingList.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 179B6FA020E8CC30008A7D5A /* MyWorkingList.xcdatamodeld */; };
 		179B6FA420E8F963008A7D5A /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 179B6FA320E8F963008A7D5A /* README.md */; };
-		179B6FAB20EA8469008A7D5A /* model in Resources */ = {isa = PBXBuildFile; fileRef = 179B6FAA20EA8468008A7D5A /* model */; };
 		CE9893C320EA019500E085EE /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9893C120EA019500E085EE /* TableViewCell.swift */; };
 		CE9893C420EA019500E085EE /* TableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE9893C220EA019500E085EE /* TableViewCell.xib */; };
+		CEEC51C420EAFA6D00C4A770 /* myTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEC51C320EAFA6D00C4A770 /* myTask.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,9 +54,9 @@
 		179B6F9120E8C6BC008A7D5A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		179B6FA120E8CC30008A7D5A /* MyWorkingList.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MyWorkingList.xcdatamodel; sourceTree = "<group>"; };
 		179B6FA320E8F963008A7D5A /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		179B6FAA20EA8468008A7D5A /* model */ = {isa = PBXFileReference; lastKnownFileType = folder; path = model; sourceTree = "<group>"; };
 		CE9893C120EA019500E085EE /* TableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
 		CE9893C220EA019500E085EE /* TableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TableViewCell.xib; sourceTree = "<group>"; };
+		CEEC51C320EAFA6D00C4A770 /* myTask.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = myTask.swift; path = MyWorkingList/model/myTask.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,7 +108,7 @@
 		179B6F6B20E8C6B8008A7D5A /* MyWorkingList */ = {
 			isa = PBXGroup;
 			children = (
-				179B6FAA20EA8468008A7D5A /* model */,
+				CEEC51C220EAFA5700C4A770 /* model */,
 				179B6FA020E8CC30008A7D5A /* MyWorkingList.xcdatamodeld */,
 				179B6F6C20E8C6B8008A7D5A /* AppDelegate.swift */,
 				179B6F6E20E8C6B8008A7D5A /* ViewController.swift */,
@@ -138,6 +138,14 @@
 				179B6F9120E8C6BC008A7D5A /* Info.plist */,
 			);
 			path = MyWorkingListUITests;
+			sourceTree = "<group>";
+		};
+		CEEC51C220EAFA5700C4A770 /* model */ = {
+			isa = PBXGroup;
+			children = (
+				CEEC51C320EAFA6D00C4A770 /* myTask.swift */,
+			);
+			path = model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -244,7 +252,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				179B6FAB20EA8469008A7D5A /* model in Resources */,
 				179B6F7A20E8C6BC008A7D5A /* LaunchScreen.storyboard in Resources */,
 				CE9893C420EA019500E085EE /* TableViewCell.xib in Resources */,
 				179B6F7720E8C6BC008A7D5A /* Assets.xcassets in Resources */,
@@ -276,6 +283,7 @@
 			files = (
 				179B6F6F20E8C6B8008A7D5A /* ViewController.swift in Sources */,
 				CE9893C320EA019500E085EE /* TableViewCell.swift in Sources */,
+				CEEC51C420EAFA6D00C4A770 /* myTask.swift in Sources */,
 				179B6F6D20E8C6B8008A7D5A /* AppDelegate.swift in Sources */,
 				179B6FA220E8CC30008A7D5A /* MyWorkingList.xcdatamodeld in Sources */,
 			);
