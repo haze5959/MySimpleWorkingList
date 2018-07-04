@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="SideViewController" customModule="MyWorkingList" customModuleProvider="target">
+            <connections>
+                <outlet property="tableView" destination="fjW-ke-89k" id="zc1-lq-kCw"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LR3-Ke-xmi">
+                    <rect key="frame" x="0.0" y="20" width="281.5" height="647"/>
+                    <subviews>
+                        <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="fjW-ke-89k">
+                            <rect key="frame" x="0.0" y="0.0" width="281.5" height="603"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        </tableView>
+                        <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gcL-7n-xC5">
+                            <rect key="frame" x="0.0" y="603" width="282" height="44"/>
+                            <items>
+                                <barButtonItem title="Item" id="f7Y-ZK-fgI">
+                                    <connections>
+                                        <action selector="pressDonationBtn:" destination="-1" id="WVq-yV-LyY"/>
+                                    </connections>
+                                </barButtonItem>
+                                <barButtonItem style="plain" systemItem="flexibleSpace" id="acg-p7-Edr"/>
+                                <barButtonItem systemItem="edit" id="htA-yp-vI4">
+                                    <connections>
+                                        <action selector="pressEditBtn:" destination="-1" id="VcV-US-LiP"/>
+                                    </connections>
+                                </barButtonItem>
+                                <barButtonItem systemItem="add" id="bly-xg-rbc">
+                                    <connections>
+                                        <action selector="pressAddBtn:" destination="-1" id="gPn-VS-sqH"/>
+                                    </connections>
+                                </barButtonItem>
+                            </items>
+                        </toolbar>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstItem="fjW-ke-89k" firstAttribute="top" secondItem="LR3-Ke-xmi" secondAttribute="top" id="2un-W2-xFV"/>
+                        <constraint firstItem="gcL-7n-xC5" firstAttribute="top" secondItem="fjW-ke-89k" secondAttribute="bottom" id="5dZ-2R-fb2"/>
+                        <constraint firstAttribute="bottom" secondItem="gcL-7n-xC5" secondAttribute="bottom" id="R9r-eS-s31"/>
+                        <constraint firstAttribute="trailing" secondItem="fjW-ke-89k" secondAttribute="trailing" id="bRG-1X-Sqe"/>
+                        <constraint firstItem="gcL-7n-xC5" firstAttribute="leading" secondItem="LR3-Ke-xmi" secondAttribute="leading" id="hqE-4D-F5d"/>
+                        <constraint firstAttribute="trailing" secondItem="gcL-7n-xC5" secondAttribute="trailing" constant="-0.5" id="iSf-VM-9TK"/>
+                        <constraint firstItem="fjW-ke-89k" firstAttribute="leading" secondItem="LR3-Ke-xmi" secondAttribute="leading" id="ooY-eD-2gX"/>
+                    </constraints>
+                </view>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dPe-c0-YOy">
+                    <rect key="frame" x="281.5" y="20" width="93.5" height="647"/>
+                </button>
+            </subviews>
+            <constraints>
+                <constraint firstItem="dPe-c0-YOy" firstAttribute="leading" secondItem="LR3-Ke-xmi" secondAttribute="trailing" id="GEa-WB-J24"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="LR3-Ke-xmi" secondAttribute="bottom" id="M6R-rM-O4w"/>
+                <constraint firstItem="dPe-c0-YOy" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="Ndp-40-Fby"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="dPe-c0-YOy" secondAttribute="trailing" id="bc9-3h-fJI"/>
+                <constraint firstItem="LR3-Ke-xmi" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="cyR-AD-SDk"/>
+                <constraint firstItem="LR3-Ke-xmi" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="ggk-B8-Dbc"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="LR3-Ke-xmi" secondAttribute="trailing" multiplier="4:3" id="sFR-T6-cE6"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="dPe-c0-YOy" secondAttribute="bottom" id="u2L-Kv-kg3"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+        </view>
+    </objects>
+</document>

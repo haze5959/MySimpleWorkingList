@@ -16,6 +16,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+        let context = self.persistentContainer.viewContext;
+        let workSpace = WorkSpace(context: context) // Link Task & Context
+        
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Users")
+        //request.predicate = NSPredicate(format: "age = %@", "12")
+        request.returnsObjectsAsFaults = false
+        do {
+            let result = try context.fetch(request)
+            for data in result as! [NSManagedObject] {
+                print(data.value(forKey: "username") as! String)
+            }
+            
+        } catch {
+            
+            print("Failed")
+        }
         
         return true
     }

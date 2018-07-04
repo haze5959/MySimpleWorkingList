@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -27,11 +28,19 @@
                                                 <action selector="pressWorkSpaceBtn:" destination="BYZ-38-t0r" id="mb1-sP-Hah"/>
                                             </connections>
                                         </barButtonItem>
-                                        <barButtonItem key="rightBarButtonItem" title="달력 조회" id="cOQ-V0-0ax">
-                                            <connections>
-                                                <action selector="pressSearchCalendarBtn:" destination="BYZ-38-t0r" id="ayS-1d-Hmr"/>
-                                            </connections>
-                                        </barButtonItem>
+                                        <rightBarButtonItems>
+                                            <barButtonItem title="Item" image="baseline_calendar.png" style="plain" id="cOQ-V0-0ax">
+                                                <inset key="largeContentSizeImageInsets" minX="0.0" minY="0.0" maxX="-1" maxY="0.0"/>
+                                                <connections>
+                                                    <action selector="pressSearchCalendarBtn:" destination="BYZ-38-t0r" id="ayS-1d-Hmr"/>
+                                                </connections>
+                                            </barButtonItem>
+                                            <barButtonItem title="today" id="F5A-3o-2XR">
+                                                <connections>
+                                                    <action selector="pressTodayBtn:" destination="BYZ-38-t0r" id="XDO-5Q-j7o"/>
+                                                </connections>
+                                            </barButtonItem>
+                                        </rightBarButtonItems>
                                     </navigationItem>
                                 </items>
                             </navigationBar>
@@ -89,4 +98,7 @@
             <point key="canvasLocation" x="32.799999999999997" y="32.833583208395808"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="baseline_calendar.png" width="48" height="48"/>
+    </resources>
 </document>
