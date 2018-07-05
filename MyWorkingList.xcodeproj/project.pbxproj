@@ -18,6 +18,9 @@
 		179B6FA420E8F963008A7D5A /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 179B6FA320E8F963008A7D5A /* README.md */; };
 		CE9893C320EA019500E085EE /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9893C120EA019500E085EE /* TableViewCell.swift */; };
 		CE9893C420EA019500E085EE /* TableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE9893C220EA019500E085EE /* TableViewCell.xib */; };
+		CEAC645420EDAA930019935B /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEAC645320EDAA930019935B /* CloudKit.framework */; };
+		CEAC645820EDEA9A0019935B /* PinWheelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEAC645720EDEA9A0019935B /* PinWheelView.swift */; };
+		CEAC645B20EE0CA90019935B /* SharedData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEAC645A20EE0CA90019935B /* SharedData.swift */; };
 		CED2FD7520ECA88A0021F514 /* baseline_calendar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CED2FD7320ECA8890021F514 /* baseline_calendar@2x.png */; };
 		CED2FD7620ECA88A0021F514 /* baseline_calendar@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = CED2FD7420ECA88A0021F514 /* baseline_calendar@3x.png */; };
 		CED2FD7A20ECB9270021F514 /* SideViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED2FD7820ECB9270021F514 /* SideViewController.swift */; };
@@ -60,6 +63,10 @@
 		179B6FA320E8F963008A7D5A /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		CE9893C120EA019500E085EE /* TableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
 		CE9893C220EA019500E085EE /* TableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TableViewCell.xib; sourceTree = "<group>"; };
+		CEAC645120EDAA550019935B /* MyWorkingList.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MyWorkingList.entitlements; sourceTree = "<group>"; };
+		CEAC645320EDAA930019935B /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
+		CEAC645720EDEA9A0019935B /* PinWheelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinWheelView.swift; sourceTree = "<group>"; };
+		CEAC645A20EE0CA90019935B /* SharedData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedData.swift; sourceTree = "<group>"; };
 		CED2FD7320ECA8890021F514 /* baseline_calendar@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "baseline_calendar@2x.png"; sourceTree = "<group>"; };
 		CED2FD7420ECA88A0021F514 /* baseline_calendar@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "baseline_calendar@3x.png"; sourceTree = "<group>"; };
 		CED2FD7820ECB9270021F514 /* SideViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideViewController.swift; sourceTree = "<group>"; };
@@ -72,6 +79,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CEAC645420EDAA930019935B /* CloudKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -100,6 +108,7 @@
 				179B6F8320E8C6BC008A7D5A /* MyWorkingListTests */,
 				179B6F8E20E8C6BC008A7D5A /* MyWorkingListUITests */,
 				179B6F6A20E8C6B8008A7D5A /* Products */,
+				CEAC645220EDAA930019935B /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -116,6 +125,7 @@
 		179B6F6B20E8C6B8008A7D5A /* MyWorkingList */ = {
 			isa = PBXGroup;
 			children = (
+				CEAC645120EDAA550019935B /* MyWorkingList.entitlements */,
 				CED2FD7720ECB8B10021F514 /* SideView */,
 				CED2FD6F20EC9F250021F514 /* Resource */,
 				CEEC51C220EAFA5700C4A770 /* model */,
@@ -128,6 +138,8 @@
 				179B6F7B20E8C6BC008A7D5A /* Info.plist */,
 				CE9893C120EA019500E085EE /* TableViewCell.swift */,
 				CE9893C220EA019500E085EE /* TableViewCell.xib */,
+				CEAC645720EDEA9A0019935B /* PinWheelView.swift */,
+				CEAC645A20EE0CA90019935B /* SharedData.swift */,
 			);
 			path = MyWorkingList;
 			sourceTree = "<group>";
@@ -148,6 +160,14 @@
 				179B6F9120E8C6BC008A7D5A /* Info.plist */,
 			);
 			path = MyWorkingListUITests;
+			sourceTree = "<group>";
+		};
+		CEAC645220EDAA930019935B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				CEAC645320EDAA930019935B /* CloudKit.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		CED2FD6F20EC9F250021F514 /* Resource */ = {
@@ -252,6 +272,17 @@
 				TargetAttributes = {
 					179B6F6820E8C6B8008A7D5A = {
 						CreatedOnToolsVersion = 9.4.1;
+						SystemCapabilities = {
+							com.apple.ApplePay = {
+								enabled = 0;
+							};
+							com.apple.Push = {
+								enabled = 1;
+							};
+							com.apple.iCloud = {
+								enabled = 1;
+							};
+						};
 					};
 					179B6F7F20E8C6BC008A7D5A = {
 						CreatedOnToolsVersion = 9.4.1;
@@ -321,8 +352,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				179B6F6F20E8C6B8008A7D5A /* ViewController.swift in Sources */,
+				CEAC645820EDEA9A0019935B /* PinWheelView.swift in Sources */,
 				CE9893C320EA019500E085EE /* TableViewCell.swift in Sources */,
 				CEEC51C420EAFA6D00C4A770 /* myTask.swift in Sources */,
+				CEAC645B20EE0CA90019935B /* SharedData.swift in Sources */,
 				179B6F6D20E8C6B8008A7D5A /* AppDelegate.swift in Sources */,
 				179B6FA220E8CC30008A7D5A /* MyWorkingList.xcdatamodeld in Sources */,
 				CED2FD7A20ECB9270021F514 /* SideViewController.swift in Sources */,
@@ -498,6 +531,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = MyWorkingList/MyWorkingList.entitlements;
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = Z97K7ZHNKX;
 				INFOPLIST_FILE = MyWorkingList/Info.plist;
@@ -508,7 +542,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.oq.MyWorkingList;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "7426903f-c658-429f-801d-461d75b27850";
+				PROVISIONING_PROFILE = "d0004d59-9aba-4a48-b1b3-b31429ce119d";
 				PROVISIONING_PROFILE_SPECIFIER = "MyWorkingList Dev 2018";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -519,6 +553,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = MyWorkingList/MyWorkingList.entitlements;
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = MyWorkingList/Info.plist;

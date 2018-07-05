@@ -7,99 +7,101 @@
 //
 
 import UIKit
-import CoreData
+import CloudKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
-
+    var navigationVC: UINavigationController!
+    var container: CKContainer!
+    var publicDB: CKDatabase!
+    var privateDB: CKDatabase!
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        let context = self.persistentContainer.viewContext;
-        let workSpace = WorkSpace(context: context) // Link Task & Context
+        //스플레시 뷰 TODO: 스플레시 띄우기
+        self.window = UIWindow(frame: UIScreen.main.bounds);
+        self.navigationVC = UINavigationController();
+        self.navigationVC.navigationBar.isHidden = true;
+        let storyBoard = UIStoryboard (name: "Main", bundle: Bundle.main);
+        let viewController:UIViewController! = storyBoard.instantiateInitialViewController();
+        self.navigationVC.viewControllers = [viewController];
+        self.window!.rootViewController = self.navigationVC;
+        self.window?.makeKeyAndVisible();
         
-        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Users")
-        //request.predicate = NSPredicate(format: "age = %@", "12")
-        request.returnsObjectsAsFaults = false
-        do {
-            let result = try context.fetch(request)
-            for data in result as! [NSManagedObject] {
-                print(data.value(forKey: "username") as! String)
+        let pinWheel = PinWheelView.shared;
+        pinWheel.showProgressView(viewController.view);
+        
+        //iCloud 권한 체크
+        CKContainer.default().accountStatus{ status, error in
+            guard status == .available else {
+                return
             }
-            
-        } catch {
-            
-            print("Failed")
+            //The user’s iCloud account is available..
+
+            self.container = CKContainer.default();
+            self.publicDB = self.container.publicCloudDatabase;
+            self.privateDB = self.container.privateCloudDatabase;
+
+            let predicate = NSPredicate(value: true);
+            let query = CKQuery(recordType: "workSpace", predicate: predicate);
+            self.publicDB.perform(query, inZoneWith: nil) { records, error in
+                guard error != nil else {
+                    print("err: \(String(describing: error))");
+                    return;
+                }
+                
+                if records?.count == 0 {    //최초 실행
+                    let record = CKRecord(recordType: "workSpace")
+                    record.setValue("default", forKey: "name")
+                    self.publicDB.save(record) { savedRecord, error in
+                        DispatchQueue.main.async {
+                            pinWheel.hideProgressView();
+                        }
+                    }
+                    
+                } else {
+                    let sharedData = SharedData.instance;
+                    
+                    var isSameValue = false; //클라우드 데이터에 디바이스 값이 들어있는지 판별
+                    for record in records!{
+                        let value:String = record.value(forKey: "name") as! String;
+                        print("testOQ: \(value)");
+                        
+                        if value == sharedData.workSpace {  //디바이스에 저장된 값과 클라우드에서 가져온 값이 일치한다면
+                            isSameValue = true;
+                            break;
+                        }
+                    }
+                    
+                    if !isSameValue {
+                        sharedData.workSpace = records![0].value(forKey: "name") as! String;
+                    }
+                    
+                    DispatchQueue.main.async {
+                        pinWheel.hideProgressView();
+                    }
+                    
+                }
+            }
         }
         
         return true
     }
 
-    func applicationWillResignActive(_ application: UIApplication) {
-       
-    }
+    func applicationWillResignActive(_ application: UIApplication) {}
 
-    func applicationDidEnterBackground(_ application: UIApplication) {
+    func applicationDidEnterBackground(_ application: UIApplication) {}
+
+    func applicationWillEnterForeground(_ application: UIApplication) {}
+
+    func applicationDidBecomeActive(_ application: UIApplication) {}
+
+    func applicationWillTerminate(_ application: UIApplication) {}
+    
+    // MARK: CloudKit 메서드
+    func makeWorkSpace(workSpaceName:String) -> Void {
         
     }
-
-    func applicationWillEnterForeground(_ application: UIApplication) {
-        
-    }
-
-    func applicationDidBecomeActive(_ application: UIApplication) {
-        
-    }
-
-    func applicationWillTerminate(_ application: UIApplication) {
-        self.saveContext()
-    }
-
-    // MARK: - Core Data stack
-
-    lazy var persistentContainer: NSPersistentContainer = {
-        /*
-         The persistent container for the application. This implementation
-         creates and returns a container, having loaded the store for the
-         application to it. This property is optional since there are legitimate
-         error conditions that could cause the creation of the store to fail.
-        */
-        let container = NSPersistentContainer(name: "MyWorkingList")
-        container.loadPersistentStores(completionHandler: { (storeDescription, error) in
-            if let error = error as NSError? {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                 
-                /*
-                 Typical reasons for an error here include:
-                 * The parent directory does not exist, cannot be created, or disallows writing.
-                 * The persistent store is not accessible, due to permissions or data protection when the device is locked.
-                 * The device is out of space.
-                 * The store could not be migrated to the current model version.
-                 Check the error message to determine what the actual problem was.
-                 */
-                fatalError("Unresolved error \(error), \(error.userInfo)")
-            }
-        })
-        return container
-    }()
-
-    // MARK: - Core Data Saving support
-
-    func saveContext () {
-        let context = persistentContainer.viewContext
-        if context.hasChanges {
-            do {
-                try context.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nserror = error as NSError
-                fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
-            }
-        }
-    }
-
 }
 

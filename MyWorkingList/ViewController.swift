@@ -40,7 +40,7 @@ class ViewController: UIViewController {
         
         self.tableView.register(UINib(nibName: "TableViewCell", bundle: nil), forCellReuseIdentifier: "TableViewCell");
         
-        self.titleLabel.title = "워크스페이스";
+        self.titleLabel.title = "List";
         
         initTaskData(pivotDate: Date());
         
@@ -50,14 +50,14 @@ class ViewController: UIViewController {
             self.tableView.addSubview(refreshControl)
         }
         
-        let context = APPDELEGATE_INSTANCE.persistentContainer.viewContext
-        let work = Work(context: context) // Link Task & Context
-        work.setValue("test", forKey: "body");
-        
-        // Save the data to coredata
-        APPDELEGATE_INSTANCE.saveContext()
-        
-        let _ = navigationController?.popViewController(animated: true)
+//        let context = APPDELEGATE_INSTANCE.persistentContainer.viewContext
+//        let work = Work(context: context) // Link Task & Context
+//        work.setValue("test", forKey: "body");
+//        
+//        // Save the data to coredata
+//        APPDELEGATE_INSTANCE.saveContext()
+//        
+//        let _ = navigationController?.popViewController(animated: true)
     }
     
     /**
