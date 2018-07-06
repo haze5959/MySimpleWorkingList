@@ -11,11 +11,11 @@ import CloudKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
+    
     var window: UIWindow?
     var navigationVC: UINavigationController!
     var container: CKContainer!
-    var publicDB: CKDatabase!
+//    var publicDB: CKDatabase!
     var privateDB: CKDatabase!
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
@@ -40,24 +40,34 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             //The user’s iCloud account is available..
 
             self.container = CKContainer.default();
-            self.publicDB = self.container.publicCloudDatabase;
+//            self.publicDB = self.container.publicCloudDatabase;
             self.privateDB = self.container.privateCloudDatabase;
 
             let predicate = NSPredicate(value: true);
             let query = CKQuery(recordType: "workSpace", predicate: predicate);
-            self.publicDB.perform(query, inZoneWith: nil) { records, error in
-                guard error != nil else {
+
+            self.privateDB.perform(query, inZoneWith: nil) { records, error in
+                guard error == nil else {
                     print("err: \(String(describing: error))");
+                    self.alertPopUp(bodyStr: (error?.localizedDescription)!, alertClassify: .exit)
                     return;
                 }
                 
                 if records?.count == 0 {    //최초 실행
                     let record = CKRecord(recordType: "workSpace")
                     record.setValue("default", forKey: "name")
-                    self.publicDB.save(record) { savedRecord, error in
+                    self.privateDB.save(record) { savedRecord, error in
+                        //해당 데이터를 워크스페이스 보관 배열에 넣는다.
+                        let workSpace = myWorkspace.init(id: savedRecord?.value(forKey: "name") as! String, name: (savedRecord?.recordID.recordName)!);
+                        UserDefaults().set(workSpace.id, forKey: "seletedWorkSpaceId");
+                        UserDefaults().set(workSpace.name, forKey: "seletedWorkSpaceName");
+                        SharedData.instance.workSpaceArr.append(workSpace);
+                        
                         DispatchQueue.main.async {
                             pinWheel.hideProgressView();
                         }
+                        
+                        SharedData.instance.taskUpdateObserver?.onNext(workSpace);
                     }
                     
                 } else {
@@ -67,21 +77,24 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     for record in records!{
                         let value:String = record.value(forKey: "name") as! String;
                         print("testOQ: \(value)");
+                        sharedData.workSpaceArr.append(myWorkspace.init(id:record.recordID.recordName, name:record.value(forKey: "name") as! String));
                         
-                        if value == sharedData.workSpace {  //디바이스에 저장된 값과 클라우드에서 가져온 값이 일치한다면
+                        if value == sharedData.seletedWorkSpace?.name {  //디바이스에 저장된 값과 클라우드에서 가져온 값이 일치한다면
                             isSameValue = true;
-                            break;
                         }
                     }
                     
                     if !isSameValue {
-                        sharedData.workSpace = records![0].value(forKey: "name") as! String;
+                        let workSpace = myWorkspace.init(id:(records![0].recordID.recordName) , name:records![0].value(forKey: "name") as! String);
+                        sharedData.seletedWorkSpace = workSpace;
+                        UserDefaults().set(workSpace.id, forKey: "seletedWorkSpaceId");
+                        UserDefaults().set(workSpace.name, forKey: "seletedWorkSpaceName");
                     }
                     
                     DispatchQueue.main.async {
                         pinWheel.hideProgressView();
                     }
-                    
+                    sharedData.taskUpdateObserver?.onNext(sharedData.seletedWorkSpace!);
                 }
             }
         }
@@ -102,6 +115,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: CloudKit 메서드
     func makeWorkSpace(workSpaceName:String) -> Void {
         
+    }
+    
+    // MARK: 얼럿뷰
+    enum AlertClassify {
+        case normal;
+        case exit;
+    }
+    
+    func alertPopUp(bodyStr:String, alertClassify:AlertClassify) -> Void {
+        let alert = UIAlertController(title: "알림", message: bodyStr, preferredStyle: .alert);
+        
+        switch alertClassify {
+        case .normal:
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil));
+        case .exit:
+            alert.addAction(UIAlertAction(title: "Exit", style: .cancel, handler: {
+                action in exit(0);
+            }));
+        }
+        
+        self.navigationVC.present(alert, animated: true);
     }
 }
 

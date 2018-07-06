@@ -37,7 +37,7 @@ open class PinWheelView {
         activityIndicator.activityIndicatorViewStyle = .whiteLarge
         activityIndicator.center = CGPoint(x: progressView.bounds.width / 2, y: progressView.bounds.height / 2)
         
-        labelView.text = "iCloud data load...";
+        labelView.text = "iCloud Sync...";
         labelView.frame = CGRect(x: view.frame.size.width/2 - 100, y: progressView.frame.origin.y + 85, width: 200, height: 20)
         labelView.textAlignment = .center;
         

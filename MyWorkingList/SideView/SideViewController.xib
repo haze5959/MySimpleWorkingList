@@ -26,8 +26,12 @@
                     <rect key="frame" x="0.0" y="20" width="281.5" height="647"/>
                     <subviews>
                         <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="fjW-ke-89k">
-                            <rect key="frame" x="0.0" y="0.0" width="281.5" height="603"/>
+                            <rect key="frame" x="0.0" y="44" width="282" height="559"/>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <connections>
+                                <outlet property="dataSource" destination="-1" id="v7k-MQ-T0c"/>
+                                <outlet property="delegate" destination="-1" id="7Kr-qO-VVV"/>
+                            </connections>
                         </tableView>
                         <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gcL-7n-xC5">
                             <rect key="frame" x="0.0" y="603" width="282" height="44"/>
@@ -43,6 +47,7 @@
                                         <action selector="pressEditBtn:" destination="-1" id="VcV-US-LiP"/>
                                     </connections>
                                 </barButtonItem>
+                                <barButtonItem width="20" style="plain" systemItem="fixedSpace" id="WtG-ZK-fy2"/>
                                 <barButtonItem systemItem="add" id="bly-xg-rbc">
                                     <connections>
                                         <action selector="pressAddBtn:" destination="-1" id="gPn-VS-sqH"/>
@@ -50,33 +55,58 @@
                                 </barButtonItem>
                             </items>
                         </toolbar>
+                        <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CWS-AR-wXn">
+                            <rect key="frame" x="0.0" y="0.0" width="281.5" height="44"/>
+                            <items>
+                                <navigationItem title="My WorkSpace" id="1vs-i3-jhO"/>
+                            </items>
+                        </navigationBar>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
-                        <constraint firstItem="fjW-ke-89k" firstAttribute="top" secondItem="LR3-Ke-xmi" secondAttribute="top" id="2un-W2-xFV"/>
+                        <constraint firstItem="fjW-ke-89k" firstAttribute="top" secondItem="CWS-AR-wXn" secondAttribute="bottom" id="0su-i0-4dt"/>
                         <constraint firstItem="gcL-7n-xC5" firstAttribute="top" secondItem="fjW-ke-89k" secondAttribute="bottom" id="5dZ-2R-fb2"/>
+                        <constraint firstItem="CWS-AR-wXn" firstAttribute="leading" secondItem="LR3-Ke-xmi" secondAttribute="leading" id="F2V-Fk-fVj"/>
+                        <constraint firstItem="CWS-AR-wXn" firstAttribute="top" secondItem="LR3-Ke-xmi" secondAttribute="top" id="N6m-UN-hme"/>
                         <constraint firstAttribute="bottom" secondItem="gcL-7n-xC5" secondAttribute="bottom" id="R9r-eS-s31"/>
                         <constraint firstAttribute="trailing" secondItem="fjW-ke-89k" secondAttribute="trailing" id="bRG-1X-Sqe"/>
                         <constraint firstItem="gcL-7n-xC5" firstAttribute="leading" secondItem="LR3-Ke-xmi" secondAttribute="leading" id="hqE-4D-F5d"/>
                         <constraint firstAttribute="trailing" secondItem="gcL-7n-xC5" secondAttribute="trailing" constant="-0.5" id="iSf-VM-9TK"/>
+                        <constraint firstAttribute="trailing" secondItem="CWS-AR-wXn" secondAttribute="trailing" id="nkl-6n-Jfe"/>
                         <constraint firstItem="fjW-ke-89k" firstAttribute="leading" secondItem="LR3-Ke-xmi" secondAttribute="leading" id="ooY-eD-2gX"/>
                     </constraints>
                 </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4BX-mq-2Cg">
+                    <rect key="frame" x="281.5" y="20" width="1" height="647"/>
+                    <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="1" id="dSa-uF-Jd9"/>
+                    </constraints>
+                    <viewLayoutGuide key="safeArea" id="fft-Gm-t8y"/>
+                </view>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dPe-c0-YOy">
-                    <rect key="frame" x="281.5" y="20" width="93.5" height="647"/>
+                    <rect key="frame" x="282.5" y="20" width="92.5" height="647"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.25489619006849318" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <connections>
+                        <action selector="pressOutOfView:" destination="-1" eventType="touchUpInside" id="ub0-fw-o1k"/>
+                    </connections>
                 </button>
             </subviews>
             <constraints>
-                <constraint firstItem="dPe-c0-YOy" firstAttribute="leading" secondItem="LR3-Ke-xmi" secondAttribute="trailing" id="GEa-WB-J24"/>
+                <constraint firstItem="4BX-mq-2Cg" firstAttribute="leading" secondItem="LR3-Ke-xmi" secondAttribute="trailing" id="6or-gV-Zkf"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="LR3-Ke-xmi" secondAttribute="bottom" id="M6R-rM-O4w"/>
-                <constraint firstItem="dPe-c0-YOy" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="Ndp-40-Fby"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="dPe-c0-YOy" secondAttribute="trailing" id="bc9-3h-fJI"/>
+                <constraint firstItem="dPe-c0-YOy" firstAttribute="leading" secondItem="4BX-mq-2Cg" secondAttribute="trailing" id="aKd-kh-8rP"/>
+                <constraint firstItem="dPe-c0-YOy" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="blk-Z7-w5S"/>
                 <constraint firstItem="LR3-Ke-xmi" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="cyR-AD-SDk"/>
                 <constraint firstItem="LR3-Ke-xmi" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="ggk-B8-Dbc"/>
+                <constraint firstItem="dPe-c0-YOy" firstAttribute="top" secondItem="4BX-mq-2Cg" secondAttribute="top" id="qc4-HA-xPC"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="top" secondItem="4BX-mq-2Cg" secondAttribute="top" id="rAT-et-zkB"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="LR3-Ke-xmi" secondAttribute="trailing" multiplier="4:3" id="sFR-T6-cE6"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="dPe-c0-YOy" secondAttribute="bottom" id="u2L-Kv-kg3"/>
+                <constraint firstItem="dPe-c0-YOy" firstAttribute="bottom" secondItem="4BX-mq-2Cg" secondAttribute="bottom" id="wDM-Y9-Vwl"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="4BX-mq-2Cg" secondAttribute="bottom" id="yhJ-Pk-6yc"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+            <point key="canvasLocation" x="87.5" y="53.5"/>
         </view>
     </objects>
 </document>

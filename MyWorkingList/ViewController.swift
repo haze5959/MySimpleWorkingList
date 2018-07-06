@@ -7,11 +7,14 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 class ViewController: UIViewController {
+    let disposeBag = DisposeBag();
     let MARGIN_TO_PAST_DAY = -2;
     let MARGIN_TO_AFTER_DAY = 30;
-    let APPDELEGATE_INSTANCE = (UIApplication.shared.delegate as! AppDelegate);
+//    let APPDELEGATE_INSTANCE = (UIApplication.shared.delegate as! AppDelegate);
 
     @IBOutlet weak var titleLabel: UINavigationItem!
     @IBOutlet weak var tableView: UITableView!
@@ -27,7 +30,6 @@ class ViewController: UIViewController {
         let refreshControl = UIRefreshControl();
         refreshControl.attributedTitle = NSAttributedString(string: "일주일 이전 데이터 로드");
         refreshControl.addTarget(self, action: #selector(refreshWeatherData(_:)), for: .valueChanged)
-//        refreshControl.tintColor = UIColor.red
         
         return refreshControl
     }()
@@ -40,24 +42,23 @@ class ViewController: UIViewController {
         
         self.tableView.register(UINib(nibName: "TableViewCell", bundle: nil), forCellReuseIdentifier: "TableViewCell");
         
-        self.titleLabel.title = "List";
-        
-        initTaskData(pivotDate: Date());
-        
         if #available(iOS 10.0, *) {
             self.tableView.refreshControl = refreshControl
         } else {
-            self.tableView.addSubview(refreshControl)
+            self.tableView.addSubview(refreshControl);
         }
         
-//        let context = APPDELEGATE_INSTANCE.persistentContainer.viewContext
-//        let work = Work(context: context) // Link Task & Context
-//        work.setValue("test", forKey: "body");
-//        
-//        // Save the data to coredata
-//        APPDELEGATE_INSTANCE.saveContext()
-//        
-//        let _ = navigationController?.popViewController(animated: true)
+        //데이터 초기화 옵져버
+        Observable<myWorkspace>.create{ observer in
+            SharedData.instance.taskUpdateObserver = observer;
+            return Disposables.create();
+        }.observeOn(MainScheduler.instance)
+        .subscribe{
+            self.titleLabel.title = $0.element?.name;
+            self.initTaskData(pivotDate: Date());
+            self.tableView.reloadData();
+            
+        }.disposed(by: self.disposeBag);
     }
     
     /**
@@ -97,8 +98,6 @@ class ViewController: UIViewController {
     func insertTaskData(pivotDate:Date!, amountOfNumber:Int) -> Void {
         let dateFormatter = DateFormatter();
         dateFormatter.setLocalizedDateFormatFromTemplate("M");
-//        let pastdate:Date = (Calendar.current.date(byAdding: .day, value: -amountOfNumber, to: pivotDate))!;
-//        var pastMonth:String = dateFormatter.string(from: pastdate);
         var pivotMonth:String = dateFormatter.string(from: pivotDate);
         
         //과거로부터 현재 미래까지
@@ -144,6 +143,18 @@ class ViewController: UIViewController {
      워크스페이스 사이드뷰 띄우는 버튼
     */
     @IBAction func pressWorkSpaceBtn(_ sender: Any) {
+        let sideVC = SideViewController();
+        if #available(iOS 11.0, *) {
+            sideVC.view.frame = self.view.safeAreaLayoutGuide.layoutFrame
+        } else {
+            var frame = self.view.frame;
+            frame.origin.y = frame.origin.y + UIApplication.shared.statusBarFrame.size.height;
+            frame.size.height = frame.size.height - UIApplication.shared.statusBarFrame.size.height;
+            sideVC.view.frame = frame;
+        };
+        
+        self.addChildViewController(sideVC);
+        self.view.addSubview(sideVC.view);
     }
     
     /**
@@ -205,7 +216,7 @@ extension ViewController: UITableViewDataSource {
         let day:String = dateFormatter.string(from: task.date);
         
         if task.taskType == .today {
-            cell.titleLabel?.text = "\(day) [\(dayOfWeek)] today!";
+            cell.titleLabel?.text = "\(day) [\(dayOfWeek)] - today!";
         } else {
             cell.titleLabel?.text = "\(day) [\(dayOfWeek)]";
         }

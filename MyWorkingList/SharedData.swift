@@ -7,13 +7,19 @@
 //
 
 import UIKit
+import RxSwift
 
 class SharedData: NSObject {
     static let instance: SharedData = SharedData();
     
-    var workSpace:String;
+    var seletedWorkSpace:myWorkspace?;
+    var workSpaceArr:Array<myWorkspace> = [];
+    
+    var taskUpdateObserver:AnyObserver<myWorkspace>?;
     
     override init() {
-        self.workSpace = UserDefaults().object(forKey: "MyWorkSpace") as! String;
+        if UserDefaults().object(forKey: "seletedWorkSpaceId") != nil && UserDefaults().object(forKey: "seletedWorkSpaceName") == nil {
+            self.seletedWorkSpace = myWorkspace(id: UserDefaults().object(forKey: "seletedWorkSpaceId") as! String, name: UserDefaults().object(forKey: "seletedWorkSpaceName") as! String);
+        }
     }
 }
