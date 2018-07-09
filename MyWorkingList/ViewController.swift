@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CloudKit
 import RxSwift
 import RxCocoa
 
@@ -28,7 +29,7 @@ class ViewController: UIViewController {
     
     lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl();
-        refreshControl.attributedTitle = NSAttributedString(string: "일주일 이전 데이터 로드");
+        refreshControl.attributedTitle = NSAttributedString(string: "Load data a week ago");
         refreshControl.addTarget(self, action: #selector(refreshWeatherData(_:)), for: .valueChanged)
         
         return refreshControl

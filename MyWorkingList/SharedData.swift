@@ -18,7 +18,7 @@ class SharedData: NSObject {
     var taskUpdateObserver:AnyObserver<myWorkspace>?;
     
     override init() {
-        if UserDefaults().object(forKey: "seletedWorkSpaceId") != nil && UserDefaults().object(forKey: "seletedWorkSpaceName") == nil {
+        if UserDefaults().object(forKey: "seletedWorkSpaceId") != nil && UserDefaults().object(forKey: "seletedWorkSpaceName") != nil {
             self.seletedWorkSpace = myWorkspace(id: UserDefaults().object(forKey: "seletedWorkSpaceId") as! String, name: UserDefaults().object(forKey: "seletedWorkSpaceName") as! String);
         }
     }

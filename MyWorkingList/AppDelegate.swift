@@ -15,7 +15,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     var navigationVC: UINavigationController!
     var container: CKContainer!
-//    var publicDB: CKDatabase!
     var privateDB: CKDatabase!
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
@@ -40,7 +39,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             //The user’s iCloud account is available..
 
             self.container = CKContainer.default();
-//            self.publicDB = self.container.publicCloudDatabase;
             self.privateDB = self.container.privateCloudDatabase;
 
             let predicate = NSPredicate(value: true);
@@ -54,21 +52,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 }
                 
                 if records?.count == 0 {    //최초 실행
-                    let record = CKRecord(recordType: "workSpace")
-                    record.setValue("default", forKey: "name")
-                    self.privateDB.save(record) { savedRecord, error in
-                        //해당 데이터를 워크스페이스 보관 배열에 넣는다.
-                        let workSpace = myWorkspace.init(id: savedRecord?.value(forKey: "name") as! String, name: (savedRecord?.recordID.recordName)!);
-                        UserDefaults().set(workSpace.id, forKey: "seletedWorkSpaceId");
-                        UserDefaults().set(workSpace.name, forKey: "seletedWorkSpaceName");
-                        SharedData.instance.workSpaceArr.append(workSpace);
-                        
-                        DispatchQueue.main.async {
-                            pinWheel.hideProgressView();
-                        }
-                        
-                        SharedData.instance.taskUpdateObserver?.onNext(workSpace);
-                    }
+                    self.makeWorkSpace(workSpaceName: "default");
                     
                 } else {
                     let sharedData = SharedData.instance;
@@ -76,7 +60,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     var isSameValue = false; //클라우드 데이터에 디바이스 값이 들어있는지 판별
                     for record in records!{
                         let value:String = record.value(forKey: "name") as! String;
-                        print("testOQ: \(value)");
                         sharedData.workSpaceArr.append(myWorkspace.init(id:record.recordID.recordName, name:record.value(forKey: "name") as! String));
                         
                         if value == sharedData.seletedWorkSpace?.name {  //디바이스에 저장된 값과 클라우드에서 가져온 값이 일치한다면
@@ -112,10 +95,67 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillTerminate(_ application: UIApplication) {}
     
+    // MARK: ==============================
     // MARK: CloudKit 메서드
+    // 워크스페이스 생성
     func makeWorkSpace(workSpaceName:String) -> Void {
-        
+        //******클라우드에 새 워크스페이즈 저장******
+        let pinWheel = PinWheelView.shared;
+        pinWheel.showProgressView(self.navigationVC.view);
+        let record = CKRecord(recordType: "workSpace")
+        record.setValue(workSpaceName, forKey: "name")
+        (UIApplication.shared.delegate as! AppDelegate).privateDB.save(record) { savedRecord, error in
+            //해당 데이터를 워크스페이스 보관 배열에 넣는다.
+            let workSpace = myWorkspace.init(id: (savedRecord?.recordID.recordName)!, name: savedRecord?.value(forKey: "name") as! String);
+            UserDefaults().set(workSpace.id, forKey: "seletedWorkSpaceId");
+            UserDefaults().set(workSpace.name, forKey: "seletedWorkSpaceName");
+            SharedData.instance.workSpaceArr.append(workSpace);
+            SharedData.instance.seletedWorkSpace = workSpace;
+            
+            DispatchQueue.main.async {
+                pinWheel.hideProgressView();
+            }
+            
+            SharedData.instance.taskUpdateObserver?.onNext(workSpace);
+        }
+        //***********************************
     }
+    
+    // 워크스페이스 수정
+    func updateWorkSpace(recordId:String, newName:String) -> Void {
+        //******클라우드에 새 워크스페이즈 저장******
+        let pinWheel = PinWheelView.shared;
+        pinWheel.showProgressView(self.navigationVC.view);
+        let recordId = CKRecordID(recordName: recordId)
+        (UIApplication.shared.delegate as! AppDelegate).privateDB.fetch(withRecordID: recordId) { updatedRecord, error in
+            if error != nil {
+                return
+            }
+            
+            updatedRecord?.setObject(newName as CKRecordValue, forKey: "name");
+            (UIApplication.shared.delegate as! AppDelegate).privateDB.save(updatedRecord!) { savedRecord, error in
+                DispatchQueue.main.async {
+                    pinWheel.hideProgressView();
+                }
+            }
+        }
+        //***********************************
+    }
+    
+    //해당 리코드 삭제
+    func deleteRecord(recordId:String) -> Void {
+        //******클라우드 워크스페이스 삭제******        
+        let pinWheel = PinWheelView.shared;
+        pinWheel.showProgressView(self.navigationVC.view);
+        let recordId = CKRecordID(recordName: recordId)
+        (UIApplication.shared.delegate as! AppDelegate).privateDB.delete(withRecordID: recordId) { deletedRecordId, error in
+            DispatchQueue.main.async {
+                pinWheel.hideProgressView();
+            }
+        }
+        //***********************************
+    }
+    // MARK: ==============================
     
     // MARK: 얼럿뷰
     enum AlertClassify {
@@ -137,5 +177,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         self.navigationVC.present(alert, animated: true);
     }
+
 }
 
