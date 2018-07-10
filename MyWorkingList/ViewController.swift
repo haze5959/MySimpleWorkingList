@@ -77,9 +77,9 @@ class ViewController: UIViewController {
             let date:Date = (Calendar.current.date(byAdding: .day, value: i, to: pivotDate))!;
             
             if(i == 0){
-                self.taskData.append(myTask(date, .today));
+                self.taskData.append(myTask("", date, "", .today));
             } else {
-                self.taskData.append(myTask(date, .unknown));
+                self.taskData.append(myTask("", date, "", .unknown));
             }
             
             //월이 바뀌면 섹션을 추가한다.
@@ -104,7 +104,7 @@ class ViewController: UIViewController {
         //과거로부터 현재 미래까지
         for i in 1..<amountOfNumber+1{
             let pastDate:Date = (Calendar.current.date(byAdding: .day, value: -i, to: pivotDate))!;
-            self.taskData.insert(myTask(pastDate, .unknown), at: 0);
+            self.taskData.insert(myTask("", pastDate, "", .unknown), at: 0);
             
             //월이 바뀌면 섹션을 추가한다.
             let pastMonth:String = dateFormatter.string(from: pastDate);
@@ -126,7 +126,7 @@ class ViewController: UIViewController {
         //과거로부터 현재 미래까지
         for i in 1..<amountOfNumber+1{
             let date:Date = (Calendar.current.date(byAdding: .day, value: i, to: pivotDate))!;
-            self.taskData.append(myTask(date, .unknown));
+            self.taskData.append(myTask("", date, "", .unknown));
 
             //월이 바뀌면 섹션을 추가한다.
             let month:String = dateFormatter.string(from: date);
@@ -185,6 +185,19 @@ class ViewController: UIViewController {
 extension ViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("click! - ", indexPath.row);
+        
+//        let sideVC = SideViewController();
+//        if #available(iOS 11.0, *) {
+//            sideVC.view.frame = self.view.safeAreaLayoutGuide.layoutFrame
+//        } else {
+//            var frame = self.view.frame;
+//            frame.origin.y = frame.origin.y + UIApplication.shared.statusBarFrame.size.height;
+//            frame.size.height = frame.size.height - UIApplication.shared.statusBarFrame.size.height;
+//            sideVC.view.frame = frame;
+//        };
+//
+//        self.addChildViewController(sideVC);
+//        self.view.addSubview(sideVC.view);
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {

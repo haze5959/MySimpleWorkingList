@@ -14,6 +14,7 @@ class SharedData: NSObject {
     
     var seletedWorkSpace:myWorkspace?;
     var workSpaceArr:Array<myWorkspace> = [];
+    var taskAllDic:NSMutableDictionary = [:];
     
     var taskUpdateObserver:AnyObserver<myWorkspace>?;
     

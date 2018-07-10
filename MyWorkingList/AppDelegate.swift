@@ -123,7 +123,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // 워크스페이스 수정
     func updateWorkSpace(recordId:String, newName:String) -> Void {
-        //******클라우드에 새 워크스페이즈 저장******
+        //******클라우드에 워크스페이즈 수정******
         let pinWheel = PinWheelView.shared;
         pinWheel.showProgressView(self.navigationVC.view);
         let recordId = CKRecordID(recordName: recordId)
@@ -133,6 +133,49 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
             
             updatedRecord?.setObject(newName as CKRecordValue, forKey: "name");
+            (UIApplication.shared.delegate as! AppDelegate).privateDB.save(updatedRecord!) { savedRecord, error in
+                DispatchQueue.main.async {
+                    pinWheel.hideProgressView();
+                }
+            }
+        }
+        //***********************************
+    }
+    
+    // 테스크 생성
+    func makeDayTask(workSpaceId:String, taskDate:Int, taskBody:String) -> Void {
+        //******클라우드에 새 테스크 저장******
+        let pinWheel = PinWheelView.shared;
+        pinWheel.showProgressView(self.navigationVC.view);
+        let record = CKRecord(recordType: "dayTask");
+        record.setValue(taskDate, forKey: "date");
+        record.setValue(taskBody, forKey: "body");
+        (UIApplication.shared.delegate as! AppDelegate).privateDB.save(record) { savedRecord, error in
+            //해당 데이터를 워크스페이스 보관 배열에 넣는다.
+            let task = myTask.init((savedRecord?.recordID.recordName)!, savedRecord?.value(forKey: "date") as! String, savedRecord?.value(forKey: "body") as! String, .unknown);
+            SharedData.instance.taskAllDic.setValue(task, forKey: task.date);
+            
+            DispatchQueue.main.async {
+                pinWheel.hideProgressView();
+            }
+            
+//            SharedData.instance.taskUpdateObserver?.onNext(workSpace);
+        }
+        //***********************************
+    }
+    
+    // 테스크 수정
+    func updateDayTask(task:myTask) -> Void {
+        //******클라우드에 테스크 수정******
+        let pinWheel = PinWheelView.shared;
+        pinWheel.showProgressView(self.navigationVC.view);
+        let recordId = CKRecordID(recordName: task.id)
+        (UIApplication.shared.delegate as! AppDelegate).privateDB.fetch(withRecordID: recordId) { updatedRecord, error in
+            if error != nil {
+                return
+            }
+            
+            updatedRecord?.setObject(task.body as CKRecordValue, forKey: "body");
             (UIApplication.shared.delegate as! AppDelegate).privateDB.save(updatedRecord!) { savedRecord, error in
                 DispatchQueue.main.async {
                     pinWheel.hideProgressView();

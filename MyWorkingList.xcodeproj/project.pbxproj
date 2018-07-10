@@ -19,6 +19,8 @@
 		50843A64D07ACBEE533E104B /* Pods_MyWorkingListTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 35535217B86A7B2FD818E74D /* Pods_MyWorkingListTests.framework */; };
 		8727750E88A4D68B35A4065B /* Pods_MyWorkingListUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27C3163430FBBBB0F5EC54D8 /* Pods_MyWorkingListUITests.framework */; };
 		955BB2BAA7DD9A3DC9D1BC17 /* Pods_MyWorkingList.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 10572EB58D66C6CEE3A6041D /* Pods_MyWorkingList.framework */; };
+		CE24B26D20F4AB720064FBB5 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE24B26B20F4AB720064FBB5 /* DetailViewController.swift */; };
+		CE24B26E20F4AB720064FBB5 /* DetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE24B26C20F4AB720064FBB5 /* DetailViewController.xib */; };
 		CE9893C320EA019500E085EE /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9893C120EA019500E085EE /* TableViewCell.swift */; };
 		CE9893C420EA019500E085EE /* TableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE9893C220EA019500E085EE /* TableViewCell.xib */; };
 		CEAC645420EDAA930019935B /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEAC645320EDAA930019935B /* CloudKit.framework */; };
@@ -73,6 +75,8 @@
 		8C0F5079A70854F9E1F7DB5B /* Pods-MyWorkingListUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyWorkingListUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-MyWorkingListUITests/Pods-MyWorkingListUITests.release.xcconfig"; sourceTree = "<group>"; };
 		B4568782C97630BEA4B65C9F /* Pods-MyWorkingListTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyWorkingListTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MyWorkingListTests/Pods-MyWorkingListTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B70F33A7D85F671FDE3A75E6 /* Pods-MyWorkingList.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyWorkingList.release.xcconfig"; path = "Pods/Target Support Files/Pods-MyWorkingList/Pods-MyWorkingList.release.xcconfig"; sourceTree = "<group>"; };
+		CE24B26B20F4AB720064FBB5 /* DetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
+		CE24B26C20F4AB720064FBB5 /* DetailViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DetailViewController.xib; sourceTree = "<group>"; };
 		CE9893C120EA019500E085EE /* TableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
 		CE9893C220EA019500E085EE /* TableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TableViewCell.xib; sourceTree = "<group>"; };
 		CEAC645120EDAA550019935B /* MyWorkingList.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MyWorkingList.entitlements; sourceTree = "<group>"; };
@@ -143,6 +147,7 @@
 		179B6F6B20E8C6B8008A7D5A /* MyWorkingList */ = {
 			isa = PBXGroup;
 			children = (
+				CE24B26A20F4AB720064FBB5 /* DetailView */,
 				CEAC645120EDAA550019935B /* MyWorkingList.entitlements */,
 				CED2FD7720ECB8B10021F514 /* SideView */,
 				CED2FD6F20EC9F250021F514 /* Resource */,
@@ -191,6 +196,15 @@
 				8C0F5079A70854F9E1F7DB5B /* Pods-MyWorkingListUITests.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		CE24B26A20F4AB720064FBB5 /* DetailView */ = {
+			isa = PBXGroup;
+			children = (
+				CE24B26B20F4AB720064FBB5 /* DetailViewController.swift */,
+				CE24B26C20F4AB720064FBB5 /* DetailViewController.xib */,
+			);
+			path = DetailView;
 			sourceTree = "<group>";
 		};
 		CEAC645220EDAA930019935B /* Frameworks */ = {
@@ -362,6 +376,7 @@
 				179B6F7A20E8C6BC008A7D5A /* LaunchScreen.storyboard in Resources */,
 				CED2FD7520ECA88A0021F514 /* baseline_calendar@2x.png in Resources */,
 				CED2FD7B20ECB9270021F514 /* SideViewController.xib in Resources */,
+				CE24B26E20F4AB720064FBB5 /* DetailViewController.xib in Resources */,
 				CE9893C420EA019500E085EE /* TableViewCell.xib in Resources */,
 				179B6F7720E8C6BC008A7D5A /* Assets.xcassets in Resources */,
 				179B6FA420E8F963008A7D5A /* README.md in Resources */,
@@ -474,6 +489,7 @@
 				CEAC645B20EE0CA90019935B /* SharedData.swift in Sources */,
 				179B6F6D20E8C6B8008A7D5A /* AppDelegate.swift in Sources */,
 				179B6FA220E8CC30008A7D5A /* MyWorkingList.xcdatamodeld in Sources */,
+				CE24B26D20F4AB720064FBB5 /* DetailViewController.swift in Sources */,
 				CED2FD7A20ECB9270021F514 /* SideViewController.swift in Sources */,
 				CEC9447B20EF24A60092CF5D /* myWorkspace.swift in Sources */,
 			);
@@ -654,7 +670,10 @@
 				DEVELOPMENT_TEAM = Z97K7ZHNKX;
 				INFOPLIST_FILE = MyWorkingList/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.oq.MyWorkingList;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "37f1c89e-d648-412e-ac0e-af3eac5ef9a8";
@@ -674,7 +693,10 @@
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = MyWorkingList/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.oq.MyWorkingList;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -692,7 +714,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 5T9LN79RPK;
 				INFOPLIST_FILE = MyWorkingListTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = oq.MyWorkingListTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -710,7 +736,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 5T9LN79RPK;
 				INFOPLIST_FILE = MyWorkingListTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = oq.MyWorkingListTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -727,7 +757,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 5T9LN79RPK;
 				INFOPLIST_FILE = MyWorkingListUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = oq.MyWorkingListUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -744,7 +778,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 5T9LN79RPK;
 				INFOPLIST_FILE = MyWorkingListUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = oq.MyWorkingListUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;

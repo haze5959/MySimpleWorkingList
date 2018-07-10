@@ -14,12 +14,14 @@ enum TaskType: Int {
 }
 
 class myTask: NSObject {
+    let id:String!
     let date:Date!
     let body:String!
     let taskType:TaskType!
     
-    init(_ dateVal:Date, _ taskType:TaskType) {
-        self.body = "";
+    init(_ id:String, _ dateVal:Date, _ bodyVal:String, _ taskType:TaskType) {
+        self.id = id;
+        self.body = bodyVal;
         self.date = dateVal;
         self.taskType = taskType;
     }
