@@ -12,6 +12,9 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="DetailViewController" customModule="MyWorkingList" customModuleProvider="target">
             <connections>
+                <outlet property="saveBtn" destination="ExU-3y-iA6" id="6OR-Xu-hVB"/>
+                <outlet property="textView" destination="wsU-Sj-LP8" id="X7R-tC-Qev"/>
+                <outlet property="titleLabel" destination="cuL-iM-xY9" id="qer-jN-lFx"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -21,21 +24,28 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zJv-5V-W6H">
-                    <rect key="frame" x="20" y="40" width="335" height="607"/>
+                    <rect key="frame" x="20" y="40" width="335" height="377"/>
                     <subviews>
                         <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Rrb-Jy-FcK">
                             <rect key="frame" x="0.0" y="0.0" width="335" height="44"/>
                             <items>
                                 <navigationItem title="Title" id="cuL-iM-xY9">
-                                    <barButtonItem key="leftBarButtonItem" title="Item" id="IbZ-4p-mvA"/>
-                                    <barButtonItem key="rightBarButtonItem" title="Item" id="ExU-3y-iA6"/>
+                                    <barButtonItem key="leftBarButtonItem" title="back" id="IbZ-4p-mvA">
+                                        <connections>
+                                            <action selector="pressBackBtn:" destination="-1" id="anH-E1-jo3"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem key="rightBarButtonItem" systemItem="save" id="ExU-3y-iA6">
+                                        <connections>
+                                            <action selector="pressSaveBtn:" destination="-1" id="PLY-PA-KGS"/>
+                                        </connections>
+                                    </barButtonItem>
                                 </navigationItem>
                             </items>
                         </navigationBar>
-                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="wsU-Sj-LP8">
-                            <rect key="frame" x="0.0" y="44" width="335" height="563"/>
+                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="wsU-Sj-LP8">
+                            <rect key="frame" x="0.0" y="44" width="335" height="333"/>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                             <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                         </textView>
@@ -57,7 +67,7 @@
                 <constraint firstItem="zJv-5V-W6H" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="20" id="BiW-Gc-WfI"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="zJv-5V-W6H" secondAttribute="trailing" constant="20" id="JcL-Ll-sr3"/>
                 <constraint firstItem="zJv-5V-W6H" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="20" id="S2a-Hu-pHq"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="zJv-5V-W6H" secondAttribute="bottom" constant="20" id="W9A-Sj-vhp"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="zJv-5V-W6H" secondAttribute="bottom" constant="250" id="W9A-Sj-vhp"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
         </view>

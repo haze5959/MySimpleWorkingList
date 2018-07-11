@@ -16,7 +16,8 @@ class SharedData: NSObject {
     var workSpaceArr:Array<myWorkspace> = [];
     var taskAllDic:NSMutableDictionary = [:];
     
-    var taskUpdateObserver:AnyObserver<myWorkspace>?;
+    var workSpaceUpdateObserver:AnyObserver<myWorkspace>?;
+    var viewContrllerDelegate:ViewControllerDelegate!;
     
     override init() {
         if UserDefaults().object(forKey: "seletedWorkSpaceId") != nil && UserDefaults().object(forKey: "seletedWorkSpaceName") != nil {

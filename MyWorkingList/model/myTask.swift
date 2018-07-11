@@ -16,7 +16,7 @@ enum TaskType: Int {
 class myTask: NSObject {
     let id:String!
     let date:Date!
-    let body:String!
+    var body:String!
     let taskType:TaskType!
     
     init(_ id:String, _ dateVal:Date, _ bodyVal:String, _ taskType:TaskType) {

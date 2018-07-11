@@ -34,6 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //iCloud 권한 체크
         CKContainer.default().accountStatus{ status, error in
             guard status == .available else {
+                self.alertPopUp(bodyStr: "user’s iCloud is not available", alertClassify: .exit);
                 return
             }
             //The user’s iCloud account is available..
@@ -77,7 +78,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     DispatchQueue.main.async {
                         pinWheel.hideProgressView();
                     }
-                    sharedData.taskUpdateObserver?.onNext(sharedData.seletedWorkSpace!);
+                    sharedData.workSpaceUpdateObserver?.onNext(sharedData.seletedWorkSpace!);
                 }
             }
         }
@@ -116,7 +117,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 pinWheel.hideProgressView();
             }
             
-            SharedData.instance.taskUpdateObserver?.onNext(workSpace);
+            SharedData.instance.workSpaceUpdateObserver?.onNext(workSpace);
         }
         //***********************************
     }
@@ -142,31 +143,79 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //***********************************
     }
     
+    // 테스크 가져오기
+    func getDayTask(startDate:Date, endDate:Date?, workSpaceId:String) -> Void {
+        let pinWheel = PinWheelView.shared;
+        DispatchQueue.main.async {
+            pinWheel.showProgressView(self.navigationVC.view);
+        }
+        
+        var predicate = NSPredicate(format: "workSpaceId = %@", workSpaceId);   //TODO: 데이트 쿼리도 넣어라
+        if endDate != nil {
+            predicate = NSPredicate(format: "workSpaceId = %@", workSpaceId);
+        }
+        
+        let query = CKQuery(recordType: "dayTask", predicate: predicate);
+        
+        self.privateDB.perform(query, inZoneWith: nil) { records, error in
+            guard error == nil else {
+                print("err: \(String(describing: error))");
+                self.alertPopUp(bodyStr: (error?.localizedDescription)!, alertClassify: .exit)
+                return;
+            }
+            
+            let dateFormatter = DateFormatter();
+            dateFormatter.setLocalizedDateFormatFromTemplate("yyMMdd");
+            
+            for record in records!{
+                let body:String = record.value(forKey: "body") as! String;
+                let date:Date = record.value(forKey: "date") as! Date;
+                
+                let task:myTask = myTask.init(record.recordID.recordName, date, body, .unknown);
+                let dayKey:String = dateFormatter.string(from: task.date);
+                
+                SharedData.instance.taskAllDic.setValue(task, forKey: dayKey);
+            }
+            
+            SharedData.instance.viewContrllerDelegate.reloadTableAll();
+            
+            DispatchQueue.main.async {
+                pinWheel.hideProgressView();
+            }
+        };
+    }
+    
     // 테스크 생성
-    func makeDayTask(workSpaceId:String, taskDate:Int, taskBody:String) -> Void {
-        //******클라우드에 새 테스크 저장******
+    func makeDayTask(workSpaceId:String, taskDate:Date, taskBody:String, indexPath:IndexPath) -> Void {
+        //*********클라우드에 새 테스크 저장*********
         let pinWheel = PinWheelView.shared;
         pinWheel.showProgressView(self.navigationVC.view);
         let record = CKRecord(recordType: "dayTask");
+        record.setValue(workSpaceId, forKey: "workSpaceId");
         record.setValue(taskDate, forKey: "date");
         record.setValue(taskBody, forKey: "body");
         (UIApplication.shared.delegate as! AppDelegate).privateDB.save(record) { savedRecord, error in
             //해당 데이터를 워크스페이스 보관 배열에 넣는다.
-            let task = myTask.init((savedRecord?.recordID.recordName)!, savedRecord?.value(forKey: "date") as! String, savedRecord?.value(forKey: "body") as! String, .unknown);
-            SharedData.instance.taskAllDic.setValue(task, forKey: task.date);
+            let task = myTask.init((savedRecord?.recordID.recordName)!, savedRecord?.value(forKey: "date") as! Date, savedRecord?.value(forKey: "body") as! String, .unknown);
+            
+            let dateFormatter = DateFormatter();
+            dateFormatter.setLocalizedDateFormatFromTemplate("yyMMdd");
+            let dayKey:String = dateFormatter.string(from: task.date);
+            
+            SharedData.instance.taskAllDic.setValue(task, forKey: dayKey);
             
             DispatchQueue.main.async {
                 pinWheel.hideProgressView();
             }
             
-//            SharedData.instance.taskUpdateObserver?.onNext(workSpace);
+            SharedData.instance.viewContrllerDelegate.reloadTableWithUpdateCell(indexPath: indexPath, body: taskBody)
         }
         //***********************************
     }
     
     // 테스크 수정
-    func updateDayTask(task:myTask) -> Void {
-        //******클라우드에 테스크 수정******
+    func updateDayTask(task:myTask, indexPath:IndexPath) -> Void {
+        //*********클라우드에 테스크 수정*********
         let pinWheel = PinWheelView.shared;
         pinWheel.showProgressView(self.navigationVC.view);
         let recordId = CKRecordID(recordName: task.id)
@@ -180,6 +229,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 DispatchQueue.main.async {
                     pinWheel.hideProgressView();
                 }
+                
+                SharedData.instance.viewContrllerDelegate.reloadTableWithUpdateCell(indexPath: indexPath, body: task.body);
             }
         }
         //***********************************
@@ -187,7 +238,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     //해당 리코드 삭제
     func deleteRecord(recordId:String) -> Void {
-        //******클라우드 워크스페이스 삭제******        
+        //********클라우드 워크스페이스 삭제********        
         let pinWheel = PinWheelView.shared;
         pinWheel.showProgressView(self.navigationVC.view);
         let recordId = CKRecordID(recordName: recordId)

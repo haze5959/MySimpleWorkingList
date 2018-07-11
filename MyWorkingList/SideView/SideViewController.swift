@@ -65,11 +65,14 @@ class SideViewController: UIViewController {
 // MARK: UITableViewDelegate
 extension SideViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("click! - ", indexPath.row);
+        //데이터 초기화
+        let parentVC = self.parent as! ViewController;
+        parentVC.taskData = [];
+        parentVC.monthSectionArr = [];
         
         if(SharedData.instance.workSpaceArr[indexPath.row].name != SharedData.instance.seletedWorkSpace?.name){
             SharedData.instance.seletedWorkSpace = SharedData.instance.workSpaceArr[indexPath.row];
-            SharedData.instance.taskUpdateObserver?.onNext(SharedData.instance.seletedWorkSpace!);
+            SharedData.instance.workSpaceUpdateObserver?.onNext(SharedData.instance.seletedWorkSpace!);
             UserDefaults().set(SharedData.instance.seletedWorkSpace?.id, forKey: "seletedWorkSpaceId");
             UserDefaults().set(SharedData.instance.seletedWorkSpace?.name, forKey: "seletedWorkSpaceName");
             self.view.removeFromSuperview();
@@ -112,9 +115,8 @@ extension SideViewController: UITableViewDataSource {
                 tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.automatic);
                 
                 SharedData.instance.seletedWorkSpace = SharedData.instance.workSpaceArr[0];
-                SharedData.instance.taskUpdateObserver?.onNext(SharedData.instance.seletedWorkSpace!);
                 tableView.reloadData();
-                SharedData.instance.taskUpdateObserver?.onNext(SharedData.instance.seletedWorkSpace!);
+                SharedData.instance.workSpaceUpdateObserver?.onNext(SharedData.instance.seletedWorkSpace!);
                 
             } else {
                 SharedData.instance.workSpaceArr.remove(at: indexPath.row);
@@ -149,7 +151,7 @@ extension SideViewController: UITableViewDataSource {
                     SharedData.instance.workSpaceArr[editActionsForRowAt.row] = myWorkspace(id: SharedData.instance.workSpaceArr[editActionsForRowAt.row].id, name: name!);
                     self.tableView.reloadData();
                     SharedData.instance.seletedWorkSpace = SharedData.instance.workSpaceArr[editActionsForRowAt.row];
-                    SharedData.instance.taskUpdateObserver?.onNext(SharedData.instance.seletedWorkSpace!);
+                    SharedData.instance.workSpaceUpdateObserver?.onNext(SharedData.instance.seletedWorkSpace!);
                 } else {
                     let cancelAlert = UIAlertController(title: "alert", message: "value is empty.", preferredStyle: .alert);
                     cancelAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil));
