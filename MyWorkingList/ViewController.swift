@@ -10,6 +10,7 @@ import UIKit
 import CloudKit
 import RxSwift
 import RxCocoa
+import EventKit
 
 public protocol ViewControllerDelegate {
     /**
@@ -60,13 +61,13 @@ class ViewController: UIViewController, ViewControllerDelegate {
     }
     
     let disposeBag = DisposeBag();
-    let MARGIN_TO_PAST_DAY = -2;
+    let MARGIN_TO_PAST_DAY = -1;
     let MARGIN_TO_AFTER_DAY = 30;
 //    let APPDELEGATE_INSTANCE = (UIApplication.shared.delegate as! AppDelegate);
 
     @IBOutlet weak var titleLabel: UINavigationItem!
     @IBOutlet weak var tableView: UITableView!
-    
+    @IBOutlet weak var shadowView: UIView!
     /**
      테이블의 모든 셀의 데이터를 담는다.(사용자가 기입하지 않은 날의 데이터도 들어있음)
     */
@@ -89,6 +90,7 @@ class ViewController: UIViewController, ViewControllerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         //초기화
+        self.shadowView.isHidden = true;
         self.tableView.delegate = self;
         self.tableView.dataSource = self;
         
@@ -115,6 +117,8 @@ class ViewController: UIViewController, ViewControllerDelegate {
         }.disposed(by: self.disposeBag);
         
         SharedData.instance.viewContrllerDelegate = self;
+        
+        requestAccessToCalendar();
     }
     
     /**
@@ -238,16 +242,26 @@ class ViewController: UIViewController, ViewControllerDelegate {
     @IBAction func pressWorkSpaceBtn(_ sender: Any) {
         let sideVC = SideViewController();
         if #available(iOS 11.0, *) {
-            sideVC.view.frame = self.view.safeAreaLayoutGuide.layoutFrame
+            var frame = self.view.safeAreaLayoutGuide.layoutFrame;
+            frame.origin.x = -frame.size.width;
+            sideVC.view.frame = frame;
         } else {
             var frame = self.view.frame;
             frame.origin.y = frame.origin.y + UIApplication.shared.statusBarFrame.size.height;
+            frame.origin.x = -frame.size.width
             frame.size.height = frame.size.height - UIApplication.shared.statusBarFrame.size.height;
             sideVC.view.frame = frame;
         };
         
         self.addChildViewController(sideVC);
         self.view.addSubview(sideVC.view);
+        self.shadowView.backgroundColor?.withAlphaComponent(0);
+        self.shadowView.isHidden = false;
+        
+        UIView.animate(withDuration: 0.3, animations: {
+            self.shadowView.backgroundColor = UIColor.init(red: 0, green: 0, blue: 0, alpha: 0.5);
+            sideVC.view.frame.origin.x = 0;
+        });
     }
     
     /**
@@ -271,6 +285,45 @@ class ViewController: UIViewController, ViewControllerDelegate {
         let indexPath = IndexPath(row: 0, section: 0);
         self.tableView.scrollToRow(at: indexPath, at: .top, animated: true);
     }
+    
+    /**
+     캘린더 권한 체크
+     */
+    func requestAccessToCalendar() {
+        EKEventStore.init().requestAccess(to: EKEntityType.event, completion: {
+            (accessGranted: Bool, error: Error?) in
+            
+            if accessGranted == true {
+                DispatchQueue.main.async(execute: {
+                    //캘린더 접근 허용
+//                    self.getALLEvents();
+                })
+            } else {
+                (UIApplication.shared.delegate as! AppDelegate).alertPopUp(bodyStr: "캘린더 접근이 허용되지 않았습니다. 설정에서 해당 앱의 캘린더 접근 권한을 허용해주십시오.", alertClassify: .exit);
+            }
+        })
+    }
+    
+    /**
+     공휴일 일정 가져오기
+     */
+//    func getALLEvents(){
+//        let caledar = NSCalendar.current
+//        let oneDayAgoComponents = NSDateComponents.init()
+//        oneDayAgoComponents.day = -1
+//        let oneDayAgo = caledar.date(byAdding: oneDayAgoComponents as DateComponents, to: Date(), wrappingComponents: true)
+//
+//
+//        let oneYearFromNowComponents = NSDateComponents.init()
+//        oneYearFromNowComponents.year = 1
+//        let oneYearFromNow = caledar.date(byAdding: oneYearFromNowComponents as DateComponents, to: Date(), wrappingComponents: true)
+//
+//        let store = EKEventStore.init();
+//
+//        let predicate = store.predicateForEvents(withStart: oneDayAgo!, end: oneYearFromNow!, calendars: nil)
+//
+//        let event = store.events(matching: predicate)
+//    }
 }
 
 // MARK: UITableViewDelegate
@@ -311,6 +364,8 @@ extension ViewController: UITableViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if (scrollView.contentOffset.y >= (scrollView.contentSize.height - scrollView.frame.size.height)) { //reach bottom
+            (UIApplication.shared.delegate as! AppDelegate).getDayTask(startDate:self.taskData[self.taskData.count-1].date, endDate: self.taskData[self.taskData.count-1].date.addingTimeInterval(86400.0 * 30), workSpaceId: (SharedData.instance.seletedWorkSpace?.id)!);
+            
             appendTaskData(pivotDate: self.taskData[self.taskData.count-1].date, amountOfNumber: 30);
             self.tableView.reloadData();
         }
@@ -338,12 +393,28 @@ extension ViewController: UITableViewDataSource {
         dateFormatter.setLocalizedDateFormatFromTemplate("dd");
         let day:String = dateFormatter.string(from: task.date);
         
+        let weekDay = Calendar.current.component(Calendar.Component.weekday, from: task.date);
+        if weekDay == 1 {   //일요일이라면
+            cell.titleLabel.backgroundColor = UIColor.init(red: 252/255, green: 228/255, blue: 236/255, alpha: 1);
+        } else {
+            cell.titleLabel.backgroundColor = UIColor.init(red: 227/255, green: 242/255, blue: 253/255, alpha: 1);
+        }
+        
         if task.taskType == .today {
             cell.titleLabel?.text = "\(day) [\(dayOfWeek)] - today!";
+            cell.titleLabel.backgroundColor = UIColor.init(red: 255/255, green: 224/255, blue: 178/255, alpha: 1);
         } else {
             cell.titleLabel?.text = "\(day) [\(dayOfWeek)]";
         }
         
+        //캘린더에서 이벤트 가져오기
+        let store = EKEventStore.init();
+        let predicate = store.predicateForEvents(withStart: task.date, end: task.date, calendars: nil);
+        let allEvent = store.events(matching: predicate);
+        
+        if allEvent.count > 0 {
+            cell.titleLabel?.text?.append("(\(allEvent[0].title!))");
+        }
         
         cell.bodyLabel?.text = task.body;
         return cell
@@ -382,6 +453,8 @@ extension ViewController: UITableViewDataSource {
     // MARK: Pull to refresh
     @objc private func refreshWeatherData(_ sender: Any) {
         // Fetch Weather Data
+        //클라우드에서 일일데이터를 가져오고 테이블 리로드
+        (UIApplication.shared.delegate as! AppDelegate).getDayTask(startDate: self.taskData[0].date.addingTimeInterval(-86400.0 * 30), endDate: self.taskData[0].date, workSpaceId: (SharedData.instance.seletedWorkSpace?.id)!);
         insertTaskData(pivotDate: self.taskData[0].date, amountOfNumber: 30);
         self.tableView.reloadData();
         self.refreshControl.endRefreshing();

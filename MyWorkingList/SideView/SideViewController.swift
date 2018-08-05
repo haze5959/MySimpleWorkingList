@@ -55,8 +55,16 @@ class SideViewController: UIViewController {
     }
     
     @IBAction func pressOutOfView(_ sender: Any) {
-        self.view.removeFromSuperview();
-        self.removeFromParentViewController();
+        let parentVC = self.parent as! ViewController;
+        
+        UIView.animate(withDuration: 0.3, animations: {
+            parentVC.shadowView.backgroundColor = UIColor.init(red: 0, green: 0, blue: 0, alpha: 0);
+            self.view.frame.origin.x = -self.view.frame.size.width;
+        }) { (value) in
+            parentVC.shadowView.isHidden = true;
+            self.view.removeFromSuperview();
+            self.removeFromParentViewController();
+        }
     }
     
     
@@ -70,7 +78,9 @@ extension SideViewController: UITableViewDelegate {
         parentVC.taskData = [];
         parentVC.monthSectionArr = [];
         
+        //기존이랑 똑같은 워크스페이스를 선택하지 않았다면
         if(SharedData.instance.workSpaceArr[indexPath.row].name != SharedData.instance.seletedWorkSpace?.name){
+            SharedData.instance.taskAllDic.removeAllObjects();
             SharedData.instance.seletedWorkSpace = SharedData.instance.workSpaceArr[indexPath.row];
             SharedData.instance.workSpaceUpdateObserver?.onNext(SharedData.instance.seletedWorkSpace!);
             UserDefaults().set(SharedData.instance.seletedWorkSpace?.id, forKey: "seletedWorkSpaceId");

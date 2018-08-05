@@ -150,9 +150,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             pinWheel.showProgressView(self.navigationVC.view);
         }
         
-        var predicate = NSPredicate(format: "workSpaceId = %@", workSpaceId);   //TODO: 데이트 쿼리도 넣어라
+        let startDateAddDay = startDate.addingTimeInterval(-86400.0);
+        
+        var predicate = NSPredicate(format: "workSpaceId = %@ AND date >= %@", workSpaceId, startDateAddDay as NSDate);   //TODO: 데이트 쿼리도 넣어라
         if endDate != nil {
-            predicate = NSPredicate(format: "workSpaceId = %@", workSpaceId);
+            let endDateAddDay = endDate?.addingTimeInterval(86400.0);
+            predicate = NSPredicate(format: "workSpaceId = %@ AND date >= %@ AND date <= %@", workSpaceId, startDateAddDay as NSDate, endDateAddDay! as NSDate);
         }
         
         let query = CKQuery(recordType: "dayTask", predicate: predicate);
