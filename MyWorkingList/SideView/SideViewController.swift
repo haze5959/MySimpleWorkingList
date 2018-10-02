@@ -36,6 +36,8 @@ class SideViewController: UIViewController {
             let name:String? = alert.textFields?.first?.text;
             if (name != nil) && name != ""  {
 //                print("Your name: \(name!)");
+                let parentVC = self.parent as! ViewController;
+                parentVC.shadowView.isHidden = true;
                 
                 //******클라우드에 새 워크스페이즈 저장******
                 (UIApplication.shared.delegate as! AppDelegate).makeWorkSpace(workSpaceName: name!);
@@ -87,6 +89,7 @@ extension SideViewController: UITableViewDelegate {
             UserDefaults().set(SharedData.instance.seletedWorkSpace?.name, forKey: "seletedWorkSpaceName");
             self.view.removeFromSuperview();
             self.removeFromParentViewController();
+            parentVC.shadowView.isHidden = true;
         }
     }
 }
@@ -142,7 +145,7 @@ extension SideViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, editActionsForRowAt: IndexPath) -> [UITableViewRowAction]? {
-        let more = UITableViewRowAction(style: .normal, title: "Rename") { action, index in
+        let renameAction = UITableViewRowAction(style: .normal, title: "Rename") { action, index in
             let alert = UIAlertController(title: "Rename WorkSpace", message: nil, preferredStyle: .alert);
             
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil));
@@ -160,6 +163,15 @@ extension SideViewController: UITableViewDataSource {
                     //***********************************
                     SharedData.instance.workSpaceArr[editActionsForRowAt.row] = myWorkspace(id: SharedData.instance.workSpaceArr[editActionsForRowAt.row].id, name: name!);
                     self.tableView.reloadData();
+    
+                    //데이터 초기화
+                    let parentVC = self.parent as! ViewController;
+                    parentVC.taskData = [];
+                    parentVC.monthSectionArr = [];
+                    SharedData.instance.taskAllDic.removeAllObjects();
+                    
+                    UserDefaults().set(SharedData.instance.seletedWorkSpace?.id, forKey: "seletedWorkSpaceId");
+                    UserDefaults().set(SharedData.instance.seletedWorkSpace?.name, forKey: "seletedWorkSpaceName");
                     SharedData.instance.seletedWorkSpace = SharedData.instance.workSpaceArr[editActionsForRowAt.row];
                     SharedData.instance.workSpaceUpdateObserver?.onNext(SharedData.instance.seletedWorkSpace!);
                 } else {
@@ -171,19 +183,21 @@ extension SideViewController: UITableViewDataSource {
             
             self.navigationController?.present(alert, animated: true);
         }
-        more.backgroundColor = .lightGray
+        renameAction.backgroundColor = .lightGray
         
-//        let favorite = UITableViewRowAction(style: .normal, title: "Favorite") { action, index in
-//            print("favorite button tapped")
-//        }
-//        favorite.backgroundColor = .orange
-//        
+        let deleteAction = UITableViewRowAction(style: .normal, title: "Delete") { action, index in
+            //******클라우드에 새 워크스페이즈 저장******
+            (UIApplication.shared.delegate as! AppDelegate).deleteRecord(recordId: SharedData.instance.workSpaceArr[editActionsForRowAt.row].id)
+            //***********************************
+        }
+        deleteAction.backgroundColor = .red
+
 //        let share = UITableViewRowAction(style: .normal, title: "Share") { action, index in
 //            print("share button tapped")
 //        }
 //        share.backgroundColor = .blue
         
-        return [more]
+        return [renameAction, deleteAction]
     }
 }
 

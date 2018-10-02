@@ -152,7 +152,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let startDateAddDay = startDate.addingTimeInterval(-86400.0);
         
-        var predicate = NSPredicate(format: "workSpaceId = %@ AND date >= %@", workSpaceId, startDateAddDay as NSDate);   //TODO: 데이트 쿼리도 넣어라
+        var predicate = NSPredicate(format: "workSpaceId = %@ AND date >= %@", workSpaceId, startDateAddDay as NSDate);
         if endDate != nil {
             let endDateAddDay = endDate?.addingTimeInterval(86400.0);
             predicate = NSPredicate(format: "workSpaceId = %@ AND date >= %@ AND date <= %@", workSpaceId, startDateAddDay as NSDate, endDateAddDay! as NSDate);
@@ -244,12 +244,54 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //********클라우드 워크스페이스 삭제********        
         let pinWheel = PinWheelView.shared;
         pinWheel.showProgressView(self.navigationVC.view);
-        let recordId = CKRecordID(recordName: recordId)
-        (UIApplication.shared.delegate as! AppDelegate).privateDB.delete(withRecordID: recordId) { deletedRecordId, error in
-            DispatchQueue.main.async {
-                pinWheel.hideProgressView();
+        
+        //일일 테스트 먼저 삭제
+        let predicate = NSPredicate(format: "workSpaceId = %@", recordId);
+        let query = CKQuery(recordType: "dayTask", predicate: predicate);
+        
+        self.privateDB.perform(query, inZoneWith: nil) { records, error in
+            guard error == nil else {
+                print("err: \(String(describing: error))");
+                self.alertPopUp(bodyStr: (error?.localizedDescription)!, alertClassify: .exit)
+                return;
             }
-        }
+            
+            let dateFormatter = DateFormatter();
+            dateFormatter.setLocalizedDateFormatFromTemplate("yyMMdd");
+            
+            let dispatchGroup = DispatchGroup()
+            for record in records!{
+                DispatchQueue(label: "kr.myWorkingList.deleteRecord").async(group: dispatchGroup) {
+                    (UIApplication.shared.delegate as! AppDelegate).privateDB.delete(withRecordID: record.recordID) { deletedRecordId, error in
+                        guard error == nil else {
+                            print("err: \(String(describing: error))");
+                            self.alertPopUp(bodyStr: (error?.localizedDescription)!, alertClassify: .exit)
+                            return;
+                        }
+                    }
+                }
+            }
+            
+            dispatchGroup.notify(queue: DispatchQueue.main) {
+                //워크스페이스 삭제
+                let recordId = CKRecordID(recordName: recordId)
+                (UIApplication.shared.delegate as! AppDelegate).privateDB.delete(withRecordID: recordId) { deletedRecordId, error in
+                    guard error == nil else {
+                        print("err: \(String(describing: error))");
+                        self.alertPopUp(bodyStr: (error?.localizedDescription)!, alertClassify: .exit)
+                        return;
+                    }
+                    
+                    print("delete complete!")
+                    SharedData.instance.viewContrllerDelegate.reloadTableAll();
+                    
+                    DispatchQueue.main.async {
+                        pinWheel.hideProgressView();
+                    }
+                }
+            }
+        };
+        
         //***********************************
     }
     // MARK: ==============================
