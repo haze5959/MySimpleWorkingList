@@ -186,18 +186,39 @@ extension SideViewController: UITableViewDataSource {
         renameAction.backgroundColor = .lightGray
         
         let deleteAction = UITableViewRowAction(style: .normal, title: "Delete") { action, index in
-            //******클라우드에 새 워크스페이즈 저장******
+            if SharedData.instance.workSpaceArr.count < 2 { //워크스페이스가 2개 미만이라면
+                let cancelAlert = UIAlertController(title: "alert", message: "at least you must have two workspace.", preferredStyle: .alert);
+                cancelAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil));
+                self.navigationController?.present(cancelAlert, animated: true);
+                return;
+            }
+            //******클라우드 해당 워크스페이스 및 일정들 삭제******
             (UIApplication.shared.delegate as! AppDelegate).deleteRecord(recordId: SharedData.instance.workSpaceArr[editActionsForRowAt.row].id)
             //***********************************
+            
+            SharedData.instance.workSpaceArr.remove(at: editActionsForRowAt.row)
+            self.tableView.reloadData();
+            
+            //선택된 워크스페이스랑 똑같은 워크스페이스를 선택했다면
+            if(SharedData.instance.workSpaceArr[editActionsForRowAt.row].name == SharedData.instance.seletedWorkSpace?.name){
+                //데이터 초기화
+                let parentVC = self.parent as! ViewController;
+                parentVC.taskData = [];
+                parentVC.monthSectionArr = [];
+                
+                SharedData.instance.taskAllDic.removeAllObjects();
+                SharedData.instance.seletedWorkSpace = SharedData.instance.workSpaceArr[0];
+                SharedData.instance.workSpaceUpdateObserver?.onNext(SharedData.instance.seletedWorkSpace!);
+                UserDefaults().set(SharedData.instance.seletedWorkSpace?.id, forKey: "seletedWorkSpaceId");
+                UserDefaults().set(SharedData.instance.seletedWorkSpace?.name, forKey: "seletedWorkSpaceName");
+                self.view.removeFromSuperview();
+                self.removeFromParentViewController();
+                parentVC.shadowView.isHidden = true;
+            }
         }
         deleteAction.backgroundColor = .red
-
-//        let share = UITableViewRowAction(style: .normal, title: "Share") { action, index in
-//            print("share button tapped")
-//        }
-//        share.backgroundColor = .blue
         
-        return [renameAction, deleteAction]
+        return [deleteAction, renameAction]
     }
 }
 
