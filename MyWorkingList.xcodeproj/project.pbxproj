@@ -32,6 +32,46 @@
 		CED2FD7A20ECB9270021F514 /* SideViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED2FD7820ECB9270021F514 /* SideViewController.swift */; };
 		CED2FD7B20ECB9270021F514 /* SideViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CED2FD7920ECB9270021F514 /* SideViewController.xib */; };
 		CEEC51C420EAFA6D00C4A770 /* myTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEC51C320EAFA6D00C4A770 /* myTask.swift */; };
+		CEEDB8CB21660E1300F6860F /* CalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEDB8C921660E1300F6860F /* CalendarViewController.swift */; };
+		CEEDB8CC21660E1300F6860F /* CalendarViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEEDB8CA21660E1300F6860F /* CalendarViewController.xib */; };
+		CEEDB8CE2166FF4800F6860F /* CalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEDB8C921660E1300F6860F /* CalendarViewController.swift */; };
+		CEEDB8CF2166FF4800F6860F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179B6F6C20E8C6B8008A7D5A /* AppDelegate.swift */; };
+		CEEDB8D02166FF4900F6860F /* CalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEDB8C921660E1300F6860F /* CalendarViewController.swift */; };
+		CEEDB8D12166FF4900F6860F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179B6F6C20E8C6B8008A7D5A /* AppDelegate.swift */; };
+		CEEDB8D22166FF4E00F6860F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179B6F6E20E8C6B8008A7D5A /* ViewController.swift */; };
+		CEEDB8D32166FF4E00F6860F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179B6F6E20E8C6B8008A7D5A /* ViewController.swift */; };
+		CEEDB8D42167009300F6860F /* CalendarViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEEDB8CA21660E1300F6860F /* CalendarViewController.xib */; };
+		CEEDB8D52167009300F6860F /* CalendarViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEEDB8CA21660E1300F6860F /* CalendarViewController.xib */; };
+		CEEDB8D62167009800F6860F /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE24B26B20F4AB720064FBB5 /* DetailViewController.swift */; };
+		CEEDB8D72167009800F6860F /* DetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE24B26C20F4AB720064FBB5 /* DetailViewController.xib */; };
+		CEEDB8D82167009800F6860F /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE24B26B20F4AB720064FBB5 /* DetailViewController.swift */; };
+		CEEDB8D92167009800F6860F /* DetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE24B26C20F4AB720064FBB5 /* DetailViewController.xib */; };
+		CEEDB8DA216700A000F6860F /* SideViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED2FD7820ECB9270021F514 /* SideViewController.swift */; };
+		CEEDB8DB216700A000F6860F /* SideViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CED2FD7920ECB9270021F514 /* SideViewController.xib */; };
+		CEEDB8DC216700A000F6860F /* SideViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED2FD7820ECB9270021F514 /* SideViewController.swift */; };
+		CEEDB8DD216700A000F6860F /* SideViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CED2FD7920ECB9270021F514 /* SideViewController.xib */; };
+		CEEDB8DE216700A600F6860F /* baseline_calendar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CED2FD7320ECA8890021F514 /* baseline_calendar@2x.png */; };
+		CEEDB8DF216700A600F6860F /* baseline_calendar@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = CED2FD7420ECA88A0021F514 /* baseline_calendar@3x.png */; };
+		CEEDB8E0216700A700F6860F /* baseline_calendar@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CED2FD7320ECA8890021F514 /* baseline_calendar@2x.png */; };
+		CEEDB8E1216700A700F6860F /* baseline_calendar@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = CED2FD7420ECA88A0021F514 /* baseline_calendar@3x.png */; };
+		CEEDB8E2216700AC00F6860F /* myTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEC51C320EAFA6D00C4A770 /* myTask.swift */; };
+		CEEDB8E3216700AC00F6860F /* myWorkspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC9447A20EF24A60092CF5D /* myWorkspace.swift */; };
+		CEEDB8E4216700AC00F6860F /* myTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEC51C320EAFA6D00C4A770 /* myTask.swift */; };
+		CEEDB8E5216700AC00F6860F /* myWorkspace.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC9447A20EF24A60092CF5D /* myWorkspace.swift */; };
+		CEEDB8E6216700B900F6860F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 179B6F7020E8C6B8008A7D5A /* Main.storyboard */; };
+		CEEDB8E7216700B900F6860F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 179B6F7020E8C6B8008A7D5A /* Main.storyboard */; };
+		CEEDB8E8216700BC00F6860F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 179B6F7620E8C6BC008A7D5A /* Assets.xcassets */; };
+		CEEDB8E9216700BC00F6860F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 179B6F7620E8C6BC008A7D5A /* Assets.xcassets */; };
+		CEEDB8EA216700BF00F6860F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 179B6F7820E8C6BC008A7D5A /* LaunchScreen.storyboard */; };
+		CEEDB8EB216700BF00F6860F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 179B6F7820E8C6BC008A7D5A /* LaunchScreen.storyboard */; };
+		CEEDB8EC216700C400F6860F /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9893C120EA019500E085EE /* TableViewCell.swift */; };
+		CEEDB8ED216700C400F6860F /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9893C120EA019500E085EE /* TableViewCell.swift */; };
+		CEEDB8EE216700C800F6860F /* TableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE9893C220EA019500E085EE /* TableViewCell.xib */; };
+		CEEDB8EF216700C800F6860F /* PinWheelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEAC645720EDEA9A0019935B /* PinWheelView.swift */; };
+		CEEDB8F0216700C800F6860F /* SharedData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEAC645A20EE0CA90019935B /* SharedData.swift */; };
+		CEEDB8F1216700C900F6860F /* TableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE9893C220EA019500E085EE /* TableViewCell.xib */; };
+		CEEDB8F2216700C900F6860F /* PinWheelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEAC645720EDEA9A0019935B /* PinWheelView.swift */; };
+		CEEDB8F3216700C900F6860F /* SharedData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEAC645A20EE0CA90019935B /* SharedData.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -89,6 +129,8 @@
 		CED2FD7820ECB9270021F514 /* SideViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideViewController.swift; sourceTree = "<group>"; };
 		CED2FD7920ECB9270021F514 /* SideViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SideViewController.xib; sourceTree = "<group>"; };
 		CEEC51C320EAFA6D00C4A770 /* myTask.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = myTask.swift; path = MyWorkingList/model/myTask.swift; sourceTree = SOURCE_ROOT; };
+		CEEDB8C921660E1300F6860F /* CalendarViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarViewController.swift; sourceTree = "<group>"; };
+		CEEDB8CA21660E1300F6860F /* CalendarViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CalendarViewController.xib; sourceTree = "<group>"; };
 		F8A1165A3AB64999D7A102E7 /* Pods-MyWorkingList.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyWorkingList.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MyWorkingList/Pods-MyWorkingList.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -147,6 +189,7 @@
 		179B6F6B20E8C6B8008A7D5A /* MyWorkingList */ = {
 			isa = PBXGroup;
 			children = (
+				CEEDB8C821660E1300F6860F /* CalendarView */,
 				CE24B26A20F4AB720064FBB5 /* DetailView */,
 				CEAC645120EDAA550019935B /* MyWorkingList.entitlements */,
 				CED2FD7720ECB8B10021F514 /* SideView */,
@@ -253,6 +296,15 @@
 			path = model;
 			sourceTree = "<group>";
 		};
+		CEEDB8C821660E1300F6860F /* CalendarView */ = {
+			isa = PBXGroup;
+			children = (
+				CEEDB8C921660E1300F6860F /* CalendarViewController.swift */,
+				CEEDB8CA21660E1300F6860F /* CalendarViewController.xib */,
+			);
+			path = CalendarView;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -329,6 +381,9 @@
 							com.apple.ApplePay = {
 								enabled = 0;
 							};
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
 							com.apple.Push = {
 								enabled = 1;
 							};
@@ -378,6 +433,7 @@
 				CED2FD7B20ECB9270021F514 /* SideViewController.xib in Resources */,
 				CE24B26E20F4AB720064FBB5 /* DetailViewController.xib in Resources */,
 				CE9893C420EA019500E085EE /* TableViewCell.xib in Resources */,
+				CEEDB8CC21660E1300F6860F /* CalendarViewController.xib in Resources */,
 				179B6F7720E8C6BC008A7D5A /* Assets.xcassets in Resources */,
 				179B6FA420E8F963008A7D5A /* README.md in Resources */,
 				179B6F7220E8C6B8008A7D5A /* Main.storyboard in Resources */,
@@ -388,6 +444,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CEEDB8DB216700A000F6860F /* SideViewController.xib in Resources */,
+				CEEDB8EA216700BF00F6860F /* LaunchScreen.storyboard in Resources */,
+				CEEDB8DE216700A600F6860F /* baseline_calendar@2x.png in Resources */,
+				CEEDB8D42167009300F6860F /* CalendarViewController.xib in Resources */,
+				CEEDB8EE216700C800F6860F /* TableViewCell.xib in Resources */,
+				CEEDB8E6216700B900F6860F /* Main.storyboard in Resources */,
+				CEEDB8E8216700BC00F6860F /* Assets.xcassets in Resources */,
+				CEEDB8DF216700A600F6860F /* baseline_calendar@3x.png in Resources */,
+				CEEDB8D72167009800F6860F /* DetailViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -395,6 +460,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CEEDB8DD216700A000F6860F /* SideViewController.xib in Resources */,
+				CEEDB8EB216700BF00F6860F /* LaunchScreen.storyboard in Resources */,
+				CEEDB8E0216700A700F6860F /* baseline_calendar@2x.png in Resources */,
+				CEEDB8D52167009300F6860F /* CalendarViewController.xib in Resources */,
+				CEEDB8F1216700C900F6860F /* TableViewCell.xib in Resources */,
+				CEEDB8E7216700B900F6860F /* Main.storyboard in Resources */,
+				CEEDB8E9216700BC00F6860F /* Assets.xcassets in Resources */,
+				CEEDB8E1216700A700F6860F /* baseline_calendar@3x.png in Resources */,
+				CEEDB8D92167009800F6860F /* DetailViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -426,11 +500,13 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-MyWorkingList/Pods-MyWorkingList-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/FSCalendar/FSCalendar.framework",
 				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
 				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FSCalendar.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
 			);
@@ -485,6 +561,7 @@
 				179B6F6F20E8C6B8008A7D5A /* ViewController.swift in Sources */,
 				CEAC645820EDEA9A0019935B /* PinWheelView.swift in Sources */,
 				CE9893C320EA019500E085EE /* TableViewCell.swift in Sources */,
+				CEEDB8CB21660E1300F6860F /* CalendarViewController.swift in Sources */,
 				CEEC51C420EAFA6D00C4A770 /* myTask.swift in Sources */,
 				CEAC645B20EE0CA90019935B /* SharedData.swift in Sources */,
 				179B6F6D20E8C6B8008A7D5A /* AppDelegate.swift in Sources */,
@@ -499,7 +576,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CEEDB8CF2166FF4800F6860F /* AppDelegate.swift in Sources */,
+				CEEDB8E3216700AC00F6860F /* myWorkspace.swift in Sources */,
+				CEEDB8CE2166FF4800F6860F /* CalendarViewController.swift in Sources */,
+				CEEDB8EC216700C400F6860F /* TableViewCell.swift in Sources */,
+				CEEDB8EF216700C800F6860F /* PinWheelView.swift in Sources */,
+				CEEDB8D62167009800F6860F /* DetailViewController.swift in Sources */,
+				CEEDB8D22166FF4E00F6860F /* ViewController.swift in Sources */,
+				CEEDB8F0216700C800F6860F /* SharedData.swift in Sources */,
 				179B6F8520E8C6BC008A7D5A /* MyWorkingListTests.swift in Sources */,
+				CEEDB8E2216700AC00F6860F /* myTask.swift in Sources */,
+				CEEDB8DA216700A000F6860F /* SideViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -507,7 +594,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CEEDB8D12166FF4900F6860F /* AppDelegate.swift in Sources */,
+				CEEDB8E5216700AC00F6860F /* myWorkspace.swift in Sources */,
+				CEEDB8D02166FF4900F6860F /* CalendarViewController.swift in Sources */,
+				CEEDB8ED216700C400F6860F /* TableViewCell.swift in Sources */,
+				CEEDB8F2216700C900F6860F /* PinWheelView.swift in Sources */,
+				CEEDB8D82167009800F6860F /* DetailViewController.swift in Sources */,
+				CEEDB8D32166FF4E00F6860F /* ViewController.swift in Sources */,
+				CEEDB8F3216700C900F6860F /* SharedData.swift in Sources */,
 				179B6F9020E8C6BC008A7D5A /* MyWorkingListUITests.swift in Sources */,
+				CEEDB8E4216700AC00F6860F /* myTask.swift in Sources */,
+				CEEDB8DC216700A000F6860F /* SideViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -667,6 +764,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = MyWorkingList/MyWorkingList.entitlements;
 				CODE_SIGN_STYLE = Manual;
+				DEFINES_MODULE = NO;
 				DEVELOPMENT_TEAM = Z97K7ZHNKX;
 				INFOPLIST_FILE = MyWorkingList/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -690,6 +788,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = MyWorkingList/MyWorkingList.entitlements;
 				CODE_SIGN_STYLE = Manual;
+				DEFINES_MODULE = NO;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = MyWorkingList/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;

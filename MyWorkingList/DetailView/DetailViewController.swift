@@ -15,6 +15,7 @@ class DetailViewController: UIViewController, UITextViewDelegate {
     @IBOutlet weak var titleLabel: UINavigationItem!
     @IBOutlet weak var textView: UITextView!
     @IBOutlet weak var saveBtn: UIBarButtonItem!
+    @IBOutlet weak var titleTextField: UITextField!
     
     override func viewDidLoad() {
         super.viewDidLoad();
@@ -44,6 +45,7 @@ class DetailViewController: UIViewController, UITextViewDelegate {
         } else { //기존 수정
             //******클라우드에 매모 수정******
             self.dayTask?.body = self.textView.text;
+            self.dayTask?.title = self.titleTextField.text;
             (UIApplication.shared.delegate as! AppDelegate).updateDayTask(task: self.dayTask!, indexPath: self.tableIndexPath!);
             //***********************************
         }

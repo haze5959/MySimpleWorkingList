@@ -22,8 +22,9 @@ class MyWorkingListTests: XCTestCase {
     }
     
     func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        let calendarVC = CalendarViewController()
+        let appDelegate = UIApplication.shared.delegate as! MyWorkingList.AppDelegate
+        appDelegate.navigationVC.present(calendarVC, animated: true, completion: nil)
     }
     
     func testPerformanceExample() {

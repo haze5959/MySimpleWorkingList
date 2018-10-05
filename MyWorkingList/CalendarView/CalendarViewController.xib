@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CalendarViewController" customModule="MyWorkingList" customModuleProvider="target">
+            <connections>
+                <outlet property="calendar" destination="jkg-jR-UzV" id="cJD-h2-uni"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="3r3-69-Nk9"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ugX-gH-qhQ">
+                    <rect key="frame" x="164" y="318" width="46" height="30"/>
+                    <connections>
+                        <action selector="pressOutOfView:" destination="-1" eventType="touchUpInside" id="ybm-B6-A5y"/>
+                    </connections>
+                </button>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jkg-jR-UzV" customClass="FSCalendar">
+                    <rect key="frame" x="20" y="40" width="335" height="607"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="edn-WT-dmQ"/>
+                        <outlet property="delegate" destination="-1" id="wpT-VC-LQZ"/>
+                    </connections>
+                </view>
+            </subviews>
+            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
+            <constraints>
+                <constraint firstItem="ugX-gH-qhQ" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="6lq-sy-SSD"/>
+                <constraint firstItem="ugX-gH-qhQ" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="NIn-FP-iaK"/>
+                <constraint firstItem="jkg-jR-UzV" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="20" id="P1F-Ko-sAn"/>
+                <constraint firstItem="jkg-jR-UzV" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="20" id="Rkp-QQ-bZb"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="ugX-gH-qhQ" secondAttribute="bottom" id="XBk-4E-V3C"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="ugX-gH-qhQ" secondAttribute="trailing" id="gbP-ox-I6a"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="jkg-jR-UzV" secondAttribute="bottom" constant="200" id="rhk-IA-nDs"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="jkg-jR-UzV" secondAttribute="trailing" constant="20" id="yi5-QC-Ikf"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+            <point key="canvasLocation" x="109" y="131"/>
+        </view>
+    </objects>
+</document>

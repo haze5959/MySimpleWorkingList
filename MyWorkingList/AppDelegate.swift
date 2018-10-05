@@ -30,7 +30,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let pinWheel = PinWheelView.shared;
         pinWheel.showProgressView(viewController.view);
-        
+
+        // Register for notifications
+        application.registerForRemoteNotifications()
+
         //iCloud 권한 체크
         CKContainer.default().accountStatus{ status, error in
             guard status == .available else {
@@ -51,35 +54,38 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     self.alertPopUp(bodyStr: (error?.localizedDescription)!, alertClassify: .exit)
                     return;
                 }
-                
+
                 if records?.count == 0 {    //최초 실행
                     self.makeWorkSpace(workSpaceName: "default");
-                    
+
                 } else {
                     let sharedData = SharedData.instance;
-                    
+
                     var isSameValue = false; //클라우드 데이터에 디바이스 값이 들어있는지 판별
                     for record in records!{
                         let value:String = record.value(forKey: "name") as! String;
                         sharedData.workSpaceArr.append(myWorkspace.init(id:record.recordID.recordName, name:record.value(forKey: "name") as! String));
-                        
+
                         if value == sharedData.seletedWorkSpace?.name {  //디바이스에 저장된 값과 클라우드에서 가져온 값이 일치한다면
                             isSameValue = true;
                         }
                     }
-                    
+
                     if !isSameValue {
                         let workSpace = myWorkspace.init(id:(records![0].recordID.recordName) , name:records![0].value(forKey: "name") as! String);
                         sharedData.seletedWorkSpace = workSpace;
                         UserDefaults().set(workSpace.id, forKey: "seletedWorkSpaceId");
                         UserDefaults().set(workSpace.name, forKey: "seletedWorkSpaceName");
                     }
-                    
+
                     DispatchQueue.main.async {
                         pinWheel.hideProgressView();
                     }
                     sharedData.workSpaceUpdateObserver?.onNext(sharedData.seletedWorkSpace!);
                 }
+
+                //클라우드 변경사항 노티 적용
+                self.saveSubscription()
             }
         }
         
@@ -172,9 +178,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
             for record in records!{
                 let body:String = record.value(forKey: "body") as! String;
+                let title:String = record.value(forKey: "title") as! String;
                 let date:Date = record.value(forKey: "date") as! Date;
                 
-                let task:myTask = myTask.init(record.recordID.recordName, date, body, .unknown);
+                let task:myTask = myTask.init(record.recordID.recordName, date, body, title);
                 let dayKey:String = dateFormatter.string(from: task.date);
                 
                 SharedData.instance.taskAllDic.setValue(task, forKey: dayKey);
@@ -189,7 +196,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     // 테스크 생성
-    func makeDayTask(workSpaceId:String, taskDate:Date, taskBody:String, indexPath:IndexPath) -> Void {
+    func makeDayTask(workSpaceId:String, taskDate:Date, taskBody:String, taskTitle:String?, indexPath:IndexPath) -> Void {
         //*********클라우드에 새 테스크 저장*********
         let pinWheel = PinWheelView.shared;
         pinWheel.showProgressView(self.navigationVC.view);
@@ -197,9 +204,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         record.setValue(workSpaceId, forKey: "workSpaceId");
         record.setValue(taskDate, forKey: "date");
         record.setValue(taskBody, forKey: "body");
+        record.setValue(taskTitle, forKey: "title");
         (UIApplication.shared.delegate as! AppDelegate).privateDB.save(record) { savedRecord, error in
             //해당 데이터를 워크스페이스 보관 배열에 넣는다.
-            let task = myTask.init((savedRecord?.recordID.recordName)!, savedRecord?.value(forKey: "date") as! Date, savedRecord?.value(forKey: "body") as! String, .unknown);
+            let task = myTask.init((savedRecord?.recordID.recordName)!, savedRecord?.value(forKey: "date") as! Date, savedRecord?.value(forKey: "body") as! String, savedRecord?.value(forKey: "title") as? String);
             
             let dateFormatter = DateFormatter();
             dateFormatter.setLocalizedDateFormatFromTemplate("yyMMdd");
@@ -316,6 +324,53 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         self.navigationVC.present(alert, animated: true);
     }
-
+    
+    // MARK: - Notification related cloud
+    public func saveSubscription() {
+        // RecordType specifies the type of the record
+        let subscriptionID = "cloudkit-recordType-changes"
+        // Let's keep a local flag handy to avoid saving the subscription more than once.
+        // Even if you try saving the subscription multiple times, the server doesn't save it more than once
+        // Nevertheless, let's save some network operation and conserve resources
+        let subscriptionSaved = UserDefaults.standard.bool(forKey: subscriptionID)
+        guard !subscriptionSaved else {
+            return
+        }
+        
+        // Subscribing is nothing but saving a query which the server would use to generate notifications.
+        // The below predicate (query) will raise a notification for all changes.
+        let predicate = NSPredicate(value: true)
+        let subscription = CKQuerySubscription(recordType: "dayTask",
+                                               predicate: predicate,
+                                               subscriptionID: subscriptionID,
+                                               options: [.firesOnRecordCreation, .firesOnRecordDeletion, .firesOnRecordUpdate])
+        
+        let notificationInfo = CKNotificationInfo()
+        // Set shouldSendContentAvailable to true for receiving silent pushes
+        // Silent notifications are not shown to the user and don’t require the user's permission.
+        notificationInfo.shouldSendContentAvailable = true
+        subscription.notificationInfo = notificationInfo
+        
+        // Use CKModifySubscriptionsOperation to save the subscription to CloudKit
+        let operation = CKModifySubscriptionsOperation(subscriptionsToSave: [subscription], subscriptionIDsToDelete: [])
+        operation.modifySubscriptionsCompletionBlock = { (_, _, error) in
+            guard error == nil else {
+                return
+            }
+            UserDefaults.standard.set(true, forKey: subscriptionID)
+        }
+        // Add the operation to the corresponding private or public database
+        self.privateDB.add(operation)
+    }
+    
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        // Whenever there's a remote notification, this gets called
+        let notification = CKNotification(fromRemoteNotificationDictionary: userInfo)
+        if (notification.subscriptionID == "cloudkit-recordType-changes") {
+            print("[CLOUD UPDATE] notification - \(notification)")
+            SharedData.instance.workSpaceUpdateObserver?.onNext(SharedData.instance.seletedWorkSpace!) //일정 업데이트
+        }
+        completionHandler(UIBackgroundFetchResult.noData)
+    }
 }
 

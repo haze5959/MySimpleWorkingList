@@ -8,21 +8,16 @@
 
 import UIKit
 
-enum TaskType: Int {
-    case unknown
-    case today
-}
-
 class myTask: NSObject {
     let id:String!
     let date:Date!
     var body:String!
-    let taskType:TaskType!
+    var title:String?
     
-    init(_ id:String, _ dateVal:Date, _ bodyVal:String, _ taskType:TaskType) {
+    init(_ id:String, _ dateVal:Date, _ bodyVal:String, _ titleVal:String?) {
         self.id = id;
         self.body = bodyVal;
+        self.title = titleVal;
         self.date = dateVal;
-        self.taskType = taskType;
     }
 }

@@ -196,9 +196,6 @@ extension SideViewController: UITableViewDataSource {
             (UIApplication.shared.delegate as! AppDelegate).deleteRecord(recordId: SharedData.instance.workSpaceArr[editActionsForRowAt.row].id)
             //***********************************
             
-            SharedData.instance.workSpaceArr.remove(at: editActionsForRowAt.row)
-            self.tableView.reloadData();
-            
             //선택된 워크스페이스랑 똑같은 워크스페이스를 선택했다면
             if(SharedData.instance.workSpaceArr[editActionsForRowAt.row].name == SharedData.instance.seletedWorkSpace?.name){
                 //데이터 초기화
@@ -215,6 +212,9 @@ extension SideViewController: UITableViewDataSource {
                 self.removeFromParentViewController();
                 parentVC.shadowView.isHidden = true;
             }
+            
+            SharedData.instance.workSpaceArr.remove(at: editActionsForRowAt.row)
+            self.tableView.reloadData();
         }
         deleteAction.backgroundColor = .red
         

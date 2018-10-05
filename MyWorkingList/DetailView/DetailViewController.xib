@@ -4,7 +4,6 @@
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -15,6 +14,7 @@
                 <outlet property="saveBtn" destination="ExU-3y-iA6" id="6OR-Xu-hVB"/>
                 <outlet property="textView" destination="wsU-Sj-LP8" id="X7R-tC-Qev"/>
                 <outlet property="titleLabel" destination="cuL-iM-xY9" id="qer-jN-lFx"/>
+                <outlet property="titleTextField" destination="03k-pc-ANM" id="7Ch-0L-UBA"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -43,8 +43,14 @@
                                 </navigationItem>
                             </items>
                         </navigationBar>
+                        <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="due date, appointment, assignment" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="03k-pc-ANM">
+                            <rect key="frame" x="0.0" y="44" width="335" height="30"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <nil key="textColor"/>
+                            <textInputTraits key="textInputTraits"/>
+                        </textField>
                         <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="wsU-Sj-LP8">
-                            <rect key="frame" x="0.0" y="44" width="335" height="333"/>
+                            <rect key="frame" x="0.0" y="74" width="335" height="303"/>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                             <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
@@ -53,12 +59,15 @@
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
                         <constraint firstItem="Rrb-Jy-FcK" firstAttribute="top" secondItem="zJv-5V-W6H" secondAttribute="top" id="6gl-Jh-mL2"/>
+                        <constraint firstItem="03k-pc-ANM" firstAttribute="top" secondItem="Rrb-Jy-FcK" secondAttribute="bottom" id="D1j-WN-4ZS"/>
                         <constraint firstAttribute="bottom" secondItem="wsU-Sj-LP8" secondAttribute="bottom" id="FA2-bg-Wf9"/>
                         <constraint firstAttribute="trailing" secondItem="Rrb-Jy-FcK" secondAttribute="trailing" id="Ip2-q3-94N"/>
                         <constraint firstItem="wsU-Sj-LP8" firstAttribute="width" secondItem="zJv-5V-W6H" secondAttribute="width" id="SZU-KZ-9zg"/>
+                        <constraint firstItem="03k-pc-ANM" firstAttribute="trailing" secondItem="Rrb-Jy-FcK" secondAttribute="trailing" id="TyZ-A2-YyT"/>
                         <constraint firstItem="wsU-Sj-LP8" firstAttribute="centerX" secondItem="zJv-5V-W6H" secondAttribute="centerX" id="Z5R-1R-znq"/>
                         <constraint firstItem="Rrb-Jy-FcK" firstAttribute="leading" secondItem="zJv-5V-W6H" secondAttribute="leading" id="cvX-tH-7jR"/>
-                        <constraint firstItem="wsU-Sj-LP8" firstAttribute="top" secondItem="Rrb-Jy-FcK" secondAttribute="bottom" id="fxz-nt-qb9"/>
+                        <constraint firstItem="03k-pc-ANM" firstAttribute="leading" secondItem="Rrb-Jy-FcK" secondAttribute="leading" id="hik-jp-aOx"/>
+                        <constraint firstItem="wsU-Sj-LP8" firstAttribute="top" secondItem="03k-pc-ANM" secondAttribute="bottom" id="xNF-bY-hQd"/>
                     </constraints>
                 </view>
             </subviews>
@@ -70,6 +79,7 @@
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="zJv-5V-W6H" secondAttribute="bottom" constant="250" id="W9A-Sj-vhp"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+            <point key="canvasLocation" x="-0.5" y="53.5"/>
         </view>
     </objects>
 </document>

@@ -11,6 +11,7 @@ import CloudKit
 import RxSwift
 import RxCocoa
 import EventKit
+import FSCalendar
 
 public protocol ViewControllerDelegate {
     /**
@@ -51,7 +52,7 @@ class ViewController: UIViewController, ViewControllerDelegate {
             let dayTask:myTask! = SharedData.instance.taskAllDic.object(forKey: dayKey) as? myTask;
             
             if (dayTask != nil) {
-                self.taskData[index] = myTask.init(dayTask.id, self.taskData[index].date, dayTask.body, self.taskData[index].taskType);
+                self.taskData[index] = myTask.init(dayTask.id, self.taskData[index].date, dayTask.body, dayTask.title);
             }
         }
         
@@ -109,7 +110,12 @@ class ViewController: UIViewController, ViewControllerDelegate {
         }.observeOn(MainScheduler.instance)
         .subscribe{
             self.titleLabel.title = $0.element?.name;
-            self.initTaskData(pivotDate: Date());
+
+            if  (($0.element?.pivotDate) != nil) {
+                self.initTaskData(pivotDate: $0.element?.pivotDate);
+            } else {
+                self.initTaskData(pivotDate: Date());
+            }
             
             //클라우드에서 일일데이터를 가져오고 테이블 리로드
             (UIApplication.shared.delegate as! AppDelegate).getDayTask(startDate: (self.taskData.first?.date)!, endDate: (self.taskData.last?.date)!, workSpaceId: (SharedData.instance.seletedWorkSpace?.id)!);
@@ -144,15 +150,15 @@ class ViewController: UIViewController, ViewControllerDelegate {
             
             if (dayTask != nil) {
                 if(i == 0){
-                    self.taskData.append(myTask(dayTask!.id, date, dayTask!.body, .today));
+                    self.taskData.append(myTask(dayTask!.id, date, dayTask!.body, dayTask!.title));
                 } else {
-                    self.taskData.append(myTask(dayTask!.id, date, dayTask!.body, .unknown));
+                    self.taskData.append(myTask(dayTask!.id, date, dayTask!.body, dayTask!.title));
                 }
             } else {
                 if(i == 0){
-                    self.taskData.append(myTask("", date, "", .today));
+                    self.taskData.append(myTask("", date, "", nil));
                 } else {
-                    self.taskData.append(myTask("", date, "", .unknown));
+                    self.taskData.append(myTask("", date, "", nil));
                 }
             }
             
@@ -186,9 +192,9 @@ class ViewController: UIViewController, ViewControllerDelegate {
             let dayTask:myTask? = SharedData.instance.taskAllDic.object(forKey: dayKey) as? myTask;
             
             if(dayTask != nil){
-                self.taskData.insert(myTask((dayTask?.id)!, pastDate, (dayTask?.body)!, .unknown), at: 0);
+                self.taskData.insert(myTask((dayTask?.id)!, pastDate, (dayTask?.body)!, (dayTask?.title)!), at: 0);
             } else {
-                self.taskData.insert(myTask("", pastDate, "", .unknown), at: 0);
+                self.taskData.insert(myTask("", pastDate, "", nil), at: 0);
             }
             
             //월이 바뀌면 섹션을 추가한다.
@@ -219,9 +225,9 @@ class ViewController: UIViewController, ViewControllerDelegate {
             let dayTask:myTask? = SharedData.instance.taskAllDic.object(forKey: dayKey) as? myTask;
             
             if(dayTask != nil){
-                self.taskData.append(myTask((dayTask?.id)!, date, (dayTask?.body)!, .unknown));
+                self.taskData.append(myTask((dayTask?.id)!, date, (dayTask?.body)!, (dayTask?.title)!));
             } else {
-                self.taskData.append(myTask("", date, "", .unknown));
+                self.taskData.append(myTask("", date, "", nil));
             }
 
             //월이 바뀌면 섹션을 추가한다.
@@ -265,9 +271,37 @@ class ViewController: UIViewController, ViewControllerDelegate {
     }
     
     /**
+     리프레시 버튼
+     */
+    @IBAction func pressRefreshBtn(_ sender: Any) {
+        //데이터 초기화
+//        self.taskData = [];
+//        self.monthSectionArr = [];
+        SharedData.instance.workSpaceUpdateObserver?.onNext(SharedData.instance.seletedWorkSpace!);
+//        initTaskData(pivotDate: Date());
+//        self.tableView.reloadData();
+        
+        //스크롤 맨 위로 올리기
+//        let indexPath = IndexPath(row: 0, section: 0);
+//        self.tableView.scrollToRow(at: indexPath, at: .top, animated: true);
+    }
+    
+    /**
      해달 날짜 달력 조회 버튼
     */
     @IBAction func pressSearchCalendarBtn(_ sender: Any) {
+        let calendarVC = CalendarViewController()
+        if #available(iOS 11.0, *) {
+            calendarVC.view.frame = self.view.safeAreaLayoutGuide.layoutFrame
+        } else {
+            var frame = self.view.frame;
+            frame.origin.y = frame.origin.y + UIApplication.shared.statusBarFrame.size.height;
+            frame.size.height = frame.size.height - UIApplication.shared.statusBarFrame.size.height;
+            calendarVC.view.frame = frame;
+        };
+        
+        self.addChildViewController(calendarVC);
+        self.view.addSubview(calendarVC.view);
     }
     
     /**
@@ -393,28 +427,37 @@ extension ViewController: UITableViewDataSource {
         dateFormatter.setLocalizedDateFormatFromTemplate("dd");
         let day:String = dateFormatter.string(from: task.date);
         
-        let weekDay = Calendar.current.component(Calendar.Component.weekday, from: task.date);
-        if weekDay == 1 {   //일요일이라면
-            cell.titleLabel.backgroundColor = UIColor.init(red: 252/255, green: 228/255, blue: 236/255, alpha: 1);
-        } else {
-            cell.titleLabel.backgroundColor = UIColor.init(red: 227/255, green: 242/255, blue: 253/255, alpha: 1);
-        }
+        dateFormatter.setLocalizedDateFormatFromTemplate("MM/dd/yyyy");
+        let taskDate:String = dateFormatter.string(from: task.date);
+        let todayDate:String = dateFormatter.string(from: Date());
         
-        if task.taskType == .today {
+        if taskDate == todayDate {  //오늘이라면
             cell.titleLabel?.text = "\(day) [\(dayOfWeek)] - today!";
             cell.titleLabel.backgroundColor = UIColor.init(red: 255/255, green: 224/255, blue: 178/255, alpha: 1);
         } else {
+            let weekDay = Calendar.current.component(Calendar.Component.weekday, from: task.date);
+            if weekDay == 1 {   //일요일이라면
+                cell.titleLabel.backgroundColor = UIColor.init(red: 252/255, green: 228/255, blue: 236/255, alpha: 1);
+            } else {
+                cell.titleLabel.backgroundColor = UIColor.init(red: 227/255, green: 242/255, blue: 253/255, alpha: 1);
+            }
+            
             cell.titleLabel?.text = "\(day) [\(dayOfWeek)]";
         }
         
-        //캘린더에서 이벤트 가져오기
-        let store = EKEventStore.init();
-        let predicate = store.predicateForEvents(withStart: task.date, end: task.date, calendars: nil);
-        let allEvent = store.events(matching: predicate);
-        
-        if allEvent.count > 0 {
-            cell.titleLabel?.text?.append("(\(allEvent[0].title!))");
+        //타이틀 넣기
+        if (task.title != nil) {
+            cell.titleLabel?.text?.append("(\(task))");
         }
+
+        //캘린더에서 이벤트 가져오기
+//        let store = EKEventStore.init();
+//        let predicate = store.predicateForEvents(withStart: task.date, end: task.date, calendars: nil);
+//        let allEvent = store.events(matching: predicate);
+//
+//        if allEvent.count > 0 {
+//            cell.titleLabel?.text?.append("(\(allEvent[0].title!))");
+//        }
         
         cell.bodyLabel?.text = task.body;
         return cell
