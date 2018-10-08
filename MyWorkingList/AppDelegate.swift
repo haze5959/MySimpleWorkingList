@@ -235,6 +235,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 return
             }
             
+            if task.title != nil {
+                updatedRecord?.setObject(task.title! as CKRecordValue, forKey: "title");
+            }
+        
             updatedRecord?.setObject(task.body as CKRecordValue, forKey: "body");
             (UIApplication.shared.delegate as! AppDelegate).privateDB.save(updatedRecord!) { savedRecord, error in
                 DispatchQueue.main.async {

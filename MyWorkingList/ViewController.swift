@@ -446,8 +446,8 @@ extension ViewController: UITableViewDataSource {
         }
         
         //타이틀 넣기
-        if (task.title != nil) {
-            cell.titleLabel?.text?.append("(\(task))");
+        if (task.title != nil && task.title!.count > 0) {
+            cell.titleLabel?.text?.append(" \(task.title!)");
         }
 
         //캘린더에서 이벤트 가져오기

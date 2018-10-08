@@ -8,7 +8,7 @@
 
 import UIKit
 
-class DetailViewController: UIViewController, UITextViewDelegate {
+class DetailViewController: UIViewController, UITextViewDelegate, UITextFieldDelegate {
 
     var dayTask:myTask?;
     var tableIndexPath:IndexPath?;
@@ -21,6 +21,7 @@ class DetailViewController: UIViewController, UITextViewDelegate {
         super.viewDidLoad();
         self.saveBtn.isEnabled = false;
         self.textView.delegate = self;
+        self.titleTextField.delegate = self;
         
         let dateFormatter = DateFormatter();
         dateFormatter.setLocalizedDateFormatFromTemplate("MM-dd-EEEE");
@@ -40,7 +41,7 @@ class DetailViewController: UIViewController, UITextViewDelegate {
         
         if self.dayTask?.id == nil || self.dayTask?.id == "" {    //새로 저장
             //******클라우드에 새 메모 저장******
-            (UIApplication.shared.delegate as! AppDelegate).makeDayTask(workSpaceId: (SharedData.instance.seletedWorkSpace?.id)!, taskDate: (self.dayTask?.date)!, taskBody: self.textView.text, indexPath: self.tableIndexPath!);
+            (UIApplication.shared.delegate as! AppDelegate).makeDayTask(workSpaceId: (SharedData.instance.seletedWorkSpace?.id)!, taskDate: (self.dayTask?.date)!, taskBody: self.textView.text, taskTitle: self.titleTextField.text, indexPath: self.tableIndexPath!);
             //***********************************
         } else { //기존 수정
             //******클라우드에 매모 수정******
@@ -62,5 +63,10 @@ class DetailViewController: UIViewController, UITextViewDelegate {
     // MARK: UITextViewDelegate
     func textViewDidChange(_ textView: UITextView) {
         saveBtn.isEnabled = true;
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        saveBtn.isEnabled = true;
+        return true;
     }
 }
