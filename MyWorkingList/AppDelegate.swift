@@ -369,6 +369,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         // Whenever there's a remote notification, this gets called
+        print("[AppDelegate] remote notification call!!")
+        
         let notification = CKNotification(fromRemoteNotificationDictionary: userInfo)
         if (notification.subscriptionID == "cloudkit-recordType-changes") {
             print("[CLOUD UPDATE] notification - \(notification)")
