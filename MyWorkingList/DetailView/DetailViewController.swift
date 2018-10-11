@@ -27,9 +27,9 @@ class DetailViewController: UIViewController, UITextViewDelegate, UITextFieldDel
         dateFormatter.setLocalizedDateFormatFromTemplate("MM-dd-EEEE");
         let day:String = dateFormatter.string(from: (self.dayTask?.date)!);
         self.titleLabel.title = day
-        
-        self.textView.text = self.dayTask?.body;
-        self.textView.becomeFirstResponder();   //포커스 잡기
+        self.titleTextField.text = self.dayTask?.title
+        self.textView.text = self.dayTask?.body
+        self.textView.becomeFirstResponder()   //포커스 잡기
     }
 
     @IBAction func pressSaveBtn(_ sender: Any) {
