@@ -17,7 +17,7 @@ public protocol ViewControllerDelegate {
     /**
      하나의 셀 업데이트
     */
-    func reloadTableWithUpdateCell(indexPath:IndexPath, body:String) -> Void;
+    func reloadTableWithUpdateCell(indexPath:IndexPath, title:String, body:String) -> Void;
     
     /**
      모든 셀 업데이트
@@ -26,13 +26,14 @@ public protocol ViewControllerDelegate {
 }
 
 class ViewController: UIViewController, ViewControllerDelegate {
-    func reloadTableWithUpdateCell(indexPath:IndexPath, body:String) {
+    func reloadTableWithUpdateCell(indexPath:IndexPath, title:String, body:String) {
         //해당 셀 데이터 업데이트
         var padding = 0
         for i in 0..<indexPath.section {
             padding += self.monthSectionArr[i].0;
         }
         
+        self.taskData[padding + indexPath.row].title = title;
         self.taskData[padding + indexPath.row].body = body;
         
         DispatchQueue.main.async {
@@ -302,6 +303,8 @@ class ViewController: UIViewController, ViewControllerDelegate {
         
         self.addChildViewController(calendarVC);
         self.view.addSubview(calendarVC.view);
+        let indexPath = IndexPath(row: 0, section: 0);
+        self.tableView.scrollToRow(at: indexPath, at: .top, animated: true);
     }
     
     /**

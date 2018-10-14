@@ -17,6 +17,8 @@ class SideViewController: UIViewController {
     }
     
     @IBAction func pressDonationBtn(_ sender: Any) {
+        print("[SideVC] press Preminum Btn!")
+        
     }
     
     @IBAction func pressEditBtn(_ sender: Any) {

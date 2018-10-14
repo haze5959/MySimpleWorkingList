@@ -219,7 +219,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 pinWheel.hideProgressView();
             }
             
-            SharedData.instance.viewContrllerDelegate.reloadTableWithUpdateCell(indexPath: indexPath, body: taskBody)
+            SharedData.instance.viewContrllerDelegate.reloadTableWithUpdateCell(indexPath: indexPath, title: taskTitle!, body: taskBody)
         }
         //***********************************
     }
@@ -245,7 +245,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     pinWheel.hideProgressView();
                 }
                 
-                SharedData.instance.viewContrllerDelegate.reloadTableWithUpdateCell(indexPath: indexPath, body: task.body);
+                SharedData.instance.viewContrllerDelegate.reloadTableWithUpdateCell(indexPath: indexPath, title: task.title!, body: task.body);
             }
         }
         //***********************************
