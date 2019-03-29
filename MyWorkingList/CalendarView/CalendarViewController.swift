@@ -26,9 +26,6 @@ class CalendarViewController: UIViewController, FSCalendarDataSource, FSCalendar
 
         self.calendar.appearance.caseOptions = [.headerUsesUpperCase,.weekdayUsesUpperCase]
         self.calendar.select(Date())
-        
-        let scopeGesture = UIPanGestureRecognizer(target: self.calendar, action: #selector(self.calendar.handleScopeGesture(_:)))
-        self.calendar.addGestureRecognizer(scopeGesture)
     }
 
     @IBAction func pressOutOfView(_ sender: Any) {

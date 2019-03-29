@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="AlarmSettingViewController" customModule="MyWorkingList" customModuleProvider="target">
+            <connections>
+                <outlet property="alarmConfirmBtn" destination="VHf-Ox-fmG" id="Uff-3x-JzP"/>
+                <outlet property="alarmDaySegment" destination="c5p-Yg-a6m" id="N0I-oj-fdM"/>
+                <outlet property="alarmSwitch" destination="4RI-nH-ySr" id="qYC-Vq-fRY"/>
+                <outlet property="alarmTimePicker" destination="BDf-mR-57A" id="VCN-xs-5ro"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aD0-tB-AyY">
+                    <rect key="frame" x="50" y="94" width="314" height="450"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Alarm state: " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rCX-yL-tbr">
+                            <rect key="frame" x="30" y="30" width="96.5" height="31"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4RI-nH-ySr">
+                            <rect key="frame" x="225" y="30" width="51" height="31"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="31" id="d2v-yi-PCY"/>
+                            </constraints>
+                            <connections>
+                                <action selector="pressAlarmSwitch:" destination="-1" eventType="valueChanged" id="Vf4-ev-Z0O"/>
+                            </connections>
+                        </switch>
+                        <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="c5p-Yg-a6m">
+                            <rect key="frame" x="31.5" y="101" width="251" height="29"/>
+                            <segments>
+                                <segment title="당일"/>
+                                <segment title="하루 전"/>
+                                <segment title="이틀 전"/>
+                                <segment title="3일 전"/>
+                                <segment title="일주일 전"/>
+                            </segments>
+                        </segmentedControl>
+                        <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="time" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="BDf-mR-57A">
+                            <rect key="frame" x="0.0" y="159" width="314" height="216"/>
+                            <date key="date" timeIntervalSinceReferenceDate="575536115.48183298">
+                                <!--2019-03-29 07:08:35 +0000-->
+                            </date>
+                        </datePicker>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VHf-Ox-fmG">
+                            <rect key="frame" x="107" y="405" width="100" height="40"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="40" id="hsQ-s2-MhO"/>
+                                <constraint firstAttribute="width" constant="100" id="hts-nY-2my"/>
+                            </constraints>
+                            <state key="normal" title="확인"/>
+                            <connections>
+                                <action selector="pressAlarmConfirmBtn:" destination="-1" eventType="touchUpInside" id="85A-AR-67S"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstItem="4RI-nH-ySr" firstAttribute="top" secondItem="rCX-yL-tbr" secondAttribute="top" id="2EP-um-3LH"/>
+                        <constraint firstItem="BDf-mR-57A" firstAttribute="top" secondItem="c5p-Yg-a6m" secondAttribute="bottom" constant="30" id="68k-EB-CKF"/>
+                        <constraint firstItem="rCX-yL-tbr" firstAttribute="top" secondItem="g4q-6g-8Kb" secondAttribute="top" constant="30" id="CAb-YA-Ed8"/>
+                        <constraint firstItem="c5p-Yg-a6m" firstAttribute="width" secondItem="aD0-tB-AyY" secondAttribute="width" multiplier="0.8" id="GQx-44-p44"/>
+                        <constraint firstItem="rCX-yL-tbr" firstAttribute="height" secondItem="4RI-nH-ySr" secondAttribute="height" id="KZD-1L-Iqi"/>
+                        <constraint firstItem="BDf-mR-57A" firstAttribute="width" secondItem="aD0-tB-AyY" secondAttribute="width" id="LVv-jn-der"/>
+                        <constraint firstItem="rCX-yL-tbr" firstAttribute="leading" secondItem="g4q-6g-8Kb" secondAttribute="leading" constant="30" id="Psw-mB-cEO"/>
+                        <constraint firstItem="BDf-mR-57A" firstAttribute="centerX" secondItem="g4q-6g-8Kb" secondAttribute="centerX" id="RbF-kc-9d3"/>
+                        <constraint firstItem="c5p-Yg-a6m" firstAttribute="top" secondItem="rCX-yL-tbr" secondAttribute="bottom" constant="40" id="UrE-h8-ejI"/>
+                        <constraint firstItem="g4q-6g-8Kb" firstAttribute="bottom" secondItem="VHf-Ox-fmG" secondAttribute="bottom" constant="5" id="W0H-ou-Udj"/>
+                        <constraint firstItem="VHf-Ox-fmG" firstAttribute="centerX" secondItem="g4q-6g-8Kb" secondAttribute="centerX" id="dBG-Xm-3GR"/>
+                        <constraint firstItem="VHf-Ox-fmG" firstAttribute="top" secondItem="BDf-mR-57A" secondAttribute="bottom" constant="30" id="ozz-Fw-Wc4"/>
+                        <constraint firstItem="c5p-Yg-a6m" firstAttribute="centerX" secondItem="g4q-6g-8Kb" secondAttribute="centerX" id="vAW-47-ITa"/>
+                        <constraint firstItem="g4q-6g-8Kb" firstAttribute="trailing" secondItem="4RI-nH-ySr" secondAttribute="trailing" constant="40" id="vN0-He-nzt"/>
+                    </constraints>
+                    <viewLayoutGuide key="safeArea" id="g4q-6g-8Kb"/>
+                </view>
+            </subviews>
+            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="calibratedRGB"/>
+            <constraints>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="top" secondItem="aD0-tB-AyY" secondAttribute="top" constant="-50" id="2zh-5u-XIv"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="aD0-tB-AyY" secondAttribute="trailing" constant="50" id="bTC-0Q-LGR"/>
+                <constraint firstItem="aD0-tB-AyY" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="50" id="cYE-02-sGJ"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+        </view>
+    </objects>
+</document>

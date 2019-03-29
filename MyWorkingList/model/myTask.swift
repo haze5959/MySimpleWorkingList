@@ -13,6 +13,7 @@ class myTask: NSObject {
     let date:Date!
     var body:String!
     var title:String?
+    var alarmDate:Date?
     
     init(_ id:String, _ dateVal:Date, _ bodyVal:String, _ titleVal:String?) {
         self.id = id;

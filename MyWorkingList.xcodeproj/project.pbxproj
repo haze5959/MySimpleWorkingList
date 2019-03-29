@@ -21,6 +21,10 @@
 		CE1E5D54216DB73600266B64 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CE1E5D51216DB73600266B64 /* Main.storyboard */; };
 		CE24B26D20F4AB720064FBB5 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE24B26B20F4AB720064FBB5 /* DetailViewController.swift */; };
 		CE24B26E20F4AB720064FBB5 /* DetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE24B26C20F4AB720064FBB5 /* DetailViewController.xib */; };
+		CE73F5AC224DFA3500ED2A50 /* AlarmSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE73F5AA224DFA3500ED2A50 /* AlarmSettingViewController.swift */; };
+		CE73F5AD224DFA3500ED2A50 /* AlarmSettingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE73F5AB224DFA3500ED2A50 /* AlarmSettingViewController.xib */; };
+		CE73F5AE224DFF7100ED2A50 /* AlarmSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE73F5AA224DFA3500ED2A50 /* AlarmSettingViewController.swift */; };
+		CE73F5AF224DFF7100ED2A50 /* AlarmSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE73F5AA224DFA3500ED2A50 /* AlarmSettingViewController.swift */; };
 		CE9893C320EA019500E085EE /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9893C120EA019500E085EE /* TableViewCell.swift */; };
 		CE9893C420EA019500E085EE /* TableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE9893C220EA019500E085EE /* TableViewCell.xib */; };
 		CEAC645420EDAA930019935B /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEAC645320EDAA930019935B /* CloudKit.framework */; };
@@ -187,6 +191,8 @@
 		CE1E5D9E216DB81600266B64 /* hi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = hi; path = hi.lproj/Main.strings; sourceTree = "<group>"; };
 		CE24B26B20F4AB720064FBB5 /* DetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
 		CE24B26C20F4AB720064FBB5 /* DetailViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DetailViewController.xib; sourceTree = "<group>"; };
+		CE73F5AA224DFA3500ED2A50 /* AlarmSettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmSettingViewController.swift; sourceTree = "<group>"; };
+		CE73F5AB224DFA3500ED2A50 /* AlarmSettingViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AlarmSettingViewController.xib; sourceTree = "<group>"; };
 		CE9893C120EA019500E085EE /* TableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
 		CE9893C220EA019500E085EE /* TableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TableViewCell.xib; sourceTree = "<group>"; };
 		CEAC645120EDAA550019935B /* MyWorkingList.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MyWorkingList.entitlements; sourceTree = "<group>"; };
@@ -316,6 +322,8 @@
 			children = (
 				CE24B26B20F4AB720064FBB5 /* DetailViewController.swift */,
 				CE24B26C20F4AB720064FBB5 /* DetailViewController.xib */,
+				CE73F5AA224DFA3500ED2A50 /* AlarmSettingViewController.swift */,
+				CE73F5AB224DFA3500ED2A50 /* AlarmSettingViewController.xib */,
 			);
 			path = DetailView;
 			sourceTree = "<group>";
@@ -479,6 +487,40 @@
 			knownRegions = (
 				en,
 				Base,
+				ko,
+				fr,
+				"zh-Hans",
+				"zh-Hant",
+				es,
+				nl,
+				"pt-BR",
+				de,
+				ja,
+				"es-419",
+				it,
+				"pt-PT",
+				da,
+				fi,
+				sv,
+				nb,
+				ru,
+				pl,
+				tr,
+				ar,
+				th,
+				hu,
+				ca,
+				cs,
+				hr,
+				he,
+				el,
+				ro,
+				ms,
+				id,
+				vi,
+				uk,
+				sk,
+				hi,
 			);
 			mainGroup = 179B6F6020E8C6B8008A7D5A;
 			productRefGroup = 179B6F6A20E8C6B8008A7D5A /* Products */;
@@ -504,6 +546,7 @@
 				CED2FD7B20ECB9270021F514 /* SideViewController.xib in Resources */,
 				CE24B26E20F4AB720064FBB5 /* DetailViewController.xib in Resources */,
 				CE9893C420EA019500E085EE /* TableViewCell.xib in Resources */,
+				CE73F5AD224DFA3500ED2A50 /* AlarmSettingViewController.xib in Resources */,
 				CEEDB8CC21660E1300F6860F /* CalendarViewController.xib in Resources */,
 				179B6F7720E8C6BC008A7D5A /* Assets.xcassets in Resources */,
 				179B6FA420E8F963008A7D5A /* README.md in Resources */,
@@ -626,6 +669,7 @@
 			files = (
 				179B6F6F20E8C6B8008A7D5A /* ViewController.swift in Sources */,
 				CEAC645820EDEA9A0019935B /* PinWheelView.swift in Sources */,
+				CE73F5AC224DFA3500ED2A50 /* AlarmSettingViewController.swift in Sources */,
 				CE9893C320EA019500E085EE /* TableViewCell.swift in Sources */,
 				CEEDB8CB21660E1300F6860F /* CalendarViewController.swift in Sources */,
 				CEEC51C420EAFA6D00C4A770 /* myTask.swift in Sources */,
@@ -644,6 +688,7 @@
 			files = (
 				CEEDB8CF2166FF4800F6860F /* AppDelegate.swift in Sources */,
 				CEEDB8E3216700AC00F6860F /* myWorkspace.swift in Sources */,
+				CE73F5AE224DFF7100ED2A50 /* AlarmSettingViewController.swift in Sources */,
 				CEEDB8CE2166FF4800F6860F /* CalendarViewController.swift in Sources */,
 				CEEDB8EC216700C400F6860F /* TableViewCell.swift in Sources */,
 				CEEDB8EF216700C800F6860F /* PinWheelView.swift in Sources */,
@@ -662,6 +707,7 @@
 			files = (
 				CEEDB8D12166FF4900F6860F /* AppDelegate.swift in Sources */,
 				CEEDB8E5216700AC00F6860F /* myWorkspace.swift in Sources */,
+				CE73F5AF224DFF7100ED2A50 /* AlarmSettingViewController.swift in Sources */,
 				CEEDB8D02166FF4900F6860F /* CalendarViewController.swift in Sources */,
 				CEEDB8ED216700C400F6860F /* TableViewCell.swift in Sources */,
 				CEEDB8F2216700C900F6860F /* PinWheelView.swift in Sources */,
