@@ -17,6 +17,7 @@ class DetailViewController: UIViewController, UITextViewDelegate, UITextFieldDel
     @IBOutlet weak var saveBtn: UIBarButtonItem!
     @IBOutlet weak var titleTextField: UITextField!
     @IBOutlet weak var alarmBtn: UIButton!
+    @IBOutlet weak var alarmBtnWidth: NSLayoutConstraint!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,10 +65,15 @@ class DetailViewController: UIViewController, UITextViewDelegate, UITextFieldDel
     }
     
     @IBAction func pressAlarmBtn(_ sender: Any) {
+        self.view.endEditing(true)
         let AlarmSettingVC = AlarmSettingViewController()
+        
+        var frame = self.view.frame;
+        frame.origin.y = 0;
+        AlarmSettingVC.view.frame = frame
+        
         AlarmSettingVC.taskDate = self.dayTask?.date
         AlarmSettingVC.alarmDate = self.dayTask?.alarmDate
-        AlarmSettingVC.view.frame = self.view.safeAreaLayoutGuide.layoutFrame
         
         self.addChildViewController(AlarmSettingVC)
         self.view.addSubview(AlarmSettingVC.view)
@@ -76,9 +82,10 @@ class DetailViewController: UIViewController, UITextViewDelegate, UITextFieldDel
     open func setAlarmBtnTitle(date: Date?) {
         if let alarmDate = date {    //알람 있음
             let dateFormatter = DateFormatter()
-            dateFormatter.setLocalizedDateFormatFromTemplate("hh-mm")
+//            dateFormatter.setLocalizedDateFormatFromTemplate("dd/hh/mm")
             let alarmTime:String = dateFormatter.string(from: alarmDate)
             self.alarmBtn.titleLabel?.text = "\(alarmTime)🔔"
+            self.alarmBtnWidth.constant = 200
         } else {    //알람 없음
             self.alarmBtn.titleLabel?.text = "🔕"
         }

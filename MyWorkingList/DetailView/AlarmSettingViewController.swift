@@ -43,7 +43,6 @@ class AlarmSettingViewController: UIViewController {
         //초기화
         if let alarmDate = self.alarmDate, let taskDate = self.taskDate {
             self.alarmSwitch.isOn = true
-            self.alarmSwitch.isEnabled = true
             self.alarmTimePicker.isEnabled = true
             
             //Day 설정
@@ -69,7 +68,6 @@ class AlarmSettingViewController: UIViewController {
             
         } else {
             self.alarmSwitch.isOn = false
-            self.alarmSwitch.isEnabled = false
             self.alarmTimePicker.isEnabled = false
             
         }
@@ -79,7 +77,6 @@ class AlarmSettingViewController: UIViewController {
     @IBAction func pressAlarmSwitch(_ sender: UISwitch) {
         if sender.isOn {
             self.alarmSwitch.isOn = true
-            self.alarmSwitch.isEnabled = true
             self.alarmTimePicker.isEnabled = true
             
             if let alarmDate = self.alarmDate, let taskDate = self.taskDate {
@@ -112,7 +109,6 @@ class AlarmSettingViewController: UIViewController {
             
         } else {
             self.alarmSwitch.isOn = false
-            self.alarmSwitch.isEnabled = false
             self.alarmTimePicker.isEnabled = false
             
         }
@@ -127,7 +123,7 @@ class AlarmSettingViewController: UIViewController {
                 return
             }
             
-            let date:Date = (calendar.date(byAdding: .day, value: betweenDay.getIntDay(), to: taskDate))!
+            let date:Date = (calendar.date(byAdding: .day, value: -betweenDay.getIntDay(), to: taskDate))!
             self.alarmDate = date
             
             //TODO: 알람 세팅 기능!!

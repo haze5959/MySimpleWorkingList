@@ -12,6 +12,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="DetailViewController" customModule="MyWorkingList" customModuleProvider="target">
             <connections>
                 <outlet property="alarmBtn" destination="DBM-3J-J7K" id="oR2-Wc-1Ug"/>
+                <outlet property="alarmBtnWidth" destination="wsd-KR-e87" id="d9e-kR-thX"/>
                 <outlet property="saveBtn" destination="ExU-3y-iA6" id="6OR-Xu-hVB"/>
                 <outlet property="textView" destination="wsU-Sj-LP8" id="X7R-tC-Qev"/>
                 <outlet property="titleLabel" destination="cuL-iM-xY9" id="qer-jN-lFx"/>
