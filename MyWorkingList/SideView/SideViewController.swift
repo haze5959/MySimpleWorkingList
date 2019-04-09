@@ -46,7 +46,7 @@ class SideViewController: UIViewController {
                 //***********************************
                 self.tableView.reloadData();
                 self.view.removeFromSuperview();
-                self.removeFromParentViewController();
+                self.removeFromParent();
                 
             } else {
                 let cancelAlert = UIAlertController(title: "alert", message: "value is empty.", preferredStyle: .alert);
@@ -67,7 +67,7 @@ class SideViewController: UIViewController {
         }) { (value) in
             parentVC.shadowView.isHidden = true;
             self.view.removeFromSuperview();
-            self.removeFromParentViewController();
+            self.removeFromParent();
         }
     }
     
@@ -90,7 +90,7 @@ extension SideViewController: UITableViewDelegate {
             UserDefaults().set(SharedData.instance.seletedWorkSpace?.id, forKey: "seletedWorkSpaceId");
             UserDefaults().set(SharedData.instance.seletedWorkSpace?.name, forKey: "seletedWorkSpaceName");
             self.view.removeFromSuperview();
-            self.removeFromParentViewController();
+            self.removeFromParent();
             parentVC.shadowView.isHidden = true;
         }
     }
@@ -100,7 +100,7 @@ extension SideViewController: UITableViewDelegate {
 extension SideViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell: UITableViewCell = UITableViewCell(style: UITableViewCellStyle.subtitle, reuseIdentifier: "Cell");
+        let cell: UITableViewCell = UITableViewCell(style: UITableViewCell.CellStyle.subtitle, reuseIdentifier: "Cell");
         if(SharedData.instance.workSpaceArr[indexPath.row].name == SharedData.instance.seletedWorkSpace?.name){
             cell.textLabel?.text = SharedData.instance.workSpaceArr[indexPath.row].name + " - Seleted!";
         } else {
@@ -121,13 +121,13 @@ extension SideViewController: UITableViewDataSource {
         cell.layoutMargins = UIEdgeInsets.zero
     }
     
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        if (editingStyle == UITableViewCellEditingStyle.delete) {
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if (editingStyle == UITableViewCell.EditingStyle.delete) {
             (UIApplication.shared.delegate as! AppDelegate).deleteRecord(recordId: SharedData.instance.workSpaceArr[indexPath.row].id);
             
             if(SharedData.instance.workSpaceArr[indexPath.row].name == SharedData.instance.seletedWorkSpace?.name){ //선택된 셀을 지우는 거라면
                 SharedData.instance.workSpaceArr.remove(at: indexPath.row);
-                tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.automatic);
+                tableView.deleteRows(at: [indexPath], with: UITableView.RowAnimation.automatic);
                 
                 SharedData.instance.seletedWorkSpace = SharedData.instance.workSpaceArr[0];
                 tableView.reloadData();
@@ -135,10 +135,10 @@ extension SideViewController: UITableViewDataSource {
                 
             } else {
                 SharedData.instance.workSpaceArr.remove(at: indexPath.row);
-                tableView.deleteRows(at: [indexPath], with: UITableViewRowAnimation.automatic);
+                tableView.deleteRows(at: [indexPath], with: UITableView.RowAnimation.automatic);
                 
             }
-        } else if (editingStyle == UITableViewCellEditingStyle.insert) {
+        } else if (editingStyle == UITableViewCell.EditingStyle.insert) {
         }
     }
     
@@ -211,7 +211,7 @@ extension SideViewController: UITableViewDataSource {
                 UserDefaults().set(SharedData.instance.seletedWorkSpace?.id, forKey: "seletedWorkSpaceId");
                 UserDefaults().set(SharedData.instance.seletedWorkSpace?.name, forKey: "seletedWorkSpaceName");
                 self.view.removeFromSuperview();
-                self.removeFromParentViewController();
+                self.removeFromParent();
                 parentVC.shadowView.isHidden = true;
             }
             

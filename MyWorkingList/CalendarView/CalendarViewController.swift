@@ -30,7 +30,7 @@ class CalendarViewController: UIViewController, FSCalendarDataSource, FSCalendar
 
     @IBAction func pressOutOfView(_ sender: Any) {
         self.view.removeFromSuperview();
-        self.removeFromParentViewController();
+        self.removeFromParent();
     }
     
     override func didReceiveMemoryWarning() {
@@ -62,7 +62,7 @@ class CalendarViewController: UIViewController, FSCalendarDataSource, FSCalendar
             SharedData.instance.seletedWorkSpace?.pivotDate = date;
             SharedData.instance.workSpaceUpdateObserver?.onNext(SharedData.instance.seletedWorkSpace!);
             self.view.removeFromSuperview();
-            self.removeFromParentViewController();
+            self.removeFromParent();
         }
     }
 

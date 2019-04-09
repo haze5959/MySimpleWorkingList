@@ -16,8 +16,8 @@ class DetailViewController: UIViewController, UITextViewDelegate, UITextFieldDel
     @IBOutlet weak var textView: UITextView!
     @IBOutlet weak var saveBtn: UIBarButtonItem!
     @IBOutlet weak var titleTextField: UITextField!
-    @IBOutlet weak var alarmBtn: UIButton!
-    @IBOutlet weak var alarmBtnWidth: NSLayoutConstraint!
+//    @IBOutlet weak var alarmBtn: UIButton!
+//    @IBOutlet weak var alarmBtnWidth: NSLayoutConstraint!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,7 +33,7 @@ class DetailViewController: UIViewController, UITextViewDelegate, UITextFieldDel
         self.textView.text = self.dayTask?.body
         self.textView.becomeFirstResponder()   //포커스 잡기
         
-        self.setAlarmBtnTitle(date: self.dayTask?.alarmDate)
+//        self.setAlarmBtnTitle(date: self.dayTask?.alarmDate)
     }
 
     @IBAction func pressSaveBtn(_ sender: Any) {
@@ -56,40 +56,41 @@ class DetailViewController: UIViewController, UITextViewDelegate, UITextFieldDel
         }
         
         self.view.removeFromSuperview();
-        self.removeFromParentViewController();
+        self.removeFromParent();
     }
     
     @IBAction func pressBackBtn(_ sender: Any) {
         self.view.removeFromSuperview();
-        self.removeFromParentViewController();
+        self.removeFromParent();
     }
     
-    @IBAction func pressAlarmBtn(_ sender: Any) {
-        self.view.endEditing(true)
-        let AlarmSettingVC = AlarmSettingViewController()
-        
-        var frame = self.view.frame;
-        frame.origin.y = 0;
-        AlarmSettingVC.view.frame = frame
-        
-        AlarmSettingVC.taskDate = self.dayTask?.date
-        AlarmSettingVC.alarmDate = self.dayTask?.alarmDate
-        
-        self.addChildViewController(AlarmSettingVC)
-        self.view.addSubview(AlarmSettingVC.view)
-    }
+//    @IBAction func pressAlarmBtn(_ sender: Any) {
+//        self.view.endEditing(true)
+//        let AlarmSettingVC = AlarmSettingViewController()
+//
+//        var frame = self.view.frame;
+//        frame.origin.y = 0;
+//        AlarmSettingVC.view.frame = frame
+//
+//        AlarmSettingVC.taskDate = self.dayTask?.date
+//        AlarmSettingVC.alarmDate = self.dayTask?.alarmDate
+//
+//        self.addChildViewController(AlarmSettingVC)
+//        self.view.addSubview(AlarmSettingVC.view)
+//    }
     
-    open func setAlarmBtnTitle(date: Date?) {
-        if let alarmDate = date {    //알람 있음
-            let dateFormatter = DateFormatter()
-//            dateFormatter.setLocalizedDateFormatFromTemplate("dd/hh/mm")
-            let alarmTime:String = dateFormatter.string(from: alarmDate)
-            self.alarmBtn.titleLabel?.text = "\(alarmTime)🔔"
-            self.alarmBtnWidth.constant = 200
-        } else {    //알람 없음
-            self.alarmBtn.titleLabel?.text = "🔕"
-        }
-    }
+//    open func setAlarmBtnTitle(date: Date?) {
+//        if let alarmDate = date {    //알람 있음
+//            let dateFormatter = DateFormatter()
+//            dateFormatter.setLocalizedDateFormatFromTemplate("MM/dd/hh:mm")
+//            let alarmTime:String = dateFormatter.string(from: alarmDate)
+//            self.alarmBtn.titleLabel?.text = "\(alarmTime)🔔"
+//            self.alarmBtn.titleLabel?.setNeedsLayout()
+//            self.alarmBtnWidth.constant = 200
+//        } else {    //알람 없음
+//            self.alarmBtn.titleLabel?.text = "🔕"
+//        }
+//    }
     
     // MARK: UITextViewDelegate
     func textViewDidChange(_ textView: UITextView) {

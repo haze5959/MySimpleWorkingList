@@ -41,9 +41,10 @@ class AlarmSettingViewController: UIViewController {
         super.viewDidLoad()
 
         //초기화
-        if let alarmDate = self.alarmDate, let taskDate = self.taskDate {
+        if let alarmDate = self.alarmDate, let taskDate = self.taskDate {   //알람 설정 정보가 있다면
             self.alarmSwitch.isOn = true
             self.alarmTimePicker.isEnabled = true
+            self.alarmDaySegment.isEnabled = true
             
             //Day 설정
             let calendar = Calendar.current
@@ -66,9 +67,10 @@ class AlarmSettingViewController: UIViewController {
             //Time 설정
             self.alarmTimePicker.date = alarmDay
             
-        } else {
+        } else {    //알람 설정 정보가 없다면
             self.alarmSwitch.isOn = false
             self.alarmTimePicker.isEnabled = false
+            self.alarmDaySegment.isEnabled = false
             
         }
         
@@ -78,6 +80,7 @@ class AlarmSettingViewController: UIViewController {
         if sender.isOn {
             self.alarmSwitch.isOn = true
             self.alarmTimePicker.isEnabled = true
+            self.alarmDaySegment.isEnabled = true
             
             if let alarmDate = self.alarmDate, let taskDate = self.taskDate {
                 //Day 설정
@@ -110,6 +113,7 @@ class AlarmSettingViewController: UIViewController {
         } else {
             self.alarmSwitch.isOn = false
             self.alarmTimePicker.isEnabled = false
+            self.alarmDaySegment.isEnabled = false
             
         }
     }
@@ -135,9 +139,9 @@ class AlarmSettingViewController: UIViewController {
         
         let parentVC = self.parent as! DetailViewController
         parentVC.dayTask?.alarmDate = self.alarmDate
-        parentVC.setAlarmBtnTitle(date: self.alarmDate)
+//        parentVC.setAlarmBtnTitle(date: self.alarmDate)
         
         self.view.removeFromSuperview();
-        self.removeFromParentViewController();
+        self.removeFromParent();
     }
 }

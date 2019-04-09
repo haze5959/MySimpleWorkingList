@@ -260,7 +260,7 @@ class ViewController: UIViewController, ViewControllerDelegate {
             sideVC.view.frame = frame;
         };
         
-        self.addChildViewController(sideVC);
+        self.addChild(sideVC);
         self.view.addSubview(sideVC.view);
         self.shadowView.backgroundColor?.withAlphaComponent(0);
         self.shadowView.isHidden = false;
@@ -301,7 +301,7 @@ class ViewController: UIViewController, ViewControllerDelegate {
             calendarVC.view.frame = frame;
         };
         
-        self.addChildViewController(calendarVC);
+        self.addChild(calendarVC);
         self.view.addSubview(calendarVC.view);
         let indexPath = IndexPath(row: 0, section: 0);
         self.tableView.scrollToRow(at: indexPath, at: .top, animated: true);
@@ -395,7 +395,7 @@ extension ViewController: UITableViewDelegate {
             detailVC.view.frame = frame;
         };
 
-        self.addChildViewController(detailVC);
+        self.addChild(detailVC);
         self.view.addSubview(detailVC.view);
     }
     
