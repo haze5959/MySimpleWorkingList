@@ -25,9 +25,12 @@ class DetailViewController: UIViewController, UITextViewDelegate, UITextFieldDel
         self.textView.delegate = self
         self.titleTextField.delegate = self
         
-        let dateFormatter = DateFormatter()
-        dateFormatter.setLocalizedDateFormatFromTemplate("MM-dd-EEEE");
-        let day:String = dateFormatter.string(from: (self.dayTask?.date)!);
+        let dayKeyFormatter = DateFormatter()
+        dayKeyFormatter.setLocalizedDateFormatFromTemplate("EEEE")
+        let dateEEE:String = dayKeyFormatter.string(from: (self.dayTask?.date)!)
+        let dateShort:String = DateFormatter.localizedString(from: (self.dayTask?.date)!, dateStyle: .short, timeStyle: .none)
+        let day:String  = "\(dateShort) \(dateEEE)"
+
         self.titleLabel.title = day
         self.titleTextField.text = self.dayTask?.title
         self.textView.text = self.dayTask?.body

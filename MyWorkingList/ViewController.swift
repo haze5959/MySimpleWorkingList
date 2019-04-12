@@ -133,7 +133,7 @@ class ViewController: UIViewController, ViewControllerDelegate {
     */
     func initTaskData(pivotDate:Date!) -> Void {
         let dateFormatter = DateFormatter();
-        dateFormatter.setLocalizedDateFormatFromTemplate("M");
+        dateFormatter.setLocalizedDateFormatFromTemplate("yyyy MM");
         let tempdate:Date = (Calendar.current.date(byAdding: .day, value: MARGIN_TO_PAST_DAY, to: pivotDate))!;
         var tempMonth:String = dateFormatter.string(from: tempdate);
         var sectionContainNum:Int = 0;
@@ -178,67 +178,67 @@ class ViewController: UIViewController, ViewControllerDelegate {
     }
     
     func insertTaskData(pivotDate:Date!, amountOfNumber:Int) -> Void {
-        let dateFormatter = DateFormatter();
-        dateFormatter.setLocalizedDateFormatFromTemplate("M");
-        var pivotMonth:String = dateFormatter.string(from: pivotDate);
+        let dateFormatter = DateFormatter()
+        dateFormatter.setLocalizedDateFormatFromTemplate("yyyy MM")
+        var pivotMonth:String = dateFormatter.string(from: pivotDate)
         
-        let dayKeyFormatter = DateFormatter();
-        dayKeyFormatter.setLocalizedDateFormatFromTemplate("yyMMdd");
+        let dayKeyFormatter = DateFormatter()
+        dayKeyFormatter.setLocalizedDateFormatFromTemplate("yyMMdd")
         //과거로부터 현재 미래까지
         for i in 1..<amountOfNumber+1{
-            let pastDate:Date = (Calendar.current.date(byAdding: .day, value: -i, to: pivotDate))!;
+            let pastDate:Date = (Calendar.current.date(byAdding: .day, value: -i, to: pivotDate))!
             //*********dayKey 생성***********
-            let dayKey:String = dayKeyFormatter.string(from: pastDate);
+            let dayKey:String = dayKeyFormatter.string(from: pastDate)
             //******************************
-            let dayTask:myTask? = SharedData.instance.taskAllDic.object(forKey: dayKey) as? myTask;
+            let dayTask:myTask? = SharedData.instance.taskAllDic.object(forKey: dayKey) as? myTask
             
             if(dayTask != nil){
-                self.taskData.insert(myTask((dayTask?.id)!, pastDate, (dayTask?.body)!, (dayTask?.title)!), at: 0);
+                self.taskData.insert(myTask((dayTask?.id)!, pastDate, (dayTask?.body)!, (dayTask?.title)!), at: 0)
             } else {
-                self.taskData.insert(myTask("", pastDate, "", nil), at: 0);
+                self.taskData.insert(myTask("", pastDate, "", nil), at: 0)
             }
             
             //월이 바뀌면 섹션을 추가한다.
-            let pastMonth:String = dateFormatter.string(from: pastDate);
+            let pastMonth:String = dateFormatter.string(from: pastDate)
             if(pivotMonth != pastMonth){
-                self.monthSectionArr.insert((1, pastMonth), at: 0);
-                pivotMonth = pastMonth;
+                self.monthSectionArr.insert((1, pastMonth), at: 0)
+                pivotMonth = pastMonth
                 
             } else {
-                self.monthSectionArr[0].0 += 1;
+                self.monthSectionArr[0].0 += 1
             }
         }
     }
     
     func appendTaskData(pivotDate:Date!, amountOfNumber:Int) -> Void {
-        let dateFormatter = DateFormatter();
-        dateFormatter.setLocalizedDateFormatFromTemplate("M");
-        var tempMonth:String = dateFormatter.string(from: pivotDate);
+        let dateFormatter = DateFormatter()
+        dateFormatter.setLocalizedDateFormatFromTemplate("yyyy MM")
+        var tempMonth:String = dateFormatter.string(from: pivotDate)
 
-        let dayKeyFormatter = DateFormatter();
-        dayKeyFormatter.setLocalizedDateFormatFromTemplate("yyMMdd");
+        let dayKeyFormatter = DateFormatter()
+        dayKeyFormatter.setLocalizedDateFormatFromTemplate("yyMMdd")
         //과거로부터 현재 미래까지
         for i in 1..<amountOfNumber+1{
-            let date:Date = (Calendar.current.date(byAdding: .day, value: i, to: pivotDate))!;
+            let date:Date = (Calendar.current.date(byAdding: .day, value: i, to: pivotDate))!
             //*********dayKey 생성***********
-            let dayKey:String = dayKeyFormatter.string(from: date);
+            let dayKey:String = dayKeyFormatter.string(from: date)
             //******************************
-            let dayTask:myTask? = SharedData.instance.taskAllDic.object(forKey: dayKey) as? myTask;
+            let dayTask:myTask? = SharedData.instance.taskAllDic.object(forKey: dayKey) as? myTask
             
             if(dayTask != nil){
-                self.taskData.append(myTask((dayTask?.id)!, date, (dayTask?.body)!, (dayTask?.title)!));
+                self.taskData.append(myTask((dayTask?.id)!, date, (dayTask?.body)!, (dayTask?.title)!))
             } else {
-                self.taskData.append(myTask("", date, "", nil));
+                self.taskData.append(myTask("", date, "", nil))
             }
 
             //월이 바뀌면 섹션을 추가한다.
-            let month:String = dateFormatter.string(from: date);
+            let month:String = dateFormatter.string(from: date)
             if(month != tempMonth){
-                self.monthSectionArr.append((1, month));
-                tempMonth = month;
+                self.monthSectionArr.append((1, month))
+                tempMonth = month
                 
             } else {
-                self.monthSectionArr[self.monthSectionArr.count-1].0 += 1;
+                self.monthSectionArr[self.monthSectionArr.count-1].0 += 1
             }
         }
     }
@@ -247,28 +247,28 @@ class ViewController: UIViewController, ViewControllerDelegate {
      워크스페이스 사이드뷰 띄우는 버튼
     */
     @IBAction func pressWorkSpaceBtn(_ sender: Any) {
-        let sideVC = SideViewController();
+        let sideVC = SideViewController()
         if #available(iOS 11.0, *) {
-            var frame = self.view.safeAreaLayoutGuide.layoutFrame;
-            frame.origin.x = -frame.size.width;
-            sideVC.view.frame = frame;
-        } else {
-            var frame = self.view.frame;
-            frame.origin.y = frame.origin.y + UIApplication.shared.statusBarFrame.size.height;
+            var frame = self.view.safeAreaLayoutGuide.layoutFrame
             frame.origin.x = -frame.size.width
-            frame.size.height = frame.size.height - UIApplication.shared.statusBarFrame.size.height;
-            sideVC.view.frame = frame;
+            sideVC.view.frame = frame
+        } else {
+            var frame = self.view.frame
+            frame.origin.y = frame.origin.y + UIApplication.shared.statusBarFrame.size.height
+            frame.origin.x = -frame.size.width
+            frame.size.height = frame.size.height - UIApplication.shared.statusBarFrame.size.height
+            sideVC.view.frame = frame
         };
         
-        self.addChild(sideVC);
-        self.view.addSubview(sideVC.view);
-        self.shadowView.backgroundColor?.withAlphaComponent(0);
-        self.shadowView.isHidden = false;
+        self.addChild(sideVC)
+        self.view.addSubview(sideVC.view)
+        self.shadowView.backgroundColor?.withAlphaComponent(0)
+        self.shadowView.isHidden = false
         
         UIView.animate(withDuration: 0.3, animations: {
-            self.shadowView.backgroundColor = UIColor.init(red: 0, green: 0, blue: 0, alpha: 0.5);
-            sideVC.view.frame.origin.x = 0;
-        });
+            self.shadowView.backgroundColor = UIColor.init(red: 0, green: 0, blue: 0, alpha: 0.5)
+            sideVC.view.frame.origin.x = 0
+        })
     }
     
     /**
@@ -278,7 +278,7 @@ class ViewController: UIViewController, ViewControllerDelegate {
         //데이터 초기화
 //        self.taskData = [];
 //        self.monthSectionArr = [];
-        SharedData.instance.workSpaceUpdateObserver?.onNext(SharedData.instance.seletedWorkSpace!);
+        SharedData.instance.workSpaceUpdateObserver?.onNext(SharedData.instance.seletedWorkSpace!)
 //        initTaskData(pivotDate: Date());
 //        self.tableView.reloadData();
         
@@ -295,16 +295,16 @@ class ViewController: UIViewController, ViewControllerDelegate {
         if #available(iOS 11.0, *) {
             calendarVC.view.frame = self.view.safeAreaLayoutGuide.layoutFrame
         } else {
-            var frame = self.view.frame;
-            frame.origin.y = frame.origin.y + UIApplication.shared.statusBarFrame.size.height;
-            frame.size.height = frame.size.height - UIApplication.shared.statusBarFrame.size.height;
-            calendarVC.view.frame = frame;
+            var frame = self.view.frame
+            frame.origin.y = frame.origin.y + UIApplication.shared.statusBarFrame.size.height
+            frame.size.height = frame.size.height - UIApplication.shared.statusBarFrame.size.height
+            calendarVC.view.frame = frame
         };
         
-        self.addChild(calendarVC);
-        self.view.addSubview(calendarVC.view);
-        let indexPath = IndexPath(row: 0, section: 0);
-        self.tableView.scrollToRow(at: indexPath, at: .top, animated: true);
+        self.addChild(calendarVC)
+        self.view.addSubview(calendarVC.view)
+        let indexPath = IndexPath(row: 0, section: 0)
+        self.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
     }
     
     /**
@@ -312,15 +312,15 @@ class ViewController: UIViewController, ViewControllerDelegate {
      */
     @IBAction func pressTodayBtn(_ sender: Any) {
         //데이터 초기화
-        self.taskData = [];
-        self.monthSectionArr = [];
+        self.taskData = []
+        self.monthSectionArr = []
         
-        initTaskData(pivotDate: Date());
-        self.tableView.reloadData();
+        initTaskData(pivotDate: Date())
+        self.tableView.reloadData()
         
         //스크롤 맨 위로 올리기
-        let indexPath = IndexPath(row: 0, section: 0);
-        self.tableView.scrollToRow(at: indexPath, at: .top, animated: true);
+        let indexPath = IndexPath(row: 0, section: 0)
+        self.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
     }
     
     /**
@@ -336,7 +336,7 @@ class ViewController: UIViewController, ViewControllerDelegate {
 //                    self.getALLEvents();
                 })
             } else {
-                (UIApplication.shared.delegate as! AppDelegate).alertPopUp(bodyStr: "캘린더 접근이 허용되지 않았습니다. 설정에서 해당 앱의 캘린더 접근 권한을 허용해주십시오.", alertClassify: .exit);
+                (UIApplication.shared.delegate as! AppDelegate).alertPopUp(bodyStr: "캘린더 접근이 허용되지 않았습니다. 설정에서 해당 앱의 캘린더 접근 권한을 허용해주십시오.", alertClassify: .exit)
             }
         })
     }
@@ -367,43 +367,43 @@ class ViewController: UIViewController, ViewControllerDelegate {
 extension ViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        let detailVC = DetailViewController();
+        let detailVC = DetailViewController()
         
         var padding = 0
         for i in 0..<indexPath.section {
-            padding += self.monthSectionArr[i].0;
+            padding += self.monthSectionArr[i].0
         }
         
-        let task:myTask = self.taskData[padding + indexPath.row];
+        let task:myTask = self.taskData[padding + indexPath.row]
         
-        let dayKeyFormatter = DateFormatter();
-        dayKeyFormatter.setLocalizedDateFormatFromTemplate("yyMMdd");
-        let dayKey:String = dayKeyFormatter.string(from: task.date);
-        detailVC.dayTask = SharedData.instance.taskAllDic.object(forKey: dayKey) as? myTask;
-        detailVC.tableIndexPath = indexPath;
+        let dayKeyFormatter = DateFormatter()
+        dayKeyFormatter.setLocalizedDateFormatFromTemplate("yyMMdd")
+        let dayKey:String = dayKeyFormatter.string(from: task.date)
+        detailVC.dayTask = SharedData.instance.taskAllDic.object(forKey: dayKey) as? myTask
+        detailVC.tableIndexPath = indexPath
         
         if (detailVC.dayTask == nil) {
-            detailVC.dayTask = task;
+            detailVC.dayTask = task
         }
         
         if #available(iOS 11.0, *) {
             detailVC.view.frame = self.view.safeAreaLayoutGuide.layoutFrame
         } else {
-            var frame = self.view.frame;
-            frame.origin.y = frame.origin.y + UIApplication.shared.statusBarFrame.size.height;
-            frame.size.height = frame.size.height - UIApplication.shared.statusBarFrame.size.height;
-            detailVC.view.frame = frame;
+            var frame = self.view.frame
+            frame.origin.y = frame.origin.y + UIApplication.shared.statusBarFrame.size.height
+            frame.size.height = frame.size.height - UIApplication.shared.statusBarFrame.size.height
+            detailVC.view.frame = frame
         };
 
-        self.addChild(detailVC);
-        self.view.addSubview(detailVC.view);
+        self.addChild(detailVC)
+        self.view.addSubview(detailVC.view)
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if (self.taskData.count > 0 && scrollView.contentOffset.y >= (scrollView.contentSize.height - scrollView.frame.size.height)) { //reach bottom
-            (UIApplication.shared.delegate as! AppDelegate).getDayTask(startDate:self.taskData[self.taskData.count-1].date, endDate: self.taskData[self.taskData.count-1].date.addingTimeInterval(86400.0 * 30), workSpaceId: (SharedData.instance.seletedWorkSpace?.id)!);
+            (UIApplication.shared.delegate as! AppDelegate).getDayTask(startDate:self.taskData[self.taskData.count-1].date, endDate: self.taskData[self.taskData.count-1].date.addingTimeInterval(86400.0 * 30), workSpaceId: (SharedData.instance.seletedWorkSpace?.id)!)
             
-            appendTaskData(pivotDate: self.taskData[self.taskData.count-1].date, amountOfNumber: 30);
+            appendTaskData(pivotDate: self.taskData[self.taskData.count-1].date, amountOfNumber: 30)
             self.tableView.reloadData();
         }
     }
@@ -413,44 +413,44 @@ extension ViewController: UITableViewDelegate {
 extension ViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell:TableViewCell! = self.tableView.dequeueReusableCell(withIdentifier: "TableViewCell", for: indexPath) as! TableViewCell;
-        cell.selectionStyle = .none;
+        let cell:TableViewCell! = self.tableView.dequeueReusableCell(withIdentifier: "TableViewCell", for: indexPath) as! TableViewCell
+        cell.selectionStyle = .none
         var padding = 0
         
         for i in 0..<indexPath.section {
-            padding += self.monthSectionArr[i].0;
+            padding += self.monthSectionArr[i].0
         }
         
-        let task:myTask = self.taskData[padding + indexPath.row];
+        let task:myTask = self.taskData[padding + indexPath.row]
 
         //요일/일자 뽑아내기
-        let dateFormatter = DateFormatter();
-        dateFormatter.setLocalizedDateFormatFromTemplate("EEEE");
-        let dayOfWeek:String = dateFormatter.string(from: task.date);
-        dateFormatter.setLocalizedDateFormatFromTemplate("dd");
-        let day:String = dateFormatter.string(from: task.date);
+        let dateFormatter = DateFormatter()
+        dateFormatter.setLocalizedDateFormatFromTemplate("EEEE")
+        let dayOfWeek:String = dateFormatter.string(from: task.date)
+        dateFormatter.setLocalizedDateFormatFromTemplate("dd")
+        let day:String = dateFormatter.string(from: task.date)
         
-        dateFormatter.setLocalizedDateFormatFromTemplate("MM/dd/yyyy");
-        let taskDate:String = dateFormatter.string(from: task.date);
+        dateFormatter.setLocalizedDateFormatFromTemplate("MM/dd/yyyy")
+        let taskDate:String = dateFormatter.string(from: task.date)
         let todayDate:String = dateFormatter.string(from: Date());
         
         if taskDate == todayDate {  //오늘이라면
-            cell.titleLabel?.text = "\(day) [\(dayOfWeek)] - today!";
-            cell.titleLabel.backgroundColor = UIColor.init(red: 255/255, green: 224/255, blue: 178/255, alpha: 1);
+            cell.titleLabel?.text = "\(day) [\(dayOfWeek)] - today!"
+            cell.titleLabel.backgroundColor = UIColor.init(red: 255/255, green: 224/255, blue: 178/255, alpha: 1)
         } else {
-            let weekDay = Calendar.current.component(Calendar.Component.weekday, from: task.date);
+            let weekDay = Calendar.current.component(Calendar.Component.weekday, from: task.date)
             if weekDay == 1 {   //일요일이라면
-                cell.titleLabel.backgroundColor = UIColor.init(red: 252/255, green: 228/255, blue: 236/255, alpha: 1);
+                cell.titleLabel.backgroundColor = UIColor.init(red: 252/255, green: 228/255, blue: 236/255, alpha: 1)
             } else {
-                cell.titleLabel.backgroundColor = UIColor.init(red: 227/255, green: 242/255, blue: 253/255, alpha: 1);
+                cell.titleLabel.backgroundColor = UIColor.init(red: 227/255, green: 242/255, blue: 253/255, alpha: 1)
             }
             
-            cell.titleLabel?.text = "\(day) [\(dayOfWeek)]";
+            cell.titleLabel?.text = "\(day) [\(dayOfWeek)]"
         }
         
         //타이틀 넣기
         if (task.title != nil && task.title!.count > 0) {
-            cell.titleLabel?.text?.append(" \(task.title!)");
+            cell.titleLabel?.text?.append(" \(task.title!)")
         }
 
         //캘린더에서 이벤트 가져오기
@@ -462,34 +462,34 @@ extension ViewController: UITableViewDataSource {
 //            cell.titleLabel?.text?.append("(\(allEvent[0].title!))");
 //        }
         
-        cell.bodyLabel?.text = task.body;
+        cell.bodyLabel?.text = task.body
         return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         var padding = 0
         for i in 0..<indexPath.section {
-            padding += self.monthSectionArr[i].0;
+            padding += self.monthSectionArr[i].0
         }
         
         if(self.taskData[padding + indexPath.row].body == ""){
-            return 40;
+            return 40
         }
         
-        return 200;
+        return 200
     }
     
     // MARK: 해더 관련
     func numberOfSections(in tableView: UITableView) -> Int {
-        return self.monthSectionArr.count;
+        return self.monthSectionArr.count
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.monthSectionArr[section].0;
+        return self.monthSectionArr[section].0
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return self.monthSectionArr[section].1;
+        return self.monthSectionArr[section].1
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -500,9 +500,9 @@ extension ViewController: UITableViewDataSource {
     @objc private func refreshWeatherData(_ sender: Any) {
         // Fetch Weather Data
         //클라우드에서 일일데이터를 가져오고 테이블 리로드
-        (UIApplication.shared.delegate as! AppDelegate).getDayTask(startDate: self.taskData[0].date.addingTimeInterval(-86400.0 * 30), endDate: self.taskData[0].date, workSpaceId: (SharedData.instance.seletedWorkSpace?.id)!);
-        insertTaskData(pivotDate: self.taskData[0].date, amountOfNumber: 30);
-        self.tableView.reloadData();
-        self.refreshControl.endRefreshing();
+        (UIApplication.shared.delegate as! AppDelegate).getDayTask(startDate: self.taskData[0].date.addingTimeInterval(-86400.0 * 30), endDate: self.taskData[0].date, workSpaceId: (SharedData.instance.seletedWorkSpace?.id)!)
+        insertTaskData(pivotDate: self.taskData[0].date, amountOfNumber: 30)
+        self.tableView.reloadData()
+        self.refreshControl.endRefreshing()
     }
 }
