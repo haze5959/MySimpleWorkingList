@@ -13,7 +13,7 @@
         <!--I-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" userLabel="I" customClass="ViewController" customModule="MyWorkingList" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" userLabel="I" customClass="ViewController" customModule="Daily_Work_Note" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
