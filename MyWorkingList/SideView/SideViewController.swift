@@ -10,8 +10,11 @@ import UIKit
 import CloudKit
 import StoreKit
 
-class SideViewController: UIViewController {
+class SideViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
+
     @IBOutlet weak var tableView: UITableView!
+    
+    var pickedDateType:DateType = .day
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,27 +30,38 @@ class SideViewController: UIViewController {
     }
     
     @IBAction func pressAddBtn(_ sender: Any) {
-        let alert = UIAlertController(title: "New WorkSpace", message: nil, preferredStyle: .alert);
+        self.pickedDateType = .day
+        let alert = UIAlertController(title: "New WorkSpace", message: nil, preferredStyle: .alert)
         
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil));
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         
         alert.addTextField(configurationHandler: { textField in
             textField.placeholder = "input your new workspace name..."
         })
+        
+        let contentVC = UIViewController()
+        contentVC.preferredContentSize = CGSize(width: 250,height: 100)
+        let pickerFrame = UIPickerView(frame: CGRect(x: 0, y: 0, width: 250, height: 100))
+        //set the pickers datasource and delegate
+        pickerFrame.delegate = self
+        pickerFrame.dataSource = self
+        //Add the picker to the alert controller
+        contentVC.view.addSubview(pickerFrame)
+        alert.setValue(contentVC, forKey: "contentViewController")
         
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
             let name:String? = alert.textFields?.first?.text
             if (name != nil) && name != ""  {
 //                print("Your name: \(name!)");
                 let parentVC = self.parent as! ViewController
-                parentVC.shadowView.isHidden = true;
+                parentVC.shadowView.isHidden = true
                 
                 //******클라우드에 새 워크스페이즈 저장******
-                (UIApplication.shared.delegate as! AppDelegate).makeWorkSpace(workSpaceName: name!)
+                (UIApplication.shared.delegate as! AppDelegate).makeWorkSpace(workSpaceName:  name!, dateType: self.pickedDateType)
                 //***********************************
                 self.tableView.reloadData()
                 self.view.removeFromSuperview()
-                self.removeFromParentViewController()
+                self.removeFromParent()
                 
             } else {
                 let cancelAlert = UIAlertController(title: "alert", message: "value is empty.", preferredStyle: .alert)
@@ -68,7 +82,7 @@ class SideViewController: UIViewController {
         }) { (value) in
             parentVC.shadowView.isHidden = true
             self.view.removeFromSuperview()
-            self.removeFromParentViewController()
+            self.removeFromParent()
         }
     }
     
@@ -90,8 +104,9 @@ extension SideViewController: UITableViewDelegate {
             SharedData.instance.workSpaceUpdateObserver?.onNext(SharedData.instance.seletedWorkSpace!)
             UserDefaults().set(SharedData.instance.seletedWorkSpace?.id, forKey: "seletedWorkSpaceId")
             UserDefaults().set(SharedData.instance.seletedWorkSpace?.name, forKey: "seletedWorkSpaceName")
+            UserDefaults().set(SharedData.instance.seletedWorkSpace?.dateType.rawValue, forKey: "seletedWorkSpaceDateType")
             self.view.removeFromSuperview()
-            self.removeFromParentViewController()
+            self.removeFromParent()
             parentVC.shadowView.isHidden = true
         }
     }
@@ -164,7 +179,7 @@ extension SideViewController: UITableViewDataSource {
                     //******클라우드에 새 워크스페이즈 저장******
                     (UIApplication.shared.delegate as! AppDelegate).updateWorkSpace(recordId: SharedData.instance.workSpaceArr[editActionsForRowAt.row].id, newName: name!)
                     //***********************************
-                    SharedData.instance.workSpaceArr[editActionsForRowAt.row] = myWorkspace(id: SharedData.instance.workSpaceArr[editActionsForRowAt.row].id, name: name!)
+                    SharedData.instance.workSpaceArr[editActionsForRowAt.row] = myWorkspace(id: SharedData.instance.workSpaceArr[editActionsForRowAt.row].id, name: name!, dateType: SharedData.instance.workSpaceArr[editActionsForRowAt.row].dateType)
                     self.tableView.reloadData()
     
                     //데이터 초기화
@@ -175,6 +190,7 @@ extension SideViewController: UITableViewDataSource {
                     
                     UserDefaults().set(SharedData.instance.seletedWorkSpace?.id, forKey: "seletedWorkSpaceId")
                     UserDefaults().set(SharedData.instance.seletedWorkSpace?.name, forKey: "seletedWorkSpaceName")
+                    UserDefaults().set(SharedData.instance.seletedWorkSpace?.dateType.rawValue, forKey: "seletedWorkSpaceDateType")
                     SharedData.instance.seletedWorkSpace = SharedData.instance.workSpaceArr[editActionsForRowAt.row]
                     SharedData.instance.workSpaceUpdateObserver?.onNext(SharedData.instance.seletedWorkSpace!)
                 } else {
@@ -211,8 +227,9 @@ extension SideViewController: UITableViewDataSource {
                 SharedData.instance.workSpaceUpdateObserver?.onNext(SharedData.instance.seletedWorkSpace!)
                 UserDefaults().set(SharedData.instance.seletedWorkSpace?.id, forKey: "seletedWorkSpaceId")
                 UserDefaults().set(SharedData.instance.seletedWorkSpace?.name, forKey: "seletedWorkSpaceName")
+                UserDefaults().set(SharedData.instance.seletedWorkSpace?.dateType.rawValue, forKey: "seletedWorkSpaceDateType")
                 self.view.removeFromSuperview()
-                self.removeFromParentViewController()
+                self.removeFromParent()
                 parentVC.shadowView.isHidden = true
             }
             
@@ -222,6 +239,31 @@ extension SideViewController: UITableViewDataSource {
         deleteAction.backgroundColor = .red
         
         return [deleteAction, renameAction]
+    }
+    
+    // MARK: - UIPickerViewDataSource
+    public func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return DateType.allCases.count
+    }
+    
+    public func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        switch row {
+        case DateType.day.rawValue:
+            return "Daily"
+        case DateType.week.rawValue:
+            return "Weekly"
+        case DateType.month.rawValue:
+            return "Monthly"
+        default:
+            return "Daily"
+        }
+    }
+    public func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        self.pickedDateType = DateType(rawValue: row)!
+    }
+    
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
     }
 }
 

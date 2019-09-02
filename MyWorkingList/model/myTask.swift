@@ -12,13 +12,11 @@ class myTask: NSObject {
     let id:String!
     let date:Date!
     var body:String!
-    var title:String?
     var alarmDate:Date?
     
-    init(_ id:String, _ dateVal:Date, _ bodyVal:String, _ titleVal:String?) {
+    init(_ id:String, _ dateVal:Date, _ bodyVal:String) {
         self.id = id;
         self.body = bodyVal;
-        self.title = titleVal;
         self.date = dateVal;
     }
 }

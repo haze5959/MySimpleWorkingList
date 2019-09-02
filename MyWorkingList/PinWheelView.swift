@@ -23,35 +23,37 @@ open class PinWheelView {
     }
     
     open func showProgressView(_ view: UIView) {
-        containerView.frame = view.frame
-        containerView.center = view.center
-        containerView.backgroundColor = UIColor(hex: 0x000000, alpha: 0.3)
-        
-        progressView.frame = CGRect(x: 0, y: 0, width: 80, height: 80)
-        progressView.center = view.center
-        progressView.backgroundColor = UIColor(hex: 0x444444, alpha: 0.7)
-        progressView.clipsToBounds = true
-        progressView.layer.cornerRadius = 10
-        
-        activityIndicator.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
-        activityIndicator.style = .whiteLarge
-        activityIndicator.center = CGPoint(x: progressView.bounds.width / 2, y: progressView.bounds.height / 2)
-        
-        labelView.text = "iCloud Sync...";
-        labelView.frame = CGRect(x: view.frame.size.width/2 - 100, y: progressView.frame.origin.y + 85, width: 200, height: 20)
-        labelView.textAlignment = .center;
-        
-        progressView.addSubview(activityIndicator)
-        containerView.addSubview(progressView)
-        containerView.addSubview(labelView)
-        view.addSubview(containerView)
-        
-        activityIndicator.startAnimating()
+        DispatchQueue.main.async {
+            self.containerView.frame = view.frame
+            self.containerView.center = view.center
+            self.containerView.backgroundColor = UIColor(hex: 0x000000, alpha: 0.3)
+            
+            self.progressView.frame = CGRect(x: 0, y: 0, width: 80, height: 80)
+            self.progressView.center = view.center
+            self.progressView.backgroundColor = UIColor(hex: 0x444444, alpha: 0.7)
+            self.progressView.clipsToBounds = true
+            self.progressView.layer.cornerRadius = 10
+            
+            self.activityIndicator.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
+            self.activityIndicator.style = .whiteLarge
+            self.activityIndicator.center = CGPoint(x: self.progressView.bounds.width / 2, y: self.progressView.bounds.height / 2)
+            
+            self.labelView.text = "iCloud Sync...";
+            self.labelView.frame = CGRect(x: view.frame.size.width/2 - 100, y: self.progressView.frame.origin.y + 85, width: 200, height: 20)
+            self.labelView.textAlignment = .center;
+            
+            self.progressView.addSubview(self.activityIndicator)
+            self.containerView.addSubview(self.progressView)
+            self.containerView.addSubview(self.labelView)
+            view.addSubview(self.containerView)
+            
+            self.activityIndicator.startAnimating()
+        }
     }
     
     open func hideProgressView() {
-        activityIndicator.stopAnimating()
-        containerView.removeFromSuperview()
+        self.activityIndicator.stopAnimating()
+        self.containerView.removeFromSuperview()
     }
 }
 

@@ -9,12 +9,11 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="DetailViewController" customModule="MyWorkingList" customModuleProvider="target">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="DetailViewController" customModule="Daily_Work_Note" customModuleProvider="target">
             <connections>
                 <outlet property="saveBtn" destination="ExU-3y-iA6" id="6OR-Xu-hVB"/>
                 <outlet property="textView" destination="wsU-Sj-LP8" id="X7R-tC-Qev"/>
                 <outlet property="titleLabel" destination="cuL-iM-xY9" id="qer-jN-lFx"/>
-                <outlet property="titleTextField" destination="03k-pc-ANM" id="7Ch-0L-UBA"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -43,15 +42,8 @@
                                 </navigationItem>
                             </items>
                         </navigationBar>
-                        <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="main schedule or important memo..." minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="03k-pc-ANM">
-                            <rect key="frame" x="0.0" y="44" width="335" height="30"/>
-                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            <nil key="textColor"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                            <textInputTraits key="textInputTraits"/>
-                        </textField>
                         <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="wsU-Sj-LP8">
-                            <rect key="frame" x="0.0" y="74" width="335" height="303"/>
+                            <rect key="frame" x="0.0" y="44" width="335" height="333"/>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                             <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
@@ -60,15 +52,12 @@
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
                         <constraint firstItem="Rrb-Jy-FcK" firstAttribute="top" secondItem="zJv-5V-W6H" secondAttribute="top" id="6gl-Jh-mL2"/>
-                        <constraint firstAttribute="trailing" secondItem="03k-pc-ANM" secondAttribute="trailing" id="8kS-fh-B9R"/>
-                        <constraint firstItem="03k-pc-ANM" firstAttribute="top" secondItem="Rrb-Jy-FcK" secondAttribute="bottom" id="D1j-WN-4ZS"/>
                         <constraint firstAttribute="bottom" secondItem="wsU-Sj-LP8" secondAttribute="bottom" id="FA2-bg-Wf9"/>
                         <constraint firstAttribute="trailing" secondItem="Rrb-Jy-FcK" secondAttribute="trailing" id="Ip2-q3-94N"/>
                         <constraint firstItem="wsU-Sj-LP8" firstAttribute="width" secondItem="zJv-5V-W6H" secondAttribute="width" id="SZU-KZ-9zg"/>
+                        <constraint firstItem="wsU-Sj-LP8" firstAttribute="top" secondItem="Rrb-Jy-FcK" secondAttribute="bottom" id="T4P-Dh-GQg"/>
                         <constraint firstItem="wsU-Sj-LP8" firstAttribute="centerX" secondItem="zJv-5V-W6H" secondAttribute="centerX" id="Z5R-1R-znq"/>
                         <constraint firstItem="Rrb-Jy-FcK" firstAttribute="leading" secondItem="zJv-5V-W6H" secondAttribute="leading" id="cvX-tH-7jR"/>
-                        <constraint firstItem="03k-pc-ANM" firstAttribute="leading" secondItem="Rrb-Jy-FcK" secondAttribute="leading" id="hik-jp-aOx"/>
-                        <constraint firstItem="wsU-Sj-LP8" firstAttribute="top" secondItem="03k-pc-ANM" secondAttribute="bottom" id="xNF-bY-hQd"/>
                     </constraints>
                 </view>
             </subviews>

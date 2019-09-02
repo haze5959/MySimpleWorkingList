@@ -8,14 +8,13 @@
 
 import UIKit
 
-class DetailViewController: UIViewController, UITextViewDelegate, UITextFieldDelegate {
+class DetailViewController: UIViewController, UITextViewDelegate {
 
     var dayTask:myTask?
     var tableIndexPath:IndexPath?
     @IBOutlet weak var titleLabel: UINavigationItem!
     @IBOutlet weak var textView: UITextView!
     @IBOutlet weak var saveBtn: UIBarButtonItem!
-    @IBOutlet weak var titleTextField: UITextField!
 //    @IBOutlet weak var alarmBtn: UIButton!
 //    @IBOutlet weak var alarmBtnWidth: NSLayoutConstraint!
     
@@ -23,7 +22,6 @@ class DetailViewController: UIViewController, UITextViewDelegate, UITextFieldDel
         super.viewDidLoad()
         self.saveBtn.isEnabled = false
         self.textView.delegate = self
-        self.titleTextField.delegate = self
         
         let dayKeyFormatter = DateFormatter()
         dayKeyFormatter.setLocalizedDateFormatFromTemplate("EEEE")
@@ -32,7 +30,6 @@ class DetailViewController: UIViewController, UITextViewDelegate, UITextFieldDel
         let day:String  = "\(dateShort) \(dateEEE)"
 
         self.titleLabel.title = day
-        self.titleTextField.text = self.dayTask?.title
         self.textView.text = self.dayTask?.body
         self.textView.becomeFirstResponder()   //포커스 잡기
         
@@ -48,12 +45,11 @@ class DetailViewController: UIViewController, UITextViewDelegate, UITextFieldDel
         
         if self.dayTask?.id == nil || self.dayTask?.id == "" {    //새로 저장
             //******클라우드에 새 메모 저장******
-            (UIApplication.shared.delegate as! AppDelegate).makeDayTask(workSpaceId: (SharedData.instance.seletedWorkSpace?.id)!, taskDate: (self.dayTask?.date)!, taskBody: self.textView.text, taskTitle: self.titleTextField.text, indexPath: self.tableIndexPath!)
+            (UIApplication.shared.delegate as! AppDelegate).makeDayTask(workSpaceId: (SharedData.instance.seletedWorkSpace?.id)!, taskDate: (self.dayTask?.date)!, taskBody: self.textView.text, indexPath: self.tableIndexPath!)
             //***********************************
         } else { //기존 수정
             //******클라우드에 매모 수정******
             self.dayTask?.body = self.textView.text
-            self.dayTask?.title = self.titleTextField.text
             (UIApplication.shared.delegate as! AppDelegate).updateDayTask(task: self.dayTask!, indexPath: self.tableIndexPath!)
             //***********************************
         }

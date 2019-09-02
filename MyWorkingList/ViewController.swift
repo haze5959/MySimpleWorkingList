@@ -12,60 +12,62 @@ import RxSwift
 import RxCocoa
 import EventKit
 import FSCalendar
+import Floaty
 
 public protocol ViewControllerDelegate {
     /**
      하나의 셀 업데이트
     */
-    func reloadTableWithUpdateCell(indexPath:IndexPath, title:String, body:String) -> Void;
+    func reloadTableWithUpdateCell(indexPath:IndexPath, body:String) -> Void
     
     /**
      모든 셀 업데이트
     */
-    func reloadTableAll() -> Void;
+    func reloadTableAll() -> Void
 }
 
 class ViewController: UIViewController, ViewControllerDelegate {
-    func reloadTableWithUpdateCell(indexPath:IndexPath, title:String, body:String) {
+    
+    func reloadTableWithUpdateCell(indexPath:IndexPath, body:String) {
         //해당 셀 데이터 업데이트
         var padding = 0
         for i in 0..<indexPath.section {
-            padding += self.monthSectionArr[i].0;
+            padding += self.monthSectionArr[i].0
         }
         
-        self.taskData[padding + indexPath.row].title = title;
-        self.taskData[padding + indexPath.row].body = body;
+        self.taskData[padding + indexPath.row].body = body
         
         DispatchQueue.main.async {
-            self.tableView.reloadData();
+            self.tableView.reloadData()
         }
     }
     
     func reloadTableAll() {
-        let dayKeyFormatter = DateFormatter();
-        dayKeyFormatter.setLocalizedDateFormatFromTemplate("yyMMdd");
+        let dayKeyFormatter = DateFormatter()
+        dayKeyFormatter.setLocalizedDateFormatFromTemplate("yyMMdd")
         
-//        self.taskData.append(myTask(dayTask!.id, date, dayTask!.body, .unknown));
+//        self.taskData.append(myTask(dayTask!.id, date, dayTask!.body, .unknown))
         for (index, element) in self.taskData.enumerated() {
             //*********dayKey 생성***********
-            let dayKey:String = dayKeyFormatter.string(from: element.date);
+            let dayKey:String = dayKeyFormatter.string(from: element.date)
             //******************************
-            let dayTask:myTask! = SharedData.instance.taskAllDic.object(forKey: dayKey) as? myTask;
+            let dayTask:myTask! = SharedData.instance.taskAllDic.object(forKey: dayKey) as? myTask
             
             if (dayTask != nil) {
-                self.taskData[index] = myTask.init(dayTask.id, self.taskData[index].date, dayTask.body, dayTask.title);
+                self.taskData[index] = myTask.init(dayTask.id, self.taskData[index].date, dayTask.body)
             }
         }
         
         DispatchQueue.main.async {
-            self.tableView.reloadData();
+            self.tableView.reloadData()
         }
     }
     
-    let disposeBag = DisposeBag();
-    let MARGIN_TO_PAST_DAY = -1;
-    let MARGIN_TO_AFTER_DAY = 30;
-//    let APPDELEGATE_INSTANCE = (UIApplication.shared.delegate as! AppDelegate);
+    let disposeBag = DisposeBag()
+    let MARGIN_TO_PAST_DAY = -1
+    let MARGIN_TO_AFTER_DAY = 30
+    let MARGIN_TO_AFTER_WEEK = 10
+    let MARGIN_TO_AFTER_MONTH = 6
 
     @IBOutlet weak var titleLabel: UINavigationItem!
     @IBOutlet weak var tableView: UITableView!
@@ -73,17 +75,17 @@ class ViewController: UIViewController, ViewControllerDelegate {
     /**
      테이블의 모든 셀의 데이터를 담는다.(사용자가 기입하지 않은 날의 데이터도 들어있음)
     */
-    var taskData: Array<myTask> = [];
+    var taskData: Array<myTask> = []
     
     /**
      0:해당 월의 값이 몇개인지
      1:해당 월
     */
-    var monthSectionArr: Array<(Int, String)> = [];
+    var monthSectionArr: Array<(Int, String)> = []
     
     lazy var refreshControl: UIRefreshControl = {
-        let refreshControl = UIRefreshControl();
-        refreshControl.attributedTitle = NSAttributedString(string: "Load data a month ago");
+        let refreshControl = UIRefreshControl()
+        refreshControl.attributedTitle = NSAttributedString(string: "Load data a month ago")
         refreshControl.addTarget(self, action: #selector(refreshWeatherData(_:)), for: .valueChanged)
         
         return refreshControl
@@ -92,155 +94,80 @@ class ViewController: UIViewController, ViewControllerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         //초기화
-        self.shadowView.isHidden = true;
-        self.tableView.delegate = self;
-        self.tableView.dataSource = self;
+        self.shadowView.isHidden = true
+        self.tableView.delegate = self
+        self.tableView.dataSource = self
         
-        self.tableView.register(UINib(nibName: "TableViewCell", bundle: nil), forCellReuseIdentifier: "TableViewCell");
+        self.tableView.register(UINib(nibName: "TableViewCell", bundle: nil), forCellReuseIdentifier: "TableViewCell")
         
         if #available(iOS 10.0, *) {
             self.tableView.refreshControl = refreshControl
         } else {
-            self.tableView.addSubview(refreshControl);
+            self.tableView.addSubview(refreshControl)
         }
         
         //데이터 초기화 옵져버
         Observable<myWorkspace>.create{ observer in
             SharedData.instance.workSpaceUpdateObserver = observer;
-            return Disposables.create();
+            return Disposables.create()
         }.observeOn(MainScheduler.instance)
         .subscribe{
-            self.titleLabel.title = $0.element?.name;
+            guard let workSpace = $0.element else {
+                return
+            }
+            
+            self.titleLabel.title = workSpace.name
 
-            if  (($0.element?.pivotDate) != nil) {
-                self.initTaskData(pivotDate: $0.element?.pivotDate);
+            if  ((workSpace.pivotDate) != nil) {
+                switch workSpace.dateType! {
+                case .day:
+                    self.initTaskData(pivotDate: $0.element?.pivotDate)
+                case .week:
+                    self.initTaskDataForWeek(pivotDate: $0.element?.pivotDate)
+                case .month:
+                    self.initTaskDataForMonth(pivotDate: $0.element?.pivotDate)
+                }
             } else {
-                self.initTaskData(pivotDate: Date());
+                switch workSpace.dateType! {
+                case .day:
+                    self.initTaskData(pivotDate: Date())
+                case .week:
+                    self.initTaskDataForWeek(pivotDate: Date())
+                case .month:
+                    self.initTaskDataForMonth(pivotDate: Date())
+                }
             }
             
             //클라우드에서 일일데이터를 가져오고 테이블 리로드
-            (UIApplication.shared.delegate as! AppDelegate).getDayTask(startDate: (self.taskData.first?.date)!, endDate: (self.taskData.last?.date)!, workSpaceId: (SharedData.instance.seletedWorkSpace?.id)!);
+            (UIApplication.shared.delegate as! AppDelegate).getDayTask(startDate: (self.taskData.first?.date)!, endDate: (self.taskData.last?.date)!, workSpaceId: (SharedData.instance.seletedWorkSpace?.id)!)
             
-        }.disposed(by: self.disposeBag);
+        }.disposed(by: self.disposeBag)
         
-        SharedData.instance.viewContrllerDelegate = self;
+        SharedData.instance.viewContrllerDelegate = self
         
-        requestAccessToCalendar();
-    }
-    
-    /**
-     테이블 뷰 데이터 초기화
-    */
-    func initTaskData(pivotDate:Date!) -> Void {
-        let dateFormatter = DateFormatter();
-        dateFormatter.setLocalizedDateFormatFromTemplate("yyyy MM");
-        let tempdate:Date = (Calendar.current.date(byAdding: .day, value: MARGIN_TO_PAST_DAY, to: pivotDate))!;
-        var tempMonth:String = dateFormatter.string(from: tempdate);
-        var sectionContainNum:Int = 0;
+//        requestAccessToCalendar()
         
-        let dayKeyFormatter = DateFormatter();
-        dayKeyFormatter.setLocalizedDateFormatFromTemplate("yyMMdd");
-        //과거로부터 현재 미래까지
-        for i in MARGIN_TO_PAST_DAY..<MARGIN_TO_AFTER_DAY{
-            let date:Date = (Calendar.current.date(byAdding: .day, value: i, to: pivotDate))!;
-            
-            //*********dayKey 생성***********
-            let dayKey:String = dayKeyFormatter.string(from: date);
-            //******************************
-            let dayTask:myTask? = SharedData.instance.taskAllDic.object(forKey: dayKey) as? myTask;
-            
-            if (dayTask != nil) {
-                if(i == 0){
-                    self.taskData.append(myTask(dayTask!.id, date, dayTask!.body, dayTask!.title));
-                } else {
-                    self.taskData.append(myTask(dayTask!.id, date, dayTask!.body, dayTask!.title));
-                }
-            } else {
-                if(i == 0){
-                    self.taskData.append(myTask("", date, "", nil));
-                } else {
-                    self.taskData.append(myTask("", date, "", nil));
-                }
-            }
-            
-            //월이 바뀌면 섹션을 추가한다.
-            let month:String = dateFormatter.string(from: date);
-            if(month != tempMonth){
-                self.monthSectionArr.append((sectionContainNum, tempMonth));
-                tempMonth = month;
-                sectionContainNum = 0;
-            }
-            
-            sectionContainNum += 1;
-        }
+        //플로팅 버튼
+//        let floaty = Floaty()
+//        floaty.addItem("Day", icon: nil, handler: { item in
+//            if self.dateType == .day {
+//                floaty.close()
+//                return
+//            }
+//
+//            self.dateType = .day
+//
+//            self.taskData = [];
+//            self.monthSectionArr = [];
+//            SharedData.instance.taskAllDic.removeAllObjects();
+//            SharedData.instance.seletedWorkSpace?.pivotDate = Date();
+//            SharedData.instance.workSpaceUpdateObserver?.onNext(SharedData.instance.seletedWorkSpace!);
+//
+//            floaty.close()
+//        })
         
-        self.monthSectionArr.append((sectionContainNum, tempMonth));
-    }
-    
-    func insertTaskData(pivotDate:Date!, amountOfNumber:Int) -> Void {
-        let dateFormatter = DateFormatter()
-        dateFormatter.setLocalizedDateFormatFromTemplate("yyyy MM")
-        var pivotMonth:String = dateFormatter.string(from: pivotDate)
-        
-        let dayKeyFormatter = DateFormatter()
-        dayKeyFormatter.setLocalizedDateFormatFromTemplate("yyMMdd")
-        //과거로부터 현재 미래까지
-        for i in 1..<amountOfNumber+1{
-            let pastDate:Date = (Calendar.current.date(byAdding: .day, value: -i, to: pivotDate))!
-            //*********dayKey 생성***********
-            let dayKey:String = dayKeyFormatter.string(from: pastDate)
-            //******************************
-            let dayTask:myTask? = SharedData.instance.taskAllDic.object(forKey: dayKey) as? myTask
-            
-            if(dayTask != nil){
-                self.taskData.insert(myTask((dayTask?.id)!, pastDate, (dayTask?.body)!, (dayTask?.title)!), at: 0)
-            } else {
-                self.taskData.insert(myTask("", pastDate, "", nil), at: 0)
-            }
-            
-            //월이 바뀌면 섹션을 추가한다.
-            let pastMonth:String = dateFormatter.string(from: pastDate)
-            if(pivotMonth != pastMonth){
-                self.monthSectionArr.insert((1, pastMonth), at: 0)
-                pivotMonth = pastMonth
-                
-            } else {
-                self.monthSectionArr[0].0 += 1
-            }
-        }
-    }
-    
-    func appendTaskData(pivotDate:Date!, amountOfNumber:Int) -> Void {
-        let dateFormatter = DateFormatter()
-        dateFormatter.setLocalizedDateFormatFromTemplate("yyyy MM")
-        var tempMonth:String = dateFormatter.string(from: pivotDate)
-
-        let dayKeyFormatter = DateFormatter()
-        dayKeyFormatter.setLocalizedDateFormatFromTemplate("yyMMdd")
-        //과거로부터 현재 미래까지
-        for i in 1..<amountOfNumber+1{
-            let date:Date = (Calendar.current.date(byAdding: .day, value: i, to: pivotDate))!
-            //*********dayKey 생성***********
-            let dayKey:String = dayKeyFormatter.string(from: date)
-            //******************************
-            let dayTask:myTask? = SharedData.instance.taskAllDic.object(forKey: dayKey) as? myTask
-            
-            if(dayTask != nil){
-                self.taskData.append(myTask((dayTask?.id)!, date, (dayTask?.body)!, (dayTask?.title)!))
-            } else {
-                self.taskData.append(myTask("", date, "", nil))
-            }
-
-            //월이 바뀌면 섹션을 추가한다.
-            let month:String = dateFormatter.string(from: date)
-            if(month != tempMonth){
-                self.monthSectionArr.append((1, month))
-                tempMonth = month
-                
-            } else {
-                self.monthSectionArr[self.monthSectionArr.count-1].0 += 1
-            }
-        }
+//        self.view.addSubview(floaty)
+//        self.view.bringSubviewToFront(self.shadowView)
     }
 
     /**
@@ -315,7 +242,15 @@ class ViewController: UIViewController, ViewControllerDelegate {
         self.taskData = []
         self.monthSectionArr = []
         
-        initTaskData(pivotDate: Date())
+        switch SharedData.instance.seletedWorkSpace!.dateType! {
+        case .day:
+            initTaskData(pivotDate: Date())
+        case .week:
+            initTaskDataForWeek(pivotDate: Date())
+        case .month:
+            initTaskDataForMonth(pivotDate: Date())
+        }
+        
         self.tableView.reloadData()
         
         //스크롤 맨 위로 올리기
@@ -403,7 +338,15 @@ extension ViewController: UITableViewDelegate {
         if (self.taskData.count > 0 && scrollView.contentOffset.y >= (scrollView.contentSize.height - scrollView.frame.size.height)) { //reach bottom
             (UIApplication.shared.delegate as! AppDelegate).getDayTask(startDate:self.taskData[self.taskData.count-1].date, endDate: self.taskData[self.taskData.count-1].date.addingTimeInterval(86400.0 * 30), workSpaceId: (SharedData.instance.seletedWorkSpace?.id)!)
             
-            appendTaskData(pivotDate: self.taskData[self.taskData.count-1].date, amountOfNumber: 30)
+            switch SharedData.instance.seletedWorkSpace!.dateType! {
+            case .day:
+                appendTaskData(pivotDate: self.taskData[self.taskData.count-1].date, amountOfNumber: MARGIN_TO_AFTER_DAY)
+            case .week:
+                appendTaskDataForWeek(pivotDate: self.taskData[self.taskData.count-1].date, amountOfWeek: MARGIN_TO_AFTER_WEEK)
+            case .month:
+                appendTaskDataForMonth(pivotDate: self.taskData[self.taskData.count-1].date, amountOfNumber: MARGIN_TO_AFTER_MONTH)
+            }
+            
             self.tableView.reloadData();
         }
     }
@@ -411,9 +354,8 @@ extension ViewController: UITableViewDelegate {
 
 // MARK: UITableViewDataSource
 extension ViewController: UITableViewDataSource {
-    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell:TableViewCell! = self.tableView.dequeueReusableCell(withIdentifier: "TableViewCell", for: indexPath) as! TableViewCell
+        let cell:TableViewCell! = (self.tableView.dequeueReusableCell(withIdentifier: "TableViewCell", for: indexPath) as! TableViewCell)
         cell.selectionStyle = .none
         var padding = 0
         
@@ -434,25 +376,48 @@ extension ViewController: UITableViewDataSource {
         let taskDate:String = dateFormatter.string(from: task.date)
         let todayDate:String = dateFormatter.string(from: Date());
         
-        if taskDate == todayDate {  //오늘이라면
-            cell.titleLabel?.text = "\(day) [\(dayOfWeek)] - today!"
-            cell.titleLabel.backgroundColor = UIColor.init(red: 255/255, green: 224/255, blue: 178/255, alpha: 1)
-        } else {
-            let weekDay = Calendar.current.component(Calendar.Component.weekday, from: task.date)
-            if weekDay == 1 {   //일요일이라면
-                cell.titleLabel.backgroundColor = UIColor.init(red: 252/255, green: 228/255, blue: 236/255, alpha: 1)
+        switch SharedData.instance.seletedWorkSpace!.dateType! {
+        case .day:
+            let weekNumber = Calendar.current.component(.weekday, from: task.date)  //첫 주는 1부터 시작
+            if taskDate == todayDate {  //오늘이라면
+                cell.titleLabel?.text = "\(day) [\(dayOfWeek)] - today!"
+                cell.titleLabel.backgroundColor = UIColor.init(red: 255/255, green: 224/255, blue: 178/255, alpha: 1)
             } else {
+                let weekDay = Calendar.current.component(Calendar.Component.weekday, from: task.date)
+                if weekDay == 1 {   //일요일이라면
+                    cell.titleLabel.backgroundColor = UIColor.init(red: 252/255, green: 228/255, blue: 236/255, alpha: 1)
+                } else {
+                    cell.titleLabel.backgroundColor = UIColor.init(red: 227/255, green: 242/255, blue: 253/255, alpha: 1)
+                }
+                
+                cell.titleLabel?.text = "\(day) [\(dayOfWeek)]"
+            }
+        case .week:
+            if taskDate == todayDate {  //오늘이라면
+                cell.titleLabel?.text = "\(weekNumber) Week - today!"
+                cell.titleLabel.backgroundColor = UIColor.init(red: 255/255, green: 224/255, blue: 178/255, alpha: 1)
+            } else {
+                cell.titleLabel?.text = "\(weekNumber) Week"
                 cell.titleLabel.backgroundColor = UIColor.init(red: 227/255, green: 242/255, blue: 253/255, alpha: 1)
             }
-            
-            cell.titleLabel?.text = "\(day) [\(dayOfWeek)]"
+        case .month:
+            if taskDate == todayDate {  //오늘이라면
+                cell.titleLabel?.text = "\(day) [\(dayOfWeek)] - today!"
+                cell.titleLabel.backgroundColor = UIColor.init(red: 255/255, green: 224/255, blue: 178/255, alpha: 1)
+            } else {
+                let weekDay = Calendar.current.component(Calendar.Component.weekday, from: task.date)
+                if weekDay == 1 {   //일요일이라면
+                    cell.titleLabel.backgroundColor = UIColor.init(red: 252/255, green: 228/255, blue: 236/255, alpha: 1)
+                } else {
+                    cell.titleLabel.backgroundColor = UIColor.init(red: 227/255, green: 242/255, blue: 253/255, alpha: 1)
+                }
+                
+                cell.titleLabel?.text = "\(day) [\(dayOfWeek)]"
+            }
         }
         
-        //타이틀 넣기
-        if (task.title != nil && task.title!.count > 0) {
-            cell.titleLabel?.text?.append(" \(task.title!)")
-        }
-
+        
+        
         //캘린더에서 이벤트 가져오기
 //        let store = EKEventStore.init();
 //        let predicate = store.predicateForEvents(withStart: task.date, end: task.date, calendars: nil);
@@ -472,11 +437,18 @@ extension ViewController: UITableViewDataSource {
             padding += self.monthSectionArr[i].0
         }
         
-        if(self.taskData[padding + indexPath.row].body == ""){
-            return 40
+        switch SharedData.instance.seletedWorkSpace!.dateType! {
+        case .day:
+            if(self.taskData[padding + indexPath.row].body == ""){
+                return 40
+            }
+            
+            return 200
+        case .week:
+            return 200
+        case .month:
+            return 300
         }
-        
-        return 200
     }
     
     // MARK: 해더 관련
@@ -501,8 +473,386 @@ extension ViewController: UITableViewDataSource {
         // Fetch Weather Data
         //클라우드에서 일일데이터를 가져오고 테이블 리로드
         (UIApplication.shared.delegate as! AppDelegate).getDayTask(startDate: self.taskData[0].date.addingTimeInterval(-86400.0 * 30), endDate: self.taskData[0].date, workSpaceId: (SharedData.instance.seletedWorkSpace?.id)!)
-        insertTaskData(pivotDate: self.taskData[0].date, amountOfNumber: 30)
+        
+        switch SharedData.instance.seletedWorkSpace!.dateType! {
+        case .day:
+            insertTaskData(pivotDate: self.taskData[0].date, amountOfNumber: MARGIN_TO_AFTER_DAY)
+        case .week:
+            insertTaskDataForWeek(pivotDate: self.taskData[0].date, amountOfWeek: MARGIN_TO_AFTER_WEEK)
+        case .month:
+            insertTaskDataForMonth(pivotDate: self.taskData[0].date, amountOfNumber: MARGIN_TO_AFTER_MONTH)
+        }
+        
         self.tableView.reloadData()
         self.refreshControl.endRefreshing()
+    }
+}
+
+// MARK: Day init
+extension ViewController {
+    /**
+     테이블 뷰 데이터 초기화
+     */
+    func initTaskData(pivotDate:Date!) -> Void {
+        let dateFormatter = DateFormatter();
+        dateFormatter.setLocalizedDateFormatFromTemplate("yyyy MM");
+        let tempdate:Date = (Calendar.current.date(byAdding: .day, value: MARGIN_TO_PAST_DAY, to: pivotDate))!;
+        var tempMonth:String = dateFormatter.string(from: tempdate);
+        var sectionContainNum:Int = 0;
+        
+        let dayKeyFormatter = DateFormatter();
+        dayKeyFormatter.setLocalizedDateFormatFromTemplate("yyMMdd");
+        //과거로부터 현재 미래까지
+        for i in MARGIN_TO_PAST_DAY..<MARGIN_TO_AFTER_DAY {
+            let date:Date = (Calendar.current.date(byAdding: .day, value: i, to: pivotDate))!;
+            
+            //*********dayKey 생성***********
+            let dayKey:String = dayKeyFormatter.string(from: date);
+            //******************************
+            let dayTask:myTask? = SharedData.instance.taskAllDic.object(forKey: dayKey) as? myTask;
+            
+            if dayTask != nil {
+                if(i == 0){
+                    self.taskData.append(myTask(dayTask!.id, date, dayTask!.body));
+                } else {
+                    self.taskData.append(myTask(dayTask!.id, date, dayTask!.body));
+                }
+            } else {
+                if(i == 0){
+                    self.taskData.append(myTask("", date, ""));
+                } else {
+                    self.taskData.append(myTask("", date, ""));
+                }
+            }
+            
+            //월이 바뀌면 섹션을 추가한다.
+            let month:String = dateFormatter.string(from: date);
+            if month != tempMonth {
+                self.monthSectionArr.append((sectionContainNum, tempMonth));
+                tempMonth = month;
+                sectionContainNum = 0;
+            }
+            
+            sectionContainNum += 1;
+        }
+        
+        self.monthSectionArr.append((sectionContainNum, tempMonth));
+    }
+    
+    func insertTaskData(pivotDate:Date!, amountOfNumber:Int) -> Void {
+        let dateFormatter = DateFormatter()
+        dateFormatter.setLocalizedDateFormatFromTemplate("yyyy MM")
+        var pivotMonth:String = dateFormatter.string(from: pivotDate)
+        
+        let dayKeyFormatter = DateFormatter()
+        dayKeyFormatter.setLocalizedDateFormatFromTemplate("yyMMdd")
+        //과거로부터 현재 미래까지
+        for i in 1..<amountOfNumber+1{
+            let pastDate:Date = (Calendar.current.date(byAdding: .day, value: -i, to: pivotDate))!
+            //*********dayKey 생성***********
+            let dayKey:String = dayKeyFormatter.string(from: pastDate)
+            //******************************
+            let dayTask:myTask? = SharedData.instance.taskAllDic.object(forKey: dayKey) as? myTask
+            
+            if(dayTask != nil){
+                self.taskData.insert(myTask((dayTask?.id)!, pastDate, (dayTask?.body)!), at: 0)
+            } else {
+                self.taskData.insert(myTask("", pastDate, ""), at: 0)
+            }
+            
+            //월이 바뀌면 섹션을 추가한다.
+            let pastMonth:String = dateFormatter.string(from: pastDate)
+            if(pivotMonth != pastMonth){
+                self.monthSectionArr.insert((1, pastMonth), at: 0)
+                pivotMonth = pastMonth
+                
+            } else {
+                self.monthSectionArr[0].0 += 1
+            }
+        }
+    }
+    
+    func appendTaskData(pivotDate:Date!, amountOfNumber:Int) -> Void {
+        let dateFormatter = DateFormatter()
+        dateFormatter.setLocalizedDateFormatFromTemplate("yyyy MM")
+        var tempMonth:String = dateFormatter.string(from: pivotDate)
+        
+        let dayKeyFormatter = DateFormatter()
+        dayKeyFormatter.setLocalizedDateFormatFromTemplate("yyMMdd")
+        //과거로부터 현재 미래까지
+        for i in 1..<amountOfNumber+1{
+            let date:Date = (Calendar.current.date(byAdding: .day, value: i, to: pivotDate))!
+            //*********dayKey 생성***********
+            let dayKey:String = dayKeyFormatter.string(from: date)
+            //******************************
+            let dayTask:myTask? = SharedData.instance.taskAllDic.object(forKey: dayKey) as? myTask
+            
+            if(dayTask != nil){
+                self.taskData.append(myTask((dayTask?.id)!, date, (dayTask?.body)!))
+            } else {
+                self.taskData.append(myTask("", date, ""))
+            }
+            
+            //월이 바뀌면 섹션을 추가한다.
+            let month:String = dateFormatter.string(from: date)
+            if(month != tempMonth){
+                self.monthSectionArr.append((1, month))
+                tempMonth = month
+                
+            } else {
+                self.monthSectionArr[self.monthSectionArr.count-1].0 += 1
+            }
+        }
+    }
+}
+
+// MARK: Week init
+extension ViewController {
+    /**
+     테이블 뷰 데이터 초기화
+     */
+    func initTaskDataForWeek(pivotDate:Date!) -> Void {
+        let dateFormatter = DateFormatter()
+        dateFormatter.setLocalizedDateFormatFromTemplate("yyyy MM")
+        
+        var tempMonth:String = dateFormatter.string(from: pivotDate)
+        var sectionContainNum:Int = 0
+        
+        var weekNumber = Calendar.current.component(.weekOfMonth, from: pivotDate)  //첫 주는 1부터 시작
+        
+        let dayKeyFormatter = DateFormatter()
+        dayKeyFormatter.setLocalizedDateFormatFromTemplate("yyMMdd")
+        //과거로부터 현재 미래까지
+        for i in 0..<MARGIN_TO_AFTER_WEEK {
+            let date:Date = (Calendar.current.date(byAdding: .weekOfMonth, value: i, to: pivotDate))!
+            
+            //*********dayKey 생성***********
+            let dayKey:String = dayKeyFormatter.string(from: date)
+            //******************************
+            let dayTask:myTask? = SharedData.instance.taskAllDic.object(forKey: dayKey) as? myTask
+            
+            if dayTask != nil {
+                if(i == 0) {
+                    self.taskData.append(myTask(dayTask!.id, date, dayTask!.body))
+                } else {
+                    self.taskData.append(myTask(dayTask!.id, date, dayTask!.body))
+                }
+            } else {
+                if(i == 0){
+                    self.taskData.append(myTask("", date, ""))
+                } else {
+                    self.taskData.append(myTask("", date, ""))
+                }
+            }
+            
+            //월이 바뀌면 섹션을 추가한다.
+            let tempWeekNumber = Calendar.current.component(.weekOfMonth, from: date)  //첫 주는 1부터 시작
+            if weekNumber > tempWeekNumber {
+                let saturday = Calendar.current.date(from: Calendar.current.dateComponents([.yearForWeekOfYear, .weekOfYear], from: date))!
+                tempMonth = dateFormatter.string(from: saturday)
+                self.monthSectionArr.append((sectionContainNum, tempMonth))
+                sectionContainNum = 0
+            }
+            
+            weekNumber = tempWeekNumber
+            sectionContainNum += 1
+        }
+        
+        self.monthSectionArr.append((sectionContainNum, tempMonth))
+    }
+    
+    func insertTaskDataForWeek(pivotDate:Date!, amountOfWeek:Int) -> Void {
+        let dateFormatter = DateFormatter()
+        dateFormatter.setLocalizedDateFormatFromTemplate("yyyy MM")
+//        let sunday = Calendar.current.date(from: Calendar.current.dateComponents([.yearForWeekOfYear, .weekOfYear], from: pivotDate))!
+        
+        var tempMonth:String = dateFormatter.string(from: pivotDate)
+        
+        var weekNumber = Calendar.current.component(.weekOfMonth, from: pivotDate)
+        
+        let dayKeyFormatter = DateFormatter()
+        dayKeyFormatter.setLocalizedDateFormatFromTemplate("yyMMdd")
+        //과거로부터 현재 미래까지
+        for i in 0..<amountOfWeek {
+            let pastDate:Date = (Calendar.current.date(byAdding: .weekOfMonth, value: -i, to: pivotDate))!
+            //*********dayKey 생성***********
+            let dayKey:String = dayKeyFormatter.string(from: pastDate)
+            //******************************
+            let dayTask:myTask? = SharedData.instance.taskAllDic.object(forKey: dayKey) as? myTask
+            
+            if(dayTask != nil){
+                self.taskData.insert(myTask((dayTask?.id)!, pastDate, (dayTask?.body)!), at: 0)
+            } else {
+                self.taskData.insert(myTask("", pastDate, ""), at: 0)
+            }
+            
+            //월이 바뀌면 섹션을 추가한다.
+            let tempWeekNumber = Calendar.current.component(.weekOfMonth, from: pastDate)  //첫 주는 1부터 시작
+            if weekNumber < tempWeekNumber {
+                tempMonth = dateFormatter.string(from: pastDate)
+                self.monthSectionArr.insert((1, tempMonth), at: 0)
+            } else {
+                self.monthSectionArr[0].0 += 1
+            }
+            
+            weekNumber = tempWeekNumber
+        }
+    }
+    
+    func appendTaskDataForWeek(pivotDate:Date!, amountOfWeek:Int) -> Void {
+        let nextWeek:Date = (Calendar.current.date(byAdding: .weekOfMonth, value: 1, to: pivotDate))!
+        let dateFormatter = DateFormatter()
+        dateFormatter.setLocalizedDateFormatFromTemplate("yyyy MM")
+//        let sunday = Calendar.current.date(from: Calendar.current.dateComponents([.yearForWeekOfYear, .weekOfYear], from: pivotDate))!
+        
+        var tempMonth:String = dateFormatter.string(from: nextWeek)
+        
+        var weekNumber = Calendar.current.component(.weekOfMonth, from: nextWeek)
+        
+        let dayKeyFormatter = DateFormatter()
+        dayKeyFormatter.setLocalizedDateFormatFromTemplate("yyMMdd")
+        //과거로부터 현재 미래까지
+        for i in 0..<amountOfWeek {
+            let date:Date = (Calendar.current.date(byAdding: .weekOfMonth, value: i, to: nextWeek))!
+            //*********dayKey 생성***********
+            let dayKey:String = dayKeyFormatter.string(from: date)
+            //******************************
+            let dayTask:myTask? = SharedData.instance.taskAllDic.object(forKey: dayKey) as? myTask
+            
+            if(dayTask != nil){
+                self.taskData.append(myTask((dayTask?.id)!, date, (dayTask?.body)!))
+            } else {
+                self.taskData.append(myTask("", date, ""))
+            }
+            
+            //월이 바뀌면 섹션을 추가한다.
+            let tempWeekNumber = Calendar.current.component(.weekOfMonth, from: date)  //첫 주는 1부터 시작
+            if weekNumber > tempWeekNumber {
+                tempMonth = dateFormatter.string(from: date)
+                self.monthSectionArr.append((1, tempMonth))
+            } else {
+                self.monthSectionArr[self.monthSectionArr.count-1].0 += 1
+            }
+            
+            weekNumber = tempWeekNumber
+        }
+    }
+}
+
+// MARK: Month init
+extension ViewController {
+    /**
+     테이블 뷰 데이터 초기화
+     */
+    func initTaskDataForMonth(pivotDate:Date!) -> Void {
+        let dateFormatter = DateFormatter();
+        dateFormatter.setLocalizedDateFormatFromTemplate("yyyy MM");
+        let tempdate:Date = (Calendar.current.date(byAdding: .day, value: MARGIN_TO_PAST_DAY, to: pivotDate))!;
+        var tempMonth:String = dateFormatter.string(from: tempdate);
+        var sectionContainNum:Int = 0;
+        
+        let dayKeyFormatter = DateFormatter();
+        dayKeyFormatter.setLocalizedDateFormatFromTemplate("yyMMdd");
+        //과거로부터 현재 미래까지
+        for i in MARGIN_TO_PAST_DAY..<MARGIN_TO_AFTER_DAY {
+            let date:Date = (Calendar.current.date(byAdding: .day, value: i, to: pivotDate))!;
+            
+            //*********dayKey 생성***********
+            let dayKey:String = dayKeyFormatter.string(from: date);
+            //******************************
+            let dayTask:myTask? = SharedData.instance.taskAllDic.object(forKey: dayKey) as? myTask;
+            
+            if dayTask != nil {
+                if(i == 0){
+                    self.taskData.append(myTask(dayTask!.id, date, dayTask!.body));
+                } else {
+                    self.taskData.append(myTask(dayTask!.id, date, dayTask!.body));
+                }
+            } else {
+                if(i == 0){
+                    self.taskData.append(myTask("", date, ""));
+                } else {
+                    self.taskData.append(myTask("", date, ""));
+                }
+            }
+            
+            //월이 바뀌면 섹션을 추가한다.
+            let month:String = dateFormatter.string(from: date);
+            if month != tempMonth {
+                self.monthSectionArr.append((sectionContainNum, tempMonth));
+                tempMonth = month;
+                sectionContainNum = 0;
+            }
+            
+            sectionContainNum += 1;
+        }
+        
+        self.monthSectionArr.append((sectionContainNum, tempMonth));
+    }
+    
+    func insertTaskDataForMonth(pivotDate:Date!, amountOfNumber:Int) -> Void {
+        let dateFormatter = DateFormatter()
+        dateFormatter.setLocalizedDateFormatFromTemplate("yyyy MM")
+        var pivotMonth:String = dateFormatter.string(from: pivotDate)
+        
+        let dayKeyFormatter = DateFormatter()
+        dayKeyFormatter.setLocalizedDateFormatFromTemplate("yyMMdd")
+        //과거로부터 현재 미래까지
+        for i in 1..<amountOfNumber+1{
+            let pastDate:Date = (Calendar.current.date(byAdding: .day, value: -i, to: pivotDate))!
+            //*********dayKey 생성***********
+            let dayKey:String = dayKeyFormatter.string(from: pastDate)
+            //******************************
+            let dayTask:myTask? = SharedData.instance.taskAllDic.object(forKey: dayKey) as? myTask
+            
+            if(dayTask != nil){
+                self.taskData.insert(myTask((dayTask?.id)!, pastDate, (dayTask?.body)!), at: 0)
+            } else {
+                self.taskData.insert(myTask("", pastDate, ""), at: 0)
+            }
+            
+            //월이 바뀌면 섹션을 추가한다.
+            let pastMonth:String = dateFormatter.string(from: pastDate)
+            if(pivotMonth != pastMonth){
+                self.monthSectionArr.insert((1, pastMonth), at: 0)
+                pivotMonth = pastMonth
+                
+            } else {
+                self.monthSectionArr[0].0 += 1
+            }
+        }
+    }
+    
+    func appendTaskDataForMonth(pivotDate:Date!, amountOfNumber:Int) -> Void {
+        let dateFormatter = DateFormatter()
+        dateFormatter.setLocalizedDateFormatFromTemplate("yyyy MM")
+        var tempMonth:String = dateFormatter.string(from: pivotDate)
+        
+        let dayKeyFormatter = DateFormatter()
+        dayKeyFormatter.setLocalizedDateFormatFromTemplate("yyMMdd")
+        //과거로부터 현재 미래까지
+        for i in 1..<amountOfNumber+1{
+            let date:Date = (Calendar.current.date(byAdding: .day, value: i, to: pivotDate))!
+            //*********dayKey 생성***********
+            let dayKey:String = dayKeyFormatter.string(from: date)
+            //******************************
+            let dayTask:myTask? = SharedData.instance.taskAllDic.object(forKey: dayKey) as? myTask
+            
+            if(dayTask != nil){
+                self.taskData.append(myTask((dayTask?.id)!, date, (dayTask?.body)!))
+            } else {
+                self.taskData.append(myTask("", date, ""))
+            }
+            
+            //월이 바뀌면 섹션을 추가한다.
+            let month:String = dateFormatter.string(from: date)
+            if(month != tempMonth){
+                self.monthSectionArr.append((1, month))
+                tempMonth = month
+                
+            } else {
+                self.monthSectionArr[self.monthSectionArr.count-1].0 += 1
+            }
+        }
     }
 }

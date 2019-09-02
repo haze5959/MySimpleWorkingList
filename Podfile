@@ -6,9 +6,10 @@ target 'MyWorkingList' do
   use_frameworks!
 
   # Pods for MyWorkingList
-  pod 'RxSwift',    '~> 4.0'
-  pod 'RxCocoa',    '~> 4.0'
+  pod 'RxSwift'
+  pod 'RxCocoa'
   pod 'FSCalendar'
+  pod 'Floaty'
 
   target 'MyWorkingListTests' do
     inherit! :search_paths

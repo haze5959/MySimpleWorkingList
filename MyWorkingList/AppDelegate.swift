@@ -37,51 +37,55 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //iCloud 권한 체크
         CKContainer.default().accountStatus{ status, error in
             guard status == .available else {
-                self.alertPopUp(bodyStr: "user’s iCloud is not available", alertClassify: .exit);
+                self.alertPopUp(bodyStr: "user’s iCloud is not available", alertClassify: .exit)
                 return
             }
             //The user’s iCloud account is available..
 
-            self.container = CKContainer.default();
-            self.privateDB = self.container.privateCloudDatabase;
+            self.container = CKContainer.default()
+            self.privateDB = self.container.privateCloudDatabase
 
-            let predicate = NSPredicate(value: true);
-            let query = CKQuery(recordType: "workSpace", predicate: predicate);
+            let predicate = NSPredicate(value: true)
+            let query = CKQuery(recordType: "workSpace", predicate: predicate)
 
             self.privateDB.perform(query, inZoneWith: nil) { records, error in
                 guard error == nil else {
-                    print("err: \(String(describing: error))");
+                    print("err: \(String(describing: error))")
                     self.alertPopUp(bodyStr: (error?.localizedDescription)!, alertClassify: .exit)
-                    return;
+                    return
                 }
 
                 if records?.count == 0 {    //최초 실행
-                    self.makeWorkSpace(workSpaceName: "default");
+                    self.makeWorkSpace(workSpaceName: "default", dateType: .day)
 
                 } else {
-                    let sharedData = SharedData.instance;
+                    let sharedData = SharedData.instance
 
-                    var isSameValue = false; //클라우드 데이터에 디바이스 값이 들어있는지 판별
+                    var isSameValue = false //클라우드 데이터에 디바이스 값이 들어있는지 판별
                     for record in records!{
-                        let value:String = record.value(forKey: "name") as! String;
-                        sharedData.workSpaceArr.append(myWorkspace.init(id:record.recordID.recordName, name:record.value(forKey: "name") as! String));
+                        let workSpaceName = record.value(forKey: "name") as! String
+                        let workSpaceDateType = record.value(forKey: "dateType") as! Int
+                        
+                        sharedData.workSpaceArr.append(myWorkspace.init(id: record.recordID.recordName, name: workSpaceName, dateType: DateType(rawValue: workSpaceDateType)!))
 
-                        if value == sharedData.seletedWorkSpace?.name {  //디바이스에 저장된 값과 클라우드에서 가져온 값이 일치한다면
-                            isSameValue = true;
+                        if workSpaceName == sharedData.seletedWorkSpace?.name {  //디바이스에 저장된 값과 클라우드에서 가져온 값이 일치한다면
+                            isSameValue = true
                         }
                     }
 
                     if !isSameValue {
-                        let workSpace = myWorkspace.init(id:(records![0].recordID.recordName) , name:records![0].value(forKey: "name") as! String);
-                        sharedData.seletedWorkSpace = workSpace;
-                        UserDefaults().set(workSpace.id, forKey: "seletedWorkSpaceId");
-                        UserDefaults().set(workSpace.name, forKey: "seletedWorkSpaceName");
+                        let workSpaceDateType = records![0].value(forKey: "dateType") as! Int
+                        let workSpace = myWorkspace.init(id: records![0].recordID.recordName, name: records![0].value(forKey: "name") as! String, dateType: DateType(rawValue: workSpaceDateType)!)
+                        sharedData.seletedWorkSpace = workSpace
+                        UserDefaults().set(workSpace.id, forKey: "seletedWorkSpaceId")
+                        UserDefaults().set(workSpace.name, forKey: "seletedWorkSpaceName")
+                        UserDefaults().set(workSpace.dateType.rawValue, forKey: "seletedWorkSpaceDateType")
                     }
 
                     DispatchQueue.main.async {
-                        pinWheel.hideProgressView();
+                        pinWheel.hideProgressView()
                     }
-                    sharedData.workSpaceUpdateObserver?.onNext(sharedData.seletedWorkSpace!);
+                    sharedData.workSpaceUpdateObserver?.onNext(sharedData.seletedWorkSpace!)
                 }
 
                 //클라우드 변경사항 노티 적용
@@ -105,25 +109,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: ==============================
     // MARK: CloudKit 메서드
     // 워크스페이스 생성
-    func makeWorkSpace(workSpaceName:String) -> Void {
+    func makeWorkSpace(workSpaceName:String, dateType:DateType) -> Void {
         //******클라우드에 새 워크스페이즈 저장******
-        let pinWheel = PinWheelView.shared;
-        pinWheel.showProgressView(self.navigationVC.view);
+        let pinWheel = PinWheelView.shared
+        pinWheel.showProgressView(self.navigationVC.view)
         let record = CKRecord(recordType: "workSpace")
         record.setValue(workSpaceName, forKey: "name")
-        (UIApplication.shared.delegate as! AppDelegate).privateDB.save(record) { savedRecord, error in
-            //해당 데이터를 워크스페이스 보관 배열에 넣는다.
-            let workSpace = myWorkspace.init(id: (savedRecord?.recordID.recordName)!, name: savedRecord?.value(forKey: "name") as! String);
-            UserDefaults().set(workSpace.id, forKey: "seletedWorkSpaceId");
-            UserDefaults().set(workSpace.name, forKey: "seletedWorkSpaceName");
-            SharedData.instance.workSpaceArr.append(workSpace);
-            SharedData.instance.seletedWorkSpace = workSpace;
-            
-            DispatchQueue.main.async {
-                pinWheel.hideProgressView();
+        record.setValue(dateType.rawValue, forKey: "dateType")
+        
+        DispatchQueue.main.async {
+            (UIApplication.shared.delegate as! AppDelegate).privateDB.save(record) { savedRecord, error in
+                //해당 데이터를 워크스페이스 보관 배열에 넣는다.
+                let workSpaceDateType = record.value(forKey: "dateType") as! Int
+                let workSpace = myWorkspace.init(id: (savedRecord?.recordID.recordName)!, name: savedRecord?.value(forKey: "name") as! String, dateType: DateType(rawValue: workSpaceDateType)!)
+                UserDefaults().set(workSpace.id, forKey: "seletedWorkSpaceId");
+                UserDefaults().set(workSpace.name, forKey: "seletedWorkSpaceName");
+                UserDefaults().set(workSpace.dateType.rawValue, forKey: "seletedWorkSpaceDateType");
+                SharedData.instance.workSpaceArr.append(workSpace);
+                SharedData.instance.seletedWorkSpace = workSpace;
+                
+                DispatchQueue.main.async {
+                    pinWheel.hideProgressView();
+                }
+                
+                SharedData.instance.workSpaceUpdateObserver?.onNext(workSpace);
             }
-            
-            SharedData.instance.workSpaceUpdateObserver?.onNext(workSpace);
         }
         //***********************************
     }
@@ -178,11 +188,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
             for record in records!{
                 let body:String = record.value(forKey: "body") as! String
-                let title:String = record.value(forKey: "title") as? String ?? ""
-                
                 let date:Date = record.value(forKey: "date") as! Date
                 
-                let task:myTask = myTask.init(record.recordID.recordName, date, body, title)
+                let task:myTask = myTask.init(record.recordID.recordName, date, body)
                 let dayKey:String = dateFormatter.string(from: task.date)
                 
                 SharedData.instance.taskAllDic.setValue(task, forKey: dayKey)
@@ -197,7 +205,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     // 테스크 생성
-    func makeDayTask(workSpaceId:String, taskDate:Date, taskBody:String, taskTitle:String?, indexPath:IndexPath) -> Void {
+    func makeDayTask(workSpaceId:String, taskDate:Date, taskBody:String, indexPath:IndexPath) -> Void {
         //*********클라우드에 새 테스크 저장*********
         let pinWheel = PinWheelView.shared
         pinWheel.showProgressView(self.navigationVC.view);
@@ -205,10 +213,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         record.setValue(workSpaceId, forKey: "workSpaceId");
         record.setValue(taskDate, forKey: "date");
         record.setValue(taskBody, forKey: "body");
-        record.setValue(taskTitle, forKey: "title");
         (UIApplication.shared.delegate as! AppDelegate).privateDB.save(record) { savedRecord, error in
             //해당 데이터를 워크스페이스 보관 배열에 넣는다.
-            let task = myTask.init((savedRecord?.recordID.recordName)!, savedRecord?.value(forKey: "date") as! Date, savedRecord?.value(forKey: "body") as! String, savedRecord?.value(forKey: "title") as? String);
+            let task = myTask.init((savedRecord?.recordID.recordName)!, savedRecord?.value(forKey: "date") as! Date, savedRecord?.value(forKey: "body") as! String);
             
             let dateFormatter = DateFormatter();
             dateFormatter.setLocalizedDateFormatFromTemplate("yyMMdd");
@@ -220,7 +227,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 pinWheel.hideProgressView();
             }
             
-            SharedData.instance.viewContrllerDelegate.reloadTableWithUpdateCell(indexPath: indexPath, title: taskTitle!, body: taskBody)
+            SharedData.instance.viewContrllerDelegate.reloadTableWithUpdateCell(indexPath: indexPath, body: taskBody)
         }
         //***********************************
     }
@@ -235,18 +242,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             if error != nil {
                 return
             }
-            
-            if task.title != nil {
-                updatedRecord?.setObject(task.title! as CKRecordValue, forKey: "title");
-            }
         
             updatedRecord?.setObject(task.body as CKRecordValue, forKey: "body");
-            (UIApplication.shared.delegate as! AppDelegate).privateDB.save(updatedRecord!) { savedRecord, error in
-                DispatchQueue.main.async {
-                    pinWheel.hideProgressView();
+            
+            DispatchQueue.main.async {
+                (UIApplication.shared.delegate as! AppDelegate).privateDB.save(updatedRecord!) { savedRecord, error in
+                    DispatchQueue.main.async {
+                        pinWheel.hideProgressView();
+                    }
+                    
+                    SharedData.instance.viewContrllerDelegate.reloadTableWithUpdateCell(indexPath: indexPath, body: task.body);
                 }
-                
-                SharedData.instance.viewContrllerDelegate.reloadTableWithUpdateCell(indexPath: indexPath, title: task.title!, body: task.body);
             }
         }
         //***********************************
@@ -373,8 +379,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         print("[AppDelegate] remote notification call!!")
         
         let notification = CKNotification(fromRemoteNotificationDictionary: userInfo)
-        if (notification.subscriptionID == "cloudkit-recordType-changes") {
-            print("[CLOUD UPDATE] notification - \(notification)")
+        if (notification?.subscriptionID == "cloudkit-recordType-changes") {
+            print("[CLOUD UPDATE] notification - \(String(describing: notification))")
             SharedData.instance.workSpaceUpdateObserver?.onNext(SharedData.instance.seletedWorkSpace!) //일정 업데이트
         }
         completionHandler(UIBackgroundFetchResult.noData)
