@@ -149,10 +149,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 return
             }
             
-            updatedRecord?.setObject(newName as CKRecordValue, forKey: "name");
-            (UIApplication.shared.delegate as! AppDelegate).privateDB.save(updatedRecord!) { savedRecord, error in
-                DispatchQueue.main.async {
-                    pinWheel.hideProgressView();
+            updatedRecord?.setObject(newName as CKRecordValue, forKey: "name")
+            DispatchQueue.main.async {
+                (UIApplication.shared.delegate as! AppDelegate).privateDB.save(updatedRecord!) { savedRecord, error in
+                    DispatchQueue.main.async {
+                        pinWheel.hideProgressView();
+                    }
                 }
             }
         }

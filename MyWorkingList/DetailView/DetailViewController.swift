@@ -24,12 +24,37 @@ class DetailViewController: UIViewController, UITextViewDelegate {
         self.textView.delegate = self
         
         let dayKeyFormatter = DateFormatter()
-        dayKeyFormatter.setLocalizedDateFormatFromTemplate("EEEE")
-        let dateEEE:String = dayKeyFormatter.string(from: (self.dayTask?.date)!)
-        let dateShort:String = DateFormatter.localizedString(from: (self.dayTask?.date)!, dateStyle: .short, timeStyle: .none)
-        let day:String  = "\(dateShort) \(dateEEE)"
-
-        self.titleLabel.title = day
+        
+        guard let dateType = SharedData.instance.seletedWorkSpace?.dateType else {
+            print("dateType is nil")
+            return
+        }
+        
+        switch dateType {
+        case .day:
+            dayKeyFormatter.setLocalizedDateFormatFromTemplate("EEEE")
+            let dateEEE:String = dayKeyFormatter.string(from: (self.dayTask?.date)!)
+            let dateShort:String = DateFormatter.localizedString(from: (self.dayTask?.date)!, dateStyle: .short, timeStyle: .none)
+            let day:String  = "\(dateShort) \(dateEEE)"
+            
+            self.titleLabel.title = day
+        case .week:
+            let weekNumber = Calendar.current.component(.weekOfMonth, from: (self.dayTask?.date)!)  //첫 주는 1부터 시작
+            dayKeyFormatter.setLocalizedDateFormatFromTemplate("MM/dd")
+            let sunday = Calendar.current.date(from: Calendar.current.dateComponents([.yearForWeekOfYear, .weekOfYear], from: (self.dayTask?.date)!))!   
+            let sundayStr:String = dayKeyFormatter.string(from: sunday)
+            let saturday = Calendar.current.date(byAdding: .day, value: 6, to: sunday)
+            let saturdayStr:String = dayKeyFormatter.string(from: saturday!)
+            let week:String  = "\(weekNumber) Week(\(sundayStr)~\(saturdayStr))"
+            
+            self.titleLabel.title = week
+        case .month:
+            dayKeyFormatter.setLocalizedDateFormatFromTemplate("MM")
+            let month:String  = dayKeyFormatter.string(from: (self.dayTask?.date)!)
+            
+            self.titleLabel.title = month
+        }
+        
         self.textView.text = self.dayTask?.body
         self.textView.becomeFirstResponder()   //포커스 잡기
         

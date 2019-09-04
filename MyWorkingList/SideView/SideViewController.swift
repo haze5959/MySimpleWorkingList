@@ -55,6 +55,9 @@ class SideViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
 //                print("Your name: \(name!)");
                 let parentVC = self.parent as! ViewController
                 parentVC.shadowView.isHidden = true
+                parentVC.taskData = []
+                parentVC.monthSectionArr = []
+                SharedData.instance.taskAllDic.removeAllObjects()
                 
                 //******클라우드에 새 워크스페이즈 저장******
                 (UIApplication.shared.delegate as! AppDelegate).makeWorkSpace(workSpaceName:  name!, dateType: self.pickedDateType)
@@ -117,10 +120,21 @@ extension SideViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: UITableViewCell = UITableViewCell(style: UITableViewCell.CellStyle.subtitle, reuseIdentifier: "Cell")
+        
+        var dateType = ""
+        switch SharedData.instance.workSpaceArr[indexPath.row].dateType! {
+        case .day:
+            dateType = "Daily"
+        case .week:
+            dateType = "Weekly"
+        case .month:
+            dateType = "Monthly"
+        }
+        
         if(SharedData.instance.workSpaceArr[indexPath.row].name == SharedData.instance.seletedWorkSpace?.name){
-            cell.textLabel?.text = SharedData.instance.workSpaceArr[indexPath.row].name + " - Seleted!"
+            cell.textLabel?.text = SharedData.instance.workSpaceArr[indexPath.row].name + " [\(dateType)]" + " - Seleted!"
         } else {
-            cell.textLabel?.text = SharedData.instance.workSpaceArr[indexPath.row].name
+            cell.textLabel?.text = SharedData.instance.workSpaceArr[indexPath.row].name + " [\(dateType)]"
         }
         
         return cell;
