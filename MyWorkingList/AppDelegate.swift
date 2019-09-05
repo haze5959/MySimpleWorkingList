@@ -8,6 +8,8 @@
 
 import UIKit
 import CloudKit
+import StoreKit
+import Dialog
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,20 +18,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var navigationVC: UINavigationController!
     var container: CKContainer!
     var privateDB: CKDatabase!
+    var reviewTimer: Timer?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         //스플레시 뷰 TODO: 스플레시 띄우기
-        self.window = UIWindow(frame: UIScreen.main.bounds);
-        self.navigationVC = UINavigationController();
-        self.navigationVC.navigationBar.isHidden = true;
-        let storyBoard = UIStoryboard (name: "Main", bundle: Bundle.main);
-        let viewController:UIViewController! = storyBoard.instantiateInitialViewController();
-        self.navigationVC.viewControllers = [viewController];
-        self.window!.rootViewController = self.navigationVC;
-        self.window?.makeKeyAndVisible();
+        self.window = UIWindow(frame: UIScreen.main.bounds)
+        self.navigationVC = UINavigationController()
+        self.navigationVC.navigationBar.isHidden = true
+        let storyBoard = UIStoryboard (name: "Main", bundle: Bundle.main)
+        let viewController:UIViewController! = storyBoard.instantiateInitialViewController()
+        self.navigationVC.viewControllers = [viewController]
+        self.window!.rootViewController = self.navigationVC
+        self.window?.makeKeyAndVisible()
         
-        let pinWheel = PinWheelView.shared;
-        pinWheel.showProgressView(viewController.view);
+        let pinWheel = PinWheelView.shared
+        pinWheel.showProgressView(viewController.view)
 
         // Register for notifications
         application.registerForRemoteNotifications()
@@ -90,6 +93,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
                 //클라우드 변경사항 노티 적용
                 self.saveSubscription()
+                
+                self.showReviewTimer(second: 180)
+                
+                if !PremiumProducts.store.isProductPurchased(PremiumProducts.premiumVersion) {
+                    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 10) {
+                        self.showPhurcaseDialog()
+                    }
+                }
             }
         }
         
@@ -386,6 +397,73 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             SharedData.instance.workSpaceUpdateObserver?.onNext(SharedData.instance.seletedWorkSpace!) //일정 업데이트
         }
         completionHandler(UIBackgroundFetchResult.noData)
+    }
+    
+    // MARK: - Review
+    func showReviewTimer(second:Int) {
+        DispatchQueue.main.async {
+            if PremiumProducts.store.isProductPurchased(PremiumProducts.premiumVersion) {
+                if !UserDefaults().bool(forKey: "sawReview") {
+                    self.reviewTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval(second), repeats: true, block: { timer in
+                        self.reviewTimer?.invalidate()
+                        self.reviewTimer = nil
+                        SKStoreReviewController.requestReview()   //리뷰 평점 작성 메서드
+                        UserDefaults().set(true, forKey: "sawReview")
+                    })
+                }
+            } else {
+                self.reviewTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval(second), repeats: true, block: { timer in
+                    self.showPhurcaseDialog()
+                })
+            }
+        }
+    }
+    
+    func showPhurcaseDialog() {
+        if IAPHelper.canMakePayments() {
+            let loadingDialog = Dialog.loading(title: "Please wait...", message: "", image: nil)
+            loadingDialog.show(in: self.navigationVC)
+            
+            PremiumProducts.store.requestProducts { (success, products) in
+                loadingDialog.dismiss(animated: true, completion: {
+                    if success, let product = products?.first {
+                        DispatchQueue.main.async {
+                            let d = Dialog.alert(title: product.localizedTitle, message: product.localizedDescription, image: #imageLiteral(resourceName: "Premium"))
+                            
+                            let numberFormatter = NumberFormatter()
+                            let locale = product.priceLocale
+                            numberFormatter.numberStyle = .currency
+                            numberFormatter.locale = locale
+                            d.addAction(title: numberFormatter.string(from: product.price)!, handler: { (dialog) -> (Void) in
+                                PremiumProducts.store.buyProduct(product)
+                                dialog.dismiss()
+                                NotificationCenter.default.addObserver(self, selector: #selector(self.buyComplete),
+                                                                       name: .IAPHelperPurchaseNotification,
+                                                                       object: nil)
+                            })
+                            
+                            d.show(in: self.navigationVC)
+                        }
+                    } else {
+                        print("showPhurcaseDialog 실패!!!")
+                    }
+                })
+            }
+        } else {
+            let d = Dialog.alert(title: "Info", message: "Payment unavailable.")
+            d.addAction(title: "Done", handler: { (dialog) -> (Void) in
+                dialog.dismiss()
+            })
+            d.show(in: self.navigationVC)
+        }
+    }
+    
+    @objc func buyComplete() {
+        let d = Dialog.alert(title: "Info", message: "Purchase completed!", image: #imageLiteral(resourceName: "Premium"))
+        d.addAction(title: "Confirm", handler: { (dialog) -> (Void) in
+            dialog.dismiss()
+        })
+        d.show(in: self.navigationVC)
     }
 }
 

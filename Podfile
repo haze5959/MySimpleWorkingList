@@ -9,7 +9,7 @@ target 'MyWorkingList' do
   pod 'RxSwift'
   pod 'RxCocoa'
   pod 'FSCalendar'
-  pod 'Floaty'
+  pod 'Dialog'
 
   target 'MyWorkingListTests' do
     inherit! :search_paths

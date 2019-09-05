@@ -1,5 +1,5 @@
 PODS:
-  - Floaty (4.2.0)
+  - Dialog (1.0.0)
   - FSCalendar (2.8.0)
   - RxCocoa (5.0.0):
     - RxRelay (~> 5)
@@ -9,26 +9,26 @@ PODS:
   - RxSwift (5.0.0)
 
 DEPENDENCIES:
-  - Floaty
+  - Dialog
   - FSCalendar
   - RxCocoa
   - RxSwift
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
-    - Floaty
+    - Dialog
     - FSCalendar
     - RxCocoa
     - RxRelay
     - RxSwift
 
 SPEC CHECKSUMS:
-  Floaty: e2bd5a0f6f7f70899e26ff2da31081c8bee8d1b0
+  Dialog: 1d126a78ff004cf0384f7faf24e97f5426c2d2d1
   FSCalendar: 3a5ed3636e2ba1b83ebebfcf0c2603105a6f5efe
   RxCocoa: fcf32050ac00d801f34a7f71d5e8e7f23026dcd8
   RxRelay: 4f7409406a51a55cd88483f21ed898c234d60f18
   RxSwift: 8b0671caa829a763bbce7271095859121cbd895f
 
-PODFILE CHECKSUM: b2e81ca898fb234028c0822465d32c8827ad5f01
+PODFILE CHECKSUM: 011ab550f4f67411938aa22b41e282941d7e3c32
 
 COCOAPODS: 1.7.2

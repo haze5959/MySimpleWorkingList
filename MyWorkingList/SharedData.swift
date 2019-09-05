@@ -12,6 +12,8 @@ import RxSwift
 class SharedData: NSObject {
     static let instance: SharedData = SharedData();
     
+    var isPremeumUser = true
+    
     var seletedWorkSpace:myWorkspace?;
     var workSpaceArr:Array<myWorkspace> = [];
     var taskAllDic:NSMutableDictionary = [:];

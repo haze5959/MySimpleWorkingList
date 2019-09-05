@@ -12,7 +12,7 @@ import RxSwift
 import RxCocoa
 import EventKit
 import FSCalendar
-import Floaty
+import Dialog
 
 public protocol ViewControllerDelegate {
     /**
@@ -46,7 +46,6 @@ class ViewController: UIViewController, ViewControllerDelegate {
         let dayKeyFormatter = DateFormatter()
         dayKeyFormatter.setLocalizedDateFormatFromTemplate("yyMMdd")
         
-//        self.taskData.append(myTask(dayTask!.id, date, dayTask!.body, .unknown))
         for (index, element) in self.taskData.enumerated() {
             //*********dayKey 생성***********
             let dayKey:String = dayKeyFormatter.string(from: element.date)
@@ -67,7 +66,7 @@ class ViewController: UIViewController, ViewControllerDelegate {
     let MARGIN_TO_PAST_DAY = -1
     let MARGIN_TO_AFTER_DAY = 30
     let MARGIN_TO_AFTER_WEEK = 10
-    let MARGIN_TO_AFTER_MONTH = 6
+    let MARGIN_TO_AFTER_MONTH = 8
 
     @IBOutlet weak var titleLabel: UINavigationItem!
     @IBOutlet weak var tableView: UITableView!
@@ -146,28 +145,6 @@ class ViewController: UIViewController, ViewControllerDelegate {
         SharedData.instance.viewContrllerDelegate = self
         
 //        requestAccessToCalendar()
-        
-        //플로팅 버튼
-//        let floaty = Floaty()
-//        floaty.addItem("Day", icon: nil, handler: { item in
-//            if self.dateType == .day {
-//                floaty.close()
-//                return
-//            }
-//
-//            self.dateType = .day
-//
-//            self.taskData = [];
-//            self.monthSectionArr = [];
-//            SharedData.instance.taskAllDic.removeAllObjects();
-//            SharedData.instance.seletedWorkSpace?.pivotDate = Date();
-//            SharedData.instance.workSpaceUpdateObserver?.onNext(SharedData.instance.seletedWorkSpace!);
-//
-//            floaty.close()
-//        })
-        
-//        self.view.addSubview(floaty)
-//        self.view.bringSubviewToFront(self.shadowView)
     }
 
     /**
@@ -196,22 +173,6 @@ class ViewController: UIViewController, ViewControllerDelegate {
             self.shadowView.backgroundColor = UIColor.init(red: 0, green: 0, blue: 0, alpha: 0.5)
             sideVC.view.frame.origin.x = 0
         })
-    }
-    
-    /**
-     리프레시 버튼
-     */
-    @IBAction func pressRefreshBtn(_ sender: Any) {
-        //데이터 초기화
-//        self.taskData = [];
-//        self.monthSectionArr = [];
-        SharedData.instance.workSpaceUpdateObserver?.onNext(SharedData.instance.seletedWorkSpace!)
-//        initTaskData(pivotDate: Date());
-//        self.tableView.reloadData();
-        
-        //스크롤 맨 위로 올리기
-//        let indexPath = IndexPath(row: 0, section: 0);
-//        self.tableView.scrollToRow(at: indexPath, at: .top, animated: true);
     }
     
     /**
@@ -369,10 +330,11 @@ extension ViewController: UITableViewDataSource {
         let task:myTask = self.taskData[padding + indexPath.row]
 
         //요일/일자 뽑아내기
+        let dateCompareFormatter = DateFormatter()
+        dateCompareFormatter.setLocalizedDateFormatFromTemplate("MM/dd/yyyy")
+        let taskDate:String = dateCompareFormatter.string(from: task.date)
+        
         let dateFormatter = DateFormatter()
-        dateFormatter.setLocalizedDateFormatFromTemplate("MM/dd/yyyy")
-        let taskDate:String = dateFormatter.string(from: task.date)
-        let todayDate:String = dateFormatter.string(from: Date());
         
         switch SharedData.instance.seletedWorkSpace!.dateType! {
         case .day:
@@ -380,6 +342,8 @@ extension ViewController: UITableViewDataSource {
             let dayOfWeek:String = dateFormatter.string(from: task.date)
             dateFormatter.setLocalizedDateFormatFromTemplate("dd")
             let day:String = dateFormatter.string(from: task.date)
+            
+            let todayDate:String = dateCompareFormatter.string(from: Date());
             
             if taskDate == todayDate {  //오늘이라면
                 cell.titleLabel?.text = "\(day) [\(dayOfWeek)] - today!"
@@ -402,6 +366,9 @@ extension ViewController: UITableViewDataSource {
             let saturday = Calendar.current.date(byAdding: .day, value: 6, to: sunday)
             let saturdayStr:String = dateFormatter.string(from: saturday!)
             
+            let weekPivot = Calendar.current.date(from: Calendar.current.dateComponents([.yearForWeekOfYear, .weekOfYear], from: Date()))!   //일요일로 변경
+            let todayDate:String = dateCompareFormatter.string(from: weekPivot)
+            
             if taskDate == todayDate {  //오늘이라면
                 cell.titleLabel?.text = "\(weekNumber) Week(\(sundayStr)~\(saturdayStr)) - today!"
                 cell.titleLabel.backgroundColor = UIColor.init(red: 255/255, green: 224/255, blue: 178/255, alpha: 1)
@@ -412,6 +379,9 @@ extension ViewController: UITableViewDataSource {
         case .month:
             dateFormatter.setLocalizedDateFormatFromTemplate("MM")
             let monthStr:String = dateFormatter.string(from: task.date)
+            
+            let monthPivot = Calendar.current.date(from: Calendar.current.dateComponents([.year, .month], from: Date()))!   //해당 달의 첫째날로 변경
+            let todayDate:String = dateCompareFormatter.string(from: monthPivot)
             
             if taskDate == todayDate {  //오늘이라면
                 cell.titleLabel?.text = "\(monthStr) - today!"

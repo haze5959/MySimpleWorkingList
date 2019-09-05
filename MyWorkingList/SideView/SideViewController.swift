@@ -8,21 +8,28 @@
 
 import UIKit
 import CloudKit
-import StoreKit
+import Dialog
 
 class SideViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
 
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var buyPremiumBtn: UIBarButtonItem!
     
     var pickedDateType:DateType = .day
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.resetDonationBtn()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(self.resetDonationBtn),
+                                               name: .IAPHelperPurchaseNotification,
+                                               object: nil)
     }
     
     @IBAction func pressDonationBtn(_ sender: Any) {
         print("[SideVC] press Preminum Btn!")
-//        SKStoreReviewController.requestReview()   //리뷰 평점 작성 메서드
+        (UIApplication.shared.delegate as! AppDelegate).showPhurcaseDialog()
     }
     
     @IBAction func pressEditBtn(_ sender: Any) {
@@ -36,7 +43,7 @@ class SideViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         
         alert.addTextField(configurationHandler: { textField in
-            textField.placeholder = "input your new workspace name..."
+            textField.placeholder = "Input your new workspace name..."
         })
         
         let contentVC = UIViewController()
@@ -89,7 +96,12 @@ class SideViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
         }
     }
     
-    
+    @objc func resetDonationBtn() {
+        if PremiumProducts.store.isProductPurchased(PremiumProducts.premiumVersion) {
+            self.buyPremiumBtn.title = "Premium"
+            self.buyPremiumBtn.isEnabled = false
+        }
+    }
 }
 
 // MARK: UITableViewDelegate
@@ -183,7 +195,7 @@ extension SideViewController: UITableViewDataSource {
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
             
             alert.addTextField(configurationHandler: { textField in
-                textField.placeholder = "input your new workspace name..."
+                textField.placeholder = "Input your new workspace name..."
                 textField.text = SharedData.instance.workSpaceArr[editActionsForRowAt.row].name
             })
             
