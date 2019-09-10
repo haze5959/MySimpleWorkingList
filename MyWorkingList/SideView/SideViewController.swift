@@ -107,14 +107,10 @@ class SideViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
 // MARK: UITableViewDelegate
 extension SideViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //데이터 초기화
-        let parentVC = self.parent as! ViewController
-        parentVC.taskData = []
-        parentVC.monthSectionArr = []
-        
         //기존이랑 똑같은 워크스페이스를 선택하지 않았다면
         if(SharedData.instance.workSpaceArr[indexPath.row].name != SharedData.instance.seletedWorkSpace?.name){
-            SharedData.instance.taskAllDic.removeAllObjects()
+            let parentVC = self.parent as! ViewController
+            
             SharedData.instance.seletedWorkSpace = SharedData.instance.workSpaceArr[indexPath.row]
             SharedData.instance.workSpaceUpdateObserver?.onNext(SharedData.instance.seletedWorkSpace!)
             UserDefaults().set(SharedData.instance.seletedWorkSpace?.id, forKey: "seletedWorkSpaceId")
@@ -207,12 +203,6 @@ extension SideViewController: UITableViewDataSource {
                     //***********************************
                     SharedData.instance.workSpaceArr[editActionsForRowAt.row] = myWorkspace(id: SharedData.instance.workSpaceArr[editActionsForRowAt.row].id, name: name!, dateType: SharedData.instance.workSpaceArr[editActionsForRowAt.row].dateType)
                     self.tableView.reloadData()
-    
-                    //데이터 초기화
-                    let parentVC = self.parent as! ViewController
-                    parentVC.taskData = []
-                    parentVC.monthSectionArr = []
-                    SharedData.instance.taskAllDic.removeAllObjects()
                     
                     UserDefaults().set(SharedData.instance.seletedWorkSpace?.id, forKey: "seletedWorkSpaceId")
                     UserDefaults().set(SharedData.instance.seletedWorkSpace?.name, forKey: "seletedWorkSpaceName")
@@ -245,10 +235,6 @@ extension SideViewController: UITableViewDataSource {
             if(SharedData.instance.workSpaceArr[editActionsForRowAt.row].name == SharedData.instance.seletedWorkSpace?.name){
                 //데이터 초기화
                 let parentVC = self.parent as! ViewController
-                parentVC.taskData = []
-                parentVC.monthSectionArr = []
-                
-                SharedData.instance.taskAllDic.removeAllObjects()
                 SharedData.instance.seletedWorkSpace = SharedData.instance.workSpaceArr[0]
                 SharedData.instance.workSpaceUpdateObserver?.onNext(SharedData.instance.seletedWorkSpace!)
                 UserDefaults().set(SharedData.instance.seletedWorkSpace?.id, forKey: "seletedWorkSpaceId")

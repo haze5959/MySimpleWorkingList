@@ -55,10 +55,6 @@ class CalendarViewController: UIViewController, FSCalendarDataSource, FSCalendar
         if monthPosition == .previous || monthPosition == .next {
             calendar.setCurrentPage(date, animated: true)
         } else {
-            let parentVC = self.parent as! ViewController;
-            parentVC.taskData = [];
-            parentVC.monthSectionArr = [];
-            SharedData.instance.taskAllDic.removeAllObjects();
             SharedData.instance.seletedWorkSpace?.pivotDate = date;
             SharedData.instance.workSpaceUpdateObserver?.onNext(SharedData.instance.seletedWorkSpace!);
             self.view.removeFromSuperview();
