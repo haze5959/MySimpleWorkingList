@@ -14,6 +14,12 @@ import EventKit
 import FSCalendar
 import Dialog
 
+public enum reloadState {
+    case none
+    case append
+    case insert
+}
+
 public protocol ViewControllerDelegate {
     /**
      하나의 셀 업데이트
@@ -23,7 +29,8 @@ public protocol ViewControllerDelegate {
     /**
      모든 셀 업데이트
     */
-    func reloadTableAll() -> Void
+    
+    func reloadTableAll(reloadState:reloadState) -> Void
 }
 
 class ViewController: UIViewController, ViewControllerDelegate {
@@ -42,7 +49,7 @@ class ViewController: UIViewController, ViewControllerDelegate {
         }
     }
     
-    func reloadTableAll() {
+    func reloadTableAll(reloadState:reloadState) {
         let dayKeyFormatter = DateFormatter()
         dayKeyFormatter.setLocalizedDateFormatFromTemplate("yyMMdd")
         
@@ -57,6 +64,29 @@ class ViewController: UIViewController, ViewControllerDelegate {
             }
         }
         
+        switch reloadState {
+        case .append:
+            switch SharedData.instance.seletedWorkSpace!.dateType! {
+            case .day:
+                appendTaskData(pivotDate: self.taskData[self.taskData.count-1].date, amountOfNumber: MARGIN_TO_AFTER_DAY)
+            case .week:
+                appendTaskDataForWeek(pivotDate: self.taskData[self.taskData.count-1].date, amountOfWeek: MARGIN_TO_AFTER_WEEK)
+            case .month:
+                appendTaskDataForMonth(pivotDate: self.taskData[self.taskData.count-1].date, amountOfNumber: MARGIN_TO_AFTER_MONTH)
+            }
+        case .insert:
+            switch SharedData.instance.seletedWorkSpace!.dateType! {
+            case .day:
+                insertTaskData(pivotDate: self.taskData[0].date, amountOfNumber: MARGIN_TO_AFTER_DAY)
+            case .week:
+                insertTaskDataForWeek(pivotDate: self.taskData[0].date, amountOfWeek: MARGIN_TO_AFTER_WEEK)
+            case .month:
+                insertTaskDataForMonth(pivotDate: self.taskData[0].date, amountOfNumber: MARGIN_TO_AFTER_MONTH)
+            }
+        default:
+            break
+        }
+        
         DispatchQueue.main.async {
             self.tableView.reloadData()
         }
@@ -65,8 +95,8 @@ class ViewController: UIViewController, ViewControllerDelegate {
     let disposeBag = DisposeBag()
     let MARGIN_TO_PAST_DAY = -1
     let MARGIN_TO_AFTER_DAY = 30
-    let MARGIN_TO_AFTER_WEEK = 8
-    let MARGIN_TO_AFTER_MONTH = 4
+    let MARGIN_TO_AFTER_WEEK = 20
+    let MARGIN_TO_AFTER_MONTH = 12
 
     @IBOutlet weak var titleLabel: UINavigationItem!
     @IBOutlet weak var tableView: UITableView!
@@ -84,11 +114,13 @@ class ViewController: UIViewController, ViewControllerDelegate {
     
     lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
-        refreshControl.attributedTitle = NSAttributedString(string: "Load data a month ago")
+        refreshControl.attributedTitle = NSAttributedString(string: "Load Data...")
         refreshControl.addTarget(self, action: #selector(refreshWeatherData(_:)), for: .valueChanged)
         
         return refreshControl
     }()
+    
+    let appendTaskSubject = PublishSubject<Void>()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -142,12 +174,26 @@ class ViewController: UIViewController, ViewControllerDelegate {
             }
             
             //클라우드에서 일일데이터를 가져오고 테이블 리로드
-            (UIApplication.shared.delegate as! AppDelegate).getDayTask(startDate: (self.taskData.first?.date)!, endDate: (self.taskData.last?.date)!, workSpaceId: (SharedData.instance.seletedWorkSpace?.id)!)
+            (UIApplication.shared.delegate as! AppDelegate).getDayTask(startDate: (self.taskData.first?.date)!, endDate: (self.taskData.last?.date)!, workSpaceId: (SharedData.instance.seletedWorkSpace?.id)!, reloadState: .none)
             
         }.disposed(by: self.disposeBag)
         
         SharedData.instance.viewContrllerDelegate = self
         
+        self.appendTaskSubject
+            .throttle(RxTimeInterval.seconds(3), scheduler: MainScheduler.instance)
+            .subscribe(onNext: { () in
+                switch SharedData.instance.seletedWorkSpace!.dateType! {
+                case .day:
+                    (UIApplication.shared.delegate as! AppDelegate).getDayTask(startDate:self.taskData[self.taskData.count-1].date, endDate: self.taskData[self.taskData.count-1].date.addingTimeInterval(86400.0 * Double(self.MARGIN_TO_AFTER_DAY)), workSpaceId: (SharedData.instance.seletedWorkSpace?.id)!, reloadState: .append)
+                case .week:
+                    let startDate = (Calendar.current.date(byAdding: .weekOfMonth, value: self.MARGIN_TO_AFTER_WEEK, to: self.taskData[self.taskData.count-1].date))!
+                    (UIApplication.shared.delegate as! AppDelegate).getDayTask(startDate: startDate, endDate: self.taskData[self.taskData.count-1].date, workSpaceId: (SharedData.instance.seletedWorkSpace?.id)!, reloadState: .append)
+                case .month:
+                    let startDate = (Calendar.current.date(byAdding: .month, value: self.MARGIN_TO_AFTER_MONTH, to: self.taskData[self.taskData.count-1].date))!
+                    (UIApplication.shared.delegate as! AppDelegate).getDayTask(startDate: startDate, endDate: self.taskData[self.taskData.count-1].date, workSpaceId: (SharedData.instance.seletedWorkSpace?.id)!, reloadState: .append)
+                }
+            }).disposed(by: self.disposeBag)
 //        requestAccessToCalendar()
     }
 
@@ -301,21 +347,7 @@ extension ViewController: UITableViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if (self.taskData.count > 0 && scrollView.contentOffset.y >= (scrollView.contentSize.height - scrollView.frame.size.height)) { //reach bottom
-            switch SharedData.instance.seletedWorkSpace!.dateType! {
-            case .day:
-                appendTaskData(pivotDate: self.taskData[self.taskData.count-1].date, amountOfNumber: MARGIN_TO_AFTER_DAY)
-                (UIApplication.shared.delegate as! AppDelegate).getDayTask(startDate:self.taskData[self.taskData.count-1].date, endDate: self.taskData[self.taskData.count-1].date.addingTimeInterval(86400.0 * Double(MARGIN_TO_AFTER_DAY)), workSpaceId: (SharedData.instance.seletedWorkSpace?.id)!)
-            case .week:
-                appendTaskDataForWeek(pivotDate: self.taskData[self.taskData.count-1].date, amountOfWeek: MARGIN_TO_AFTER_WEEK)
-                let startDate = (Calendar.current.date(byAdding: .weekOfMonth, value: MARGIN_TO_AFTER_WEEK, to: self.taskData[self.taskData.count-1].date))!
-                (UIApplication.shared.delegate as! AppDelegate).getDayTask(startDate: startDate, endDate: self.taskData[self.taskData.count-1].date, workSpaceId: (SharedData.instance.seletedWorkSpace?.id)!)
-            case .month:
-                appendTaskDataForMonth(pivotDate: self.taskData[self.taskData.count-1].date, amountOfNumber: MARGIN_TO_AFTER_MONTH)
-                let startDate = (Calendar.current.date(byAdding: .month, value: MARGIN_TO_AFTER_MONTH, to: self.taskData[self.taskData.count-1].date))!
-                (UIApplication.shared.delegate as! AppDelegate).getDayTask(startDate: startDate, endDate: self.taskData[self.taskData.count-1].date, workSpaceId: (SharedData.instance.seletedWorkSpace?.id)!)
-            }
-            
-            self.tableView.reloadData();
+            self.appendTaskSubject.onNext(())
         }
     }
 }
@@ -451,19 +483,15 @@ extension ViewController: UITableViewDataSource {
         // Fetch Weather Data
         switch SharedData.instance.seletedWorkSpace!.dateType! {
         case .day:
-            insertTaskData(pivotDate: self.taskData[0].date, amountOfNumber: MARGIN_TO_AFTER_DAY)
-            (UIApplication.shared.delegate as! AppDelegate).getDayTask(startDate: self.taskData[0].date.addingTimeInterval(-86400.0 * Double(MARGIN_TO_AFTER_DAY)), endDate: self.taskData[0].date, workSpaceId: (SharedData.instance.seletedWorkSpace?.id)!)
+            (UIApplication.shared.delegate as! AppDelegate).getDayTask(startDate: self.taskData[0].date.addingTimeInterval(-86400.0 * Double(MARGIN_TO_AFTER_DAY)), endDate: self.taskData[0].date, workSpaceId: (SharedData.instance.seletedWorkSpace?.id)!,reloadState: .insert)
         case .week:
-            insertTaskDataForWeek(pivotDate: self.taskData[0].date, amountOfWeek: MARGIN_TO_AFTER_WEEK)
             let startDate = (Calendar.current.date(byAdding: .weekOfMonth, value: -MARGIN_TO_AFTER_WEEK, to: self.taskData[0].date))!
-            (UIApplication.shared.delegate as! AppDelegate).getDayTask(startDate: startDate, endDate: self.taskData[0].date, workSpaceId: (SharedData.instance.seletedWorkSpace?.id)!)
+            (UIApplication.shared.delegate as! AppDelegate).getDayTask(startDate: startDate, endDate: self.taskData[0].date, workSpaceId: (SharedData.instance.seletedWorkSpace?.id)!,reloadState: .insert)
         case .month:
-            insertTaskDataForMonth(pivotDate: self.taskData[0].date, amountOfNumber: MARGIN_TO_AFTER_MONTH)
             let startDate = (Calendar.current.date(byAdding: .month, value: -MARGIN_TO_AFTER_MONTH, to: self.taskData[0].date))!
-            (UIApplication.shared.delegate as! AppDelegate).getDayTask(startDate: startDate, endDate: self.taskData[0].date, workSpaceId: (SharedData.instance.seletedWorkSpace?.id)!)
+            (UIApplication.shared.delegate as! AppDelegate).getDayTask(startDate: startDate, endDate: self.taskData[0].date, workSpaceId: (SharedData.instance.seletedWorkSpace?.id)!,reloadState: .insert)
         }
         
-        self.tableView.reloadData()
         self.refreshControl.endRefreshing()
     }
 }
@@ -655,6 +683,7 @@ extension ViewController {
         //과거로부터 현재 미래까지
         for i in 1..<amountOfWeek+1{
             let pastDate:Date = (Calendar.current.date(byAdding: .weekOfMonth, value: -i, to: weekPivot))!
+            
             //*********dayKey 생성***********
             let dayKey:String = dayKeyFormatter.string(from: pastDate)
             //******************************

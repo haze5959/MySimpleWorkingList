@@ -173,7 +173,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     // 테스크 가져오기
-    func getDayTask(startDate:Date, endDate:Date?, workSpaceId:String) -> Void {
+    func getDayTask(startDate:Date, endDate:Date?, workSpaceId:String, reloadState:reloadState) -> Void {
         let pinWheel = PinWheelView.shared;
         DispatchQueue.main.async {
             pinWheel.showProgressView(self.navigationVC.view);
@@ -209,7 +209,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 SharedData.instance.taskAllDic.setValue(task, forKey: dayKey)
             }
             
-            SharedData.instance.viewContrllerDelegate.reloadTableAll()
+            SharedData.instance.viewContrllerDelegate.reloadTableAll(reloadState: reloadState)
             
             DispatchQueue.main.async {
                 pinWheel.hideProgressView()
@@ -315,7 +315,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     }
                     
                     print("delete complete!")
-                    SharedData.instance.viewContrllerDelegate.reloadTableAll();
+                    SharedData.instance.viewContrllerDelegate.reloadTableAll(reloadState: .none)
                     
                     DispatchQueue.main.async {
                         pinWheel.hideProgressView();
