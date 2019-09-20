@@ -94,10 +94,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 //클라우드 변경사항 노티 적용
                 self.saveSubscription()
                 
-                self.showReviewTimer(second: 300)
-                
                 if !PremiumProducts.store.isProductPurchased(PremiumProducts.premiumVersion) {
-                    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 20) {
+                    PremiumProducts.store.restorePurchases()
+                }
+                
+                self.showReviewTimer(second: 300)
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 20) {
+                    if !PremiumProducts.store.isProductPurchased(PremiumProducts.premiumVersion) {
                         self.showPhurcaseDialog()
                     }
                 }
@@ -401,7 +404,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // MARK: - Review
     func showReviewTimer(second:Int) {
-        PremiumProducts.store.restorePurchases()
         DispatchQueue.main.async {
             if PremiumProducts.store.isProductPurchased(PremiumProducts.premiumVersion) {
                 if !UserDefaults().bool(forKey: "sawReview") {
