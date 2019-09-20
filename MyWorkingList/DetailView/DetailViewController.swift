@@ -15,7 +15,8 @@ class DetailViewController: UIViewController, UITextViewDelegate {
     @IBOutlet weak var titleLabel: UINavigationItem!
     @IBOutlet weak var textView: UITextView!
     @IBOutlet weak var saveBtn: UIBarButtonItem!
-//    @IBOutlet weak var alarmBtn: UIButton!
+    @IBOutlet weak var bottomMargin: NSLayoutConstraint!
+    //    @IBOutlet weak var alarmBtn: UIButton!
 //    @IBOutlet weak var alarmBtnWidth: NSLayoutConstraint!
     
     override func viewDidLoad() {
@@ -59,6 +60,19 @@ class DetailViewController: UIViewController, UITextViewDelegate {
         self.textView.becomeFirstResponder()   //포커스 잡기
         
 //        self.setAlarmBtnTitle(date: self.dayTask?.alarmDate)
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            if UIDevice.current.orientation.isLandscape {
+                print("Landscape")
+                self.bottomMargin.constant = 370
+            } else {
+                print("Portrait")
+                self.bottomMargin.constant = 280
+            }
+        }
     }
 
     @IBAction func pressSaveBtn(_ sender: Any) {

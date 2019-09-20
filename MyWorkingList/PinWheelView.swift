@@ -22,7 +22,7 @@ open class PinWheelView {
         return Static.instance
     }
     
-    open func showProgressView(_ view: UIView) {
+    open func showProgressView(_ view: UIView, text: String = "iCloud Sync...") {
         DispatchQueue.main.async {
             self.containerView.frame = view.frame
             self.containerView.center = view.center
@@ -38,7 +38,7 @@ open class PinWheelView {
             self.activityIndicator.style = .whiteLarge
             self.activityIndicator.center = CGPoint(x: self.progressView.bounds.width / 2, y: self.progressView.bounds.height / 2)
             
-            self.labelView.text = "iCloud Sync...";
+            self.labelView.text = text
             self.labelView.frame = CGRect(x: view.frame.size.width/2 - 100, y: self.progressView.frame.origin.y + 85, width: 200, height: 20)
             self.labelView.textAlignment = .center;
             

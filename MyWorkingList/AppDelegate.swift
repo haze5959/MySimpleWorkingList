@@ -94,10 +94,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 //클라우드 변경사항 노티 적용
                 self.saveSubscription()
                 
-                self.showReviewTimer(second: 180)
+                self.showReviewTimer(second: 300)
                 
                 if !PremiumProducts.store.isProductPurchased(PremiumProducts.premiumVersion) {
-                    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 10) {
+                    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 20) {
                         self.showPhurcaseDialog()
                     }
                 }
@@ -401,6 +401,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // MARK: - Review
     func showReviewTimer(second:Int) {
+        PremiumProducts.store.restorePurchases()
         DispatchQueue.main.async {
             if PremiumProducts.store.isProductPurchased(PremiumProducts.premiumVersion) {
                 if !UserDefaults().bool(forKey: "sawReview") {
@@ -413,7 +414,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 }
             } else {
                 self.reviewTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval(second), repeats: true, block: { timer in
-                    self.showPhurcaseDialog()
+                    if PremiumProducts.store.isProductPurchased(PremiumProducts.premiumVersion) {
+                        self.showPhurcaseDialog()
+                    }
                 })
             }
         }
@@ -440,6 +443,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                                 NotificationCenter.default.addObserver(self, selector: #selector(self.buyComplete),
                                                                        name: .IAPHelperPurchaseNotification,
                                                                        object: nil)
+                                PinWheelView.shared.showProgressView(self.navigationVC.view, text: "Please wait...")
                             })
                             
                             d.show(in: self.navigationVC)
@@ -459,6 +463,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     @objc func buyComplete() {
+        PinWheelView.shared.hideProgressView()
         let d = Dialog.alert(title: "Info", message: "Purchase completed!", image: #imageLiteral(resourceName: "Premium"))
         d.addAction(title: "Confirm", handler: { (dialog) -> (Void) in
             dialog.dismiss()
