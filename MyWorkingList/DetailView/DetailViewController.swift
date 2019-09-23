@@ -59,6 +59,16 @@ class DetailViewController: UIViewController, UITextViewDelegate {
         self.textView.text = self.dayTask?.body
         self.textView.becomeFirstResponder()   //포커스 잡기
         
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            if UIDevice.current.orientation.isLandscape {
+                print("Landscape")
+                self.bottomMargin.constant = 490
+            } else {
+                print("Portrait")
+                self.bottomMargin.constant = 400
+            }
+        }
+        
 //        self.setAlarmBtnTitle(date: self.dayTask?.alarmDate)
     }
     
@@ -67,10 +77,10 @@ class DetailViewController: UIViewController, UITextViewDelegate {
         if UIDevice.current.userInterfaceIdiom == .pad {
             if UIDevice.current.orientation.isLandscape {
                 print("Landscape")
-                self.bottomMargin.constant = 370
+                self.bottomMargin.constant = 490
             } else {
                 print("Portrait")
-                self.bottomMargin.constant = 280
+                self.bottomMargin.constant = 400
             }
         }
     }
