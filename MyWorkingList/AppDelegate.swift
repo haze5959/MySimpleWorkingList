@@ -40,7 +40,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //iCloud 권한 체크
         CKContainer.default().accountStatus{ status, error in
             guard status == .available else {
-                self.alertPopUp(bodyStr: "user’s iCloud is not available", alertClassify: .exit)
+                self.alertPopUp(bodyStr: "user’s iCloud is not available\nThis might happen if the user is not logged into iCloud.", alertClassify: .exit)
                 return
             }
             //The user’s iCloud account is available..
@@ -54,7 +54,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             self.privateDB.perform(query, inZoneWith: nil) { records, error in
                 guard error == nil else {
                     print("err: \(String(describing: error))")
-                    self.alertPopUp(bodyStr: (error?.localizedDescription)!, alertClassify: .exit)
+                    self.alertPopUp(bodyStr: "\((error?.localizedDescription)!)\nThis might happen if the user is not logged into iCloud.", alertClassify: .exit)
                     return
                 }
 
@@ -338,7 +338,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func alertPopUp(bodyStr:String, alertClassify:AlertClassify) -> Void {
-        let alert = UIAlertController(title: "알림", message: bodyStr, preferredStyle: .alert);
+        let alert = UIAlertController(title: "Notice", message: bodyStr, preferredStyle: .alert);
         
         switch alertClassify {
         case .normal:

@@ -88,7 +88,7 @@ class DetailViewController: UIViewController, UITextViewDelegate {
     @IBAction func pressSaveBtn(_ sender: Any) {
         
         guard self.textView.text.count < 2000 else {
-            (UIApplication.shared.delegate as! AppDelegate).alertPopUp(bodyStr: "2000자를 넘길 수 없습니다.", alertClassify: .normal)
+            (UIApplication.shared.delegate as! AppDelegate).alertPopUp(bodyStr: "Can't exceed 2000 characters.", alertClassify: .normal)
             return
         }
         
