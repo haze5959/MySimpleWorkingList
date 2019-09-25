@@ -37,45 +37,61 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Register for notifications
         application.registerForRemoteNotifications()
 
+        self.runIcloud()
+        
+        return true
+    }
+
+    func applicationWillResignActive(_ application: UIApplication) {}
+
+    func applicationDidEnterBackground(_ application: UIApplication) {}
+
+    func applicationWillEnterForeground(_ application: UIApplication) {}
+
+    func applicationDidBecomeActive(_ application: UIApplication) {}
+
+    func applicationWillTerminate(_ application: UIApplication) {}
+    
+    func runIcloud() {
         //iCloud 권한 체크
-        CKContainer.default().accountStatus{ status, error in
+        CKContainer.default().accountStatus { status, error in
             guard status == .available else {
-                self.alertPopUp(bodyStr: "user’s iCloud is not available\nThis might happen if the user is not logged into iCloud.", alertClassify: .exit)
+                self.alertPopUp(bodyStr: "user’s iCloud is not available\nThis might happen if the user is not logged into iCloud.", alertClassify: .refresh)
                 return
             }
             //The user’s iCloud account is available..
-
+            
             self.container = CKContainer.default()
             self.privateDB = self.container.privateCloudDatabase
-
+            
             let predicate = NSPredicate(value: true)
             let query = CKQuery(recordType: "workSpace", predicate: predicate)
-
+            
             self.privateDB.perform(query, inZoneWith: nil) { records, error in
                 guard error == nil else {
                     print("err: \(String(describing: error))")
-                    self.alertPopUp(bodyStr: "\((error?.localizedDescription)!)\nThis might happen if the user is not logged into iCloud.", alertClassify: .exit)
+                    self.alertPopUp(bodyStr: "\((error?.localizedDescription)!)\nThis might happen if the user is not logged into iCloud.", alertClassify: .refresh)
                     return
                 }
-
+                
                 if records?.count == 0 {    //최초 실행
                     self.makeWorkSpace(workSpaceName: "default", dateType: .day)
-
+                    
                 } else {
                     let sharedData = SharedData.instance
-
+                    
                     var isSameValue = false //클라우드 데이터에 디바이스 값이 들어있는지 판별
                     for record in records!{
                         let workSpaceName = record.value(forKey: "name") as! String
                         let workSpaceDateType = record.value(forKey: "dateType") as! Int
                         
                         sharedData.workSpaceArr.append(myWorkspace.init(id: record.recordID.recordName, name: workSpaceName, dateType: DateType(rawValue: workSpaceDateType)!))
-
+                        
                         if workSpaceName == sharedData.seletedWorkSpace?.name {  //디바이스에 저장된 값과 클라우드에서 가져온 값이 일치한다면
                             isSameValue = true
                         }
                     }
-
+                    
                     if !isSameValue {
                         let workSpaceDateType = records![0].value(forKey: "dateType") as! Int
                         let workSpace = myWorkspace.init(id: records![0].recordID.recordName, name: records![0].value(forKey: "name") as! String, dateType: DateType(rawValue: workSpaceDateType)!)
@@ -84,13 +100,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                         UserDefaults().set(workSpace.name, forKey: "seletedWorkSpaceName")
                         UserDefaults().set(workSpace.dateType.rawValue, forKey: "seletedWorkSpaceDateType")
                     }
-
+                    
                     DispatchQueue.main.async {
-                        pinWheel.hideProgressView()
+                        PinWheelView.shared.hideProgressView()
                     }
                     sharedData.workSpaceUpdateObserver?.onNext(sharedData.seletedWorkSpace!)
                 }
-
+                
                 //클라우드 변경사항 노티 적용
                 self.saveSubscription()
                 
@@ -106,19 +122,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 }
             }
         }
-        
-        return true
     }
-
-    func applicationWillResignActive(_ application: UIApplication) {}
-
-    func applicationDidEnterBackground(_ application: UIApplication) {}
-
-    func applicationWillEnterForeground(_ application: UIApplication) {}
-
-    func applicationDidBecomeActive(_ application: UIApplication) {}
-
-    func applicationWillTerminate(_ application: UIApplication) {}
     
     // MARK: ==============================
     // MARK: CloudKit 메서드
@@ -195,7 +199,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.privateDB.perform(query, inZoneWith: nil) { records, error in
             guard error == nil else {
                 print("err: \(String(describing: error))")
-                self.alertPopUp(bodyStr: (error?.localizedDescription)!, alertClassify: .exit)
+                self.alertPopUp(bodyStr: (error?.localizedDescription)!, alertClassify: .refresh)
                 return
             }
             
@@ -287,7 +291,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.privateDB.perform(query, inZoneWith: nil) { records, error in
             guard error == nil else {
                 print("err: \(String(describing: error))");
-                self.alertPopUp(bodyStr: (error?.localizedDescription)!, alertClassify: .exit)
+                self.alertPopUp(bodyStr: (error?.localizedDescription)!, alertClassify: .refresh)
                 return;
             }
             
@@ -300,7 +304,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     (UIApplication.shared.delegate as! AppDelegate).privateDB.delete(withRecordID: record.recordID) { deletedRecordId, error in
                         guard error == nil else {
                             print("err: \(String(describing: error))");
-                            self.alertPopUp(bodyStr: (error?.localizedDescription)!, alertClassify: .exit)
+                            self.alertPopUp(bodyStr: (error?.localizedDescription)!, alertClassify: .refresh)
                             return;
                         }
                     }
@@ -313,7 +317,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 (UIApplication.shared.delegate as! AppDelegate).privateDB.delete(withRecordID: recordId) { deletedRecordId, error in
                     guard error == nil else {
                         print("err: \(String(describing: error))");
-                        self.alertPopUp(bodyStr: (error?.localizedDescription)!, alertClassify: .exit)
+                        self.alertPopUp(bodyStr: (error?.localizedDescription)!, alertClassify: .refresh)
                         return;
                     }
                     
@@ -333,20 +337,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // MARK: 얼럿뷰
     enum AlertClassify {
-        case normal;
-        case exit;
+        case normal
+        case refresh
     }
     
     func alertPopUp(bodyStr:String, alertClassify:AlertClassify) -> Void {
-        let alert = UIAlertController(title: "Notice", message: bodyStr, preferredStyle: .alert);
+        let alert = UIAlertController(title: "Notice", message: bodyStr, preferredStyle: .alert)
         
         switch alertClassify {
         case .normal:
-            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil));
-        case .exit:
-            alert.addAction(UIAlertAction(title: "Exit", style: .cancel, handler: {
-                action in exit(0);
-            }));
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        case .refresh:
+            alert.addAction(UIAlertAction(title: "Refresh", style: .cancel, handler: { action in
+                self.runIcloud()
+            }))
         }
         
         self.navigationVC.present(alert, animated: true);
