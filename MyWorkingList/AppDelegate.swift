@@ -56,7 +56,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //iCloud 권한 체크
         CKContainer.default().accountStatus { status, error in
             guard status == .available else {
-                self.alertPopUp(bodyStr: "user’s iCloud is not available\nThis might happen if the user is not logged into iCloud.", alertClassify: .refresh)
+                self.alertPopUp(bodyStr: "user’s iCloud is not available.\nThis might happen if the user is not logged into iCloud or not Setting on iCloud.\n\nGo to Settings, tap [your name], then select iCloud and please set up iCloud.", alertClassify: .reload)
                 return
             }
             //The user’s iCloud account is available..
@@ -70,7 +70,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             self.privateDB.perform(query, inZoneWith: nil) { records, error in
                 guard error == nil else {
                     print("err: \(String(describing: error))")
-                    self.alertPopUp(bodyStr: "\((error?.localizedDescription)!)\nThis might happen if the user is not logged into iCloud.", alertClassify: .refresh)
+                    self.alertPopUp(bodyStr: "\((error?.localizedDescription)!).\nThis might happen if the user is not logged into iCloud or not Setting on iCloud.\n\nGo to Settings, tap [your name], then select iCloud and please set up iCloud.", alertClassify: .reload)
                     return
                 }
                 
@@ -109,10 +109,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 
                 //클라우드 변경사항 노티 적용
                 self.saveSubscription()
-                
-                if !PremiumProducts.store.isProductPurchased(PremiumProducts.premiumVersion) {
-                    PremiumProducts.store.restorePurchases()
-                }
                 
                 self.showReviewTimer(second: 300)
                 DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 20) {
@@ -199,7 +195,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.privateDB.perform(query, inZoneWith: nil) { records, error in
             guard error == nil else {
                 print("err: \(String(describing: error))")
-                self.alertPopUp(bodyStr: (error?.localizedDescription)!, alertClassify: .refresh)
+                self.alertPopUp(bodyStr: (error?.localizedDescription)!, alertClassify: .reload)
                 return
             }
             
@@ -291,7 +287,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.privateDB.perform(query, inZoneWith: nil) { records, error in
             guard error == nil else {
                 print("err: \(String(describing: error))");
-                self.alertPopUp(bodyStr: (error?.localizedDescription)!, alertClassify: .refresh)
+                self.alertPopUp(bodyStr: (error?.localizedDescription)!, alertClassify: .reload)
                 return;
             }
             
@@ -304,7 +300,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     (UIApplication.shared.delegate as! AppDelegate).privateDB.delete(withRecordID: record.recordID) { deletedRecordId, error in
                         guard error == nil else {
                             print("err: \(String(describing: error))");
-                            self.alertPopUp(bodyStr: (error?.localizedDescription)!, alertClassify: .refresh)
+                            self.alertPopUp(bodyStr: (error?.localizedDescription)!, alertClassify: .reload)
                             return;
                         }
                     }
@@ -317,7 +313,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 (UIApplication.shared.delegate as! AppDelegate).privateDB.delete(withRecordID: recordId) { deletedRecordId, error in
                     guard error == nil else {
                         print("err: \(String(describing: error))");
-                        self.alertPopUp(bodyStr: (error?.localizedDescription)!, alertClassify: .refresh)
+                        self.alertPopUp(bodyStr: (error?.localizedDescription)!, alertClassify: .reload)
                         return;
                     }
                     
@@ -338,7 +334,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: 얼럿뷰
     enum AlertClassify {
         case normal
-        case refresh
+        case reload
     }
     
     func alertPopUp(bodyStr:String, alertClassify:AlertClassify) -> Void {
@@ -347,8 +343,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         switch alertClassify {
         case .normal:
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        case .refresh:
-            alert.addAction(UIAlertAction(title: "Refresh", style: .cancel, handler: { action in
+        case .reload:
+            alert.addAction(UIAlertAction(title: "Reload iCloud", style: .cancel, handler: { action in
                 self.runIcloud()
             }))
         }
@@ -449,10 +445,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                                 NotificationCenter.default.addObserver(self, selector: #selector(self.buyComplete),
                                                                        name: .IAPHelperPurchaseNotification,
                                                                        object: nil)
+                                NotificationCenter.default.addObserver(self, selector: #selector(self.buyFail),
+                                                                       name: .IAPHelperPurchaseFailNotification,
+                                                                       object: nil)
                                 PinWheelView.shared.showProgressView(self.navigationVC.view, text: "Please wait...")
                             })
                             
-                            d.show(in: self.navigationVC)
+                            d.addAction(title: "Purchase Restore", handler: { (dialog) -> (Void) in
+                                PremiumProducts.store.restorePurchases()
+                                dialog.dismiss()
+                                self.reviewTimer?.invalidate()
+                                self.reviewTimer = nil
+                                self.showReviewTimer(second: 300)
+                                
+                                guard let window = self.window else {
+                                    return
+                                }
+                                
+                                if let sideVC = window.rootViewController as? SideViewController {
+                                    sideVC.pressOutOfView(sideVC)
+                                }
+                            })
+                            
+                            DispatchQueue.main.async {
+                                d.show(in: self.navigationVC)
+                            }
                         }
                     } else {
                         print("showPhurcaseDialog 실패!!!")
@@ -475,6 +492,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             dialog.dismiss()
         })
         d.show(in: self.navigationVC)
+    }
+    
+    @objc func buyFail() {
+        PinWheelView.shared.hideProgressView()
     }
 }
 

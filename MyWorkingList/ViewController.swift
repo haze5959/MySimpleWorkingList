@@ -282,7 +282,7 @@ class ViewController: UIViewController, ViewControllerDelegate {
 //                    self.getALLEvents();
                 })
             } else {
-                (UIApplication.shared.delegate as! AppDelegate).alertPopUp(bodyStr: "캘린더 접근이 허용되지 않았습니다. 설정에서 해당 앱의 캘린더 접근 권한을 허용해주십시오.", alertClassify: .refresh)
+                (UIApplication.shared.delegate as! AppDelegate).alertPopUp(bodyStr: "캘린더 접근이 허용되지 않았습니다. 설정에서 해당 앱의 캘린더 접근 권한을 허용해주십시오.", alertClassify: .reload)
             }
         })
     }

@@ -52,8 +52,10 @@ open class PinWheelView {
     }
     
     open func hideProgressView() {
-        self.activityIndicator.stopAnimating()
-        self.containerView.removeFromSuperview()
+        DispatchQueue.main.async {
+            self.activityIndicator.stopAnimating()
+            self.containerView.removeFromSuperview()
+        }
     }
 }
 
