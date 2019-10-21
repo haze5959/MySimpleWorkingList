@@ -416,7 +416,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 }
             } else {
                 self.reviewTimer = Timer.scheduledTimer(withTimeInterval: TimeInterval(second), repeats: true, block: { timer in
-                    if PremiumProducts.store.isProductPurchased(PremiumProducts.premiumVersion) {
+                    if !PremiumProducts.store.isProductPurchased(PremiumProducts.premiumVersion) {
                         self.showPhurcaseDialog()
                     }
                 })

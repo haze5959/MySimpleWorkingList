@@ -122,6 +122,8 @@ class ViewController: UIViewController, ViewControllerDelegate {
     
     let appendTaskSubject = PublishSubject<Void>()
     
+    var edgeGesture: UIScreenEdgePanGestureRecognizer?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         //초기화
@@ -194,13 +196,28 @@ class ViewController: UIViewController, ViewControllerDelegate {
                     (UIApplication.shared.delegate as! AppDelegate).getDayTask(startDate: startDate, endDate: self.taskData[self.taskData.count-1].date, workSpaceId: (SharedData.instance.seletedWorkSpace?.id)!, reloadState: .append)
                 }
             }).disposed(by: self.disposeBag)
+        
+        self.setEdgeGesture()
 //        requestAccessToCalendar()
+    }
+    
+    func setEdgeGesture() {
+        self.edgeGesture = UIScreenEdgePanGestureRecognizer(target: self,
+                                                              action: #selector(self.pressWorkSpaceBtn))
+        self.edgeGesture?.edges = .left
+        if let edgeGesture = self.edgeGesture {
+            self.view.addGestureRecognizer(edgeGesture)
+        }
     }
 
     /**
      워크스페이스 사이드뷰 띄우는 버튼
     */
     @IBAction func pressWorkSpaceBtn(_ sender: Any) {
+        if let _ = self.edgeGesture {
+            self.edgeGesture = nil
+        }
+        
         let sideVC = SideViewController()
         if #available(iOS 11.0, *) {
             var frame = self.view.safeAreaLayoutGuide.layoutFrame
@@ -212,7 +229,7 @@ class ViewController: UIViewController, ViewControllerDelegate {
             frame.origin.x = -frame.size.width
             frame.size.height = frame.size.height - UIApplication.shared.statusBarFrame.size.height
             sideVC.view.frame = frame
-        };
+        }
         
         self.addChild(sideVC)
         self.view.addSubview(sideVC.view)

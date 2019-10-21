@@ -90,6 +90,7 @@ class SideViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
             parentVC.shadowView.backgroundColor = UIColor.init(red: 0, green: 0, blue: 0, alpha: 0)
             self.view.frame.origin.x = -self.view.frame.size.width
         }) { (value) in
+            parentVC.setEdgeGesture()
             parentVC.shadowView.isHidden = true
             self.view.removeFromSuperview()
             self.removeFromParent()
