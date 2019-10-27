@@ -1,0 +1,7 @@
+${PODS_ROOT}/Target Support Files/Pods-MyWorkingList/Pods-MyWorkingList-frameworks.sh
+${BUILT_PRODUCTS_DIR}/Dialog/Dialog.framework
+${BUILT_PRODUCTS_DIR}/FSCalendar/FSCalendar.framework
+${BUILT_PRODUCTS_DIR}/Floaty/Floaty.framework
+${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework
+${BUILT_PRODUCTS_DIR}/RxRelay/RxRelay.framework
+${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework

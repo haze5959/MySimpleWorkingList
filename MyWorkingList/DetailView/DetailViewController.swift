@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 class DetailViewController: UIViewController, UITextViewDelegate {
 
@@ -16,6 +18,7 @@ class DetailViewController: UIViewController, UITextViewDelegate {
     @IBOutlet weak var textView: UITextView!
     @IBOutlet weak var saveBtn: UIBarButtonItem!
     @IBOutlet weak var bottomMargin: NSLayoutConstraint!
+    private let disposeBag = DisposeBag()
     //    @IBOutlet weak var alarmBtn: UIButton!
 //    @IBOutlet weak var alarmBtnWidth: NSLayoutConstraint!
     
@@ -57,38 +60,46 @@ class DetailViewController: UIViewController, UITextViewDelegate {
         }
         
         self.textView.text = self.dayTask?.body
-        self.textView.becomeFirstResponder()   //포커스 잡기
+        self.textView.font = UIFont.systemFont(ofSize: SharedData().fontSize.getValue())
         
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            if UIDevice.current.orientation.isLandscape {
-                print("Landscape")
-                self.bottomMargin.constant = 490
-            } else {
-                print("Portrait")
-                self.bottomMargin.constant = 400
-            }
-        }
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillShow),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        
+        self.textView.becomeFirstResponder()   //포커스 잡기
+//        if UIDevice.current.userInterfaceIdiom == .pad {
+//            if UIDevice.current.orientation.isLandscape {
+//                print("Landscape")
+//                self.bottomMargin.constant = 490
+//            } else {
+//                print("Portrait")
+//                self.bottomMargin.constant = 400
+//            }
+//        }
         
 //        self.setAlarmBtnTitle(date: self.dayTask?.alarmDate)
     }
     
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            if UIDevice.current.orientation.isLandscape {
-                print("Landscape")
-                self.bottomMargin.constant = 490
-            } else {
-                print("Portrait")
-                self.bottomMargin.constant = 400
-            }
-        }
-    }
+//    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+//        super.viewWillTransition(to: size, with: coordinator)
+//        if UIDevice.current.userInterfaceIdiom == .pad {
+//            if UIDevice.current.orientation.isLandscape {
+//                print("Landscape")
+//                self.bottomMargin.constant = 490
+//            } else {
+//                print("Portrait")
+//                self.bottomMargin.constant = 400
+//            }
+//        }
+//    }
 
     @IBAction func pressSaveBtn(_ sender: Any) {
         
-        guard self.textView.text.count < 2000 else {
-            (UIApplication.shared.delegate as! AppDelegate).alertPopUp(bodyStr: "Can't exceed 2000 characters.", alertClassify: .normal)
+        guard self.textView.text.count < 5000 else {
+            (UIApplication.shared.delegate as! AppDelegate).alertPopUp(bodyStr: "Can't exceed 5000 characters.", alertClassify: .normal)
             return
         }
         
@@ -108,8 +119,9 @@ class DetailViewController: UIViewController, UITextViewDelegate {
     }
     
     @IBAction func pressBackBtn(_ sender: Any) {
-        self.view.removeFromSuperview();
-        self.removeFromParent();
+        self.view.endEditing(true)
+        self.removeFromParent()
+        self.view.removeFromSuperview()
     }
     
 //    @IBAction func pressAlarmBtn(_ sender: Any) {
@@ -148,5 +160,14 @@ class DetailViewController: UIViewController, UITextViewDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         saveBtn.isEnabled = true;
         return true;
+    }
+    
+    @objc func keyboardWillShow(_ notification: Notification) {
+        if let keyboardFrame: NSValue = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
+            let keyboardRectangle = keyboardFrame.cgRectValue
+            let keyboardHeight = keyboardRectangle.height
+            
+            self.bottomMargin.constant = keyboardHeight
+        }
     }
 }

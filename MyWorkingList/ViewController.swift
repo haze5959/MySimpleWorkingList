@@ -13,6 +13,7 @@ import RxCocoa
 import EventKit
 import FSCalendar
 import Dialog
+import Floaty
 
 public enum reloadState {
     case none
@@ -89,6 +90,27 @@ class ViewController: UIViewController, ViewControllerDelegate {
         
         DispatchQueue.main.async {
             self.tableView.reloadData()
+
+            let floaty = Floaty()
+            floaty.addItem("Small font", icon: UIImage(named: "font_small")!, handler: { item in
+                SharedData().fontSize = .small
+                self.tableView.reloadData()
+                floaty.close()
+            })
+            
+            floaty.addItem("Normal font", icon: UIImage(named: "font_normal")!, handler: { item in
+                SharedData().fontSize = .normal
+                self.tableView.reloadData()
+                floaty.close()
+            })
+            
+            floaty.addItem("Large font", icon: UIImage(named: "font_large")!, handler: { item in
+                SharedData().fontSize = .large
+                self.tableView.reloadData()
+                floaty.close()
+            })
+            
+            self.view.addSubview(floaty)
         }
     }
     
@@ -329,37 +351,31 @@ class ViewController: UIViewController, ViewControllerDelegate {
 // MARK: UITableViewDelegate
 extension ViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
-        let detailVC = DetailViewController()
-        
-        var padding = 0
-        for i in 0..<indexPath.section {
-            padding += self.monthSectionArr[i].0
-        }
-        
-        let task:myTask = self.taskData[padding + indexPath.row]
-        
-        let dayKeyFormatter = DateFormatter()
-        dayKeyFormatter.setLocalizedDateFormatFromTemplate("yyMMdd")
-        let dayKey:String = dayKeyFormatter.string(from: task.date)
-        detailVC.dayTask = SharedData.instance.taskAllDic.object(forKey: dayKey) as? myTask
-        detailVC.tableIndexPath = indexPath
-        
-        if (detailVC.dayTask == nil) {
-            detailVC.dayTask = task
-        }
-        
-        if #available(iOS 11.0, *) {
+        DispatchQueue.main.async {
+            let detailVC = DetailViewController()
+            
+            var padding = 0
+            for i in 0..<indexPath.section {
+                padding += self.monthSectionArr[i].0
+            }
+            
+            let task:myTask = self.taskData[padding + indexPath.row]
+            
+            let dayKeyFormatter = DateFormatter()
+            dayKeyFormatter.setLocalizedDateFormatFromTemplate("yyMMdd")
+            let dayKey:String = dayKeyFormatter.string(from: task.date)
+            detailVC.dayTask = SharedData.instance.taskAllDic.object(forKey: dayKey) as? myTask
+            detailVC.tableIndexPath = indexPath
+            
+            if (detailVC.dayTask == nil) {
+                detailVC.dayTask = task
+            }
+            
             detailVC.view.frame = self.view.safeAreaLayoutGuide.layoutFrame
-        } else {
-            var frame = self.view.frame
-            frame.origin.y = frame.origin.y + UIApplication.shared.statusBarFrame.size.height
-            frame.size.height = frame.size.height - UIApplication.shared.statusBarFrame.size.height
-            detailVC.view.frame = frame
-        };
 
-        self.addChild(detailVC)
-        self.view.addSubview(detailVC.view)
+            self.addChild(detailVC)
+            self.view.addSubview(detailVC.view)
+        }
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -455,6 +471,7 @@ extension ViewController: UITableViewDataSource {
 //        }
         
         cell.bodyLabel?.text = task.body
+        cell.bodyLabel.font = UIFont.systemFont(ofSize: SharedData().fontSize.getValue())
         return cell
     }
     

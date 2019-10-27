@@ -338,18 +338,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func alertPopUp(bodyStr:String, alertClassify:AlertClassify) -> Void {
-        let alert = UIAlertController(title: "Notice", message: bodyStr, preferredStyle: .alert)
-        
-        switch alertClassify {
-        case .normal:
-            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        case .reload:
-            alert.addAction(UIAlertAction(title: "Reload iCloud", style: .cancel, handler: { action in
-                self.runIcloud()
-            }))
+        DispatchQueue.main.async {
+            let alert = UIAlertController(title: "Notice", message: bodyStr, preferredStyle: .alert)
+            
+            switch alertClassify {
+            case .normal:
+                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+            case .reload:
+                alert.addAction(UIAlertAction(title: "Reload iCloud", style: .cancel, handler: { action in
+                    self.runIcloud()
+                }))
+            }
+            
+            self.navigationVC.present(alert, animated: true)
         }
-        
-        self.navigationVC.present(alert, animated: true);
     }
     
     // MARK: - Notification related cloud
