@@ -72,6 +72,7 @@ class SideViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDa
                 self.tableView.reloadData()
                 self.view.removeFromSuperview()
                 self.removeFromParent()
+                parentVC.setEdgeGesture()
                 
             } else {
                 let cancelAlert = UIAlertController(title: "alert", message: "value is empty.", preferredStyle: .alert)
@@ -119,6 +120,7 @@ extension SideViewController: UITableViewDelegate {
             UserDefaults().set(SharedData.instance.seletedWorkSpace?.dateType.rawValue, forKey: "seletedWorkSpaceDateType")
             self.view.removeFromSuperview()
             self.removeFromParent()
+            parentVC.setEdgeGesture()
             parentVC.shadowView.isHidden = true
         }
     }
@@ -243,6 +245,7 @@ extension SideViewController: UITableViewDataSource {
                 UserDefaults().set(SharedData.instance.seletedWorkSpace?.dateType.rawValue, forKey: "seletedWorkSpaceDateType")
                 self.view.removeFromSuperview()
                 self.removeFromParent()
+                parentVC.setEdgeGesture()
                 parentVC.shadowView.isHidden = true
             }
             

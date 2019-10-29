@@ -70,31 +70,7 @@ class DetailViewController: UIViewController, UITextViewDelegate {
         )
         
         self.textView.becomeFirstResponder()   //포커스 잡기
-//        if UIDevice.current.userInterfaceIdiom == .pad {
-//            if UIDevice.current.orientation.isLandscape {
-//                print("Landscape")
-//                self.bottomMargin.constant = 490
-//            } else {
-//                print("Portrait")
-//                self.bottomMargin.constant = 400
-//            }
-//        }
-        
-//        self.setAlarmBtnTitle(date: self.dayTask?.alarmDate)
     }
-    
-//    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-//        super.viewWillTransition(to: size, with: coordinator)
-//        if UIDevice.current.userInterfaceIdiom == .pad {
-//            if UIDevice.current.orientation.isLandscape {
-//                print("Landscape")
-//                self.bottomMargin.constant = 490
-//            } else {
-//                print("Portrait")
-//                self.bottomMargin.constant = 400
-//            }
-//        }
-//    }
 
     @IBAction func pressSaveBtn(_ sender: Any) {
         
@@ -114,11 +90,18 @@ class DetailViewController: UIViewController, UITextViewDelegate {
             //***********************************
         }
         
-        self.view.removeFromSuperview();
-        self.removeFromParent();
+        self.closeDetailView()
     }
     
     @IBAction func pressBackBtn(_ sender: Any) {
+        self.closeDetailView()
+    }
+    
+    func closeDetailView() {
+        if let parent = self.parent as? ViewController {
+            parent.setEdgeGesture()
+        }
+        
         self.view.endEditing(true)
         self.removeFromParent()
         self.view.removeFromSuperview()

@@ -238,6 +238,8 @@ class ViewController: UIViewController, ViewControllerDelegate {
     @IBAction func pressWorkSpaceBtn(_ sender: Any) {
         if let _ = self.edgeGesture {
             self.edgeGesture = nil
+        } else {
+            return
         }
         
         let sideVC = SideViewController()
@@ -268,6 +270,10 @@ class ViewController: UIViewController, ViewControllerDelegate {
      해달 날짜 달력 조회 버튼
     */
     @IBAction func pressSearchCalendarBtn(_ sender: Any) {
+        if let _ = self.edgeGesture {
+            self.edgeGesture = nil
+        }
+        
         let calendarVC = CalendarViewController()
         if #available(iOS 11.0, *) {
             calendarVC.view.frame = self.view.safeAreaLayoutGuide.layoutFrame
@@ -375,6 +381,10 @@ extension ViewController: UITableViewDelegate {
 
             self.addChild(detailVC)
             self.view.addSubview(detailVC.view)
+            
+            if let _ = self.edgeGesture {
+                self.edgeGesture = nil
+            }
         }
     }
     
